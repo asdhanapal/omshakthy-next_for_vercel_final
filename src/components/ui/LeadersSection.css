@@ -53,7 +53,7 @@
 /* ---- Layer 1: giant name behind subject ---- */
 .lead__name-wrap {
   position: absolute;
-  right: 4vw;
+  right: 2vw;
   top: 50%;
   translate: 0 -54%;
   z-index: 1;
@@ -73,34 +73,45 @@
 }
 .lead__letter {
   display: inline-block;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(216, 188, 134, 0.5);
-  text-stroke: 1.5px rgba(216, 188, 134, 0.5);
+  color: #f4efe6;
   will-change: transform, opacity, filter;
 }
 
 /* ---- Layer 2: portrait ---- */
 .lead__portrait-wrap {
   position: absolute;
-  right: 3vw;
+  right: 0;
   bottom: 0;
-  width: min(48vw, 620px);
+  width: min(56vw, 760px);
   z-index: 2;
   will-change: transform;
 }
 .lead__portrait {
   position: relative;
   width: 100%;
-  will-change: clip-path, transform, opacity;
+  aspect-ratio: 558 / 447; /* native size of the cut-out */
+  /* one shadow for the whole figure (not per-slice) */
+  filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.55));
   /* fade the base so the chair/feet melt into the section instead of a hard crop */
   -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
 }
-.lead__portrait img {
-  display: block;
+.lead__slices {
+  position: absolute;
+  inset: 0;
+}
+.lead__slice {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity, filter;
+}
+.lead__slice img {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
-  filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.55));
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
 }
 /* soft floor shadow to ground the figure */
 .lead__portrait-wrap::after {
@@ -114,21 +125,6 @@
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 72%);
   filter: blur(14px);
   z-index: -1;
-  pointer-events: none;
-}
-/* light sweep that races down the portrait on reveal */
-.lead__sweep {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 22%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(216, 188, 134, 0.55),
-    transparent
-  );
-  mix-blend-mode: screen;
   pointer-events: none;
 }
 .lead__portrait-glow {
@@ -147,9 +143,17 @@
 .lead__content {
   position: relative;
   z-index: 3;
-  max-width: 42ch;
+  align-self: stretch;
+  width: min(52vw, 620px);
   padding-left: clamp(1.5rem, 6vw, 6rem);
   will-change: transform;
+}
+.lead__inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-block: 16vh 13vh;
 }
 .lead__eyebrow {
   display: inline-block;
@@ -187,26 +191,28 @@
   letter-spacing: 0.04em;
   color: #d8bc86;
 }
+/* bio points as a 2-column band anchored to the bottom-left */
 .lead__points {
   list-style: none;
-  margin: 1.8rem 0 0;
+  margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem 1.8rem;
+  max-width: 560px;
 }
 .lead__points li {
   position: relative;
   padding-left: 1.6rem;
-  font-size: 0.98rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.45;
   color: rgba(255, 255, 255, 0.8);
 }
 .lead__points li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.6em;
+  top: 0.55em;
   width: 8px;
   height: 8px;
   border-radius: 50%;

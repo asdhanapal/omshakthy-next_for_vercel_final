@@ -26,16 +26,17 @@ const featured = {
 }
 
 const EASE = [0.16, 1, 0.3, 1] as const
-const SPRING = { stiffness: 90, damping: 18, mass: 0.6 }
+const SPRING = { stiffness: 60, damping: 20, mass: 0.8 }
+const SLICES = 8 // vertical slices the portrait assembles from
 
 /* ---- entrance variants (played when the section snaps into view) ---- */
 const emblemV: Variants = {
   hidden: { scale: 0.3, opacity: 0, rotate: -70 },
-  show: { scale: 1, opacity: 0.07, rotate: 0, transition: { duration: 1.5, ease: EASE } },
+  show: { scale: 1, opacity: 0.07, rotate: 0, transition: { duration: 2.1, ease: EASE } },
 }
 const nameWrapV: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.055, delayChildren: 0.2 } },
+  show: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } },
 }
 // each letter flies in from alternating top/bottom, rotated + blurred
 const letterV: Variants = {
@@ -50,45 +51,46 @@ const letterV: Variants = {
     opacity: 1,
     rotateZ: 0,
     filter: 'blur(0px)',
-    transition: { duration: 0.75, ease: EASE },
+    transition: { duration: 1.15, ease: EASE },
   },
 }
-const portraitV: Variants = {
-  hidden: { clipPath: 'inset(100% 0% 0% 0%)', opacity: 0, scale: 1.06 },
+const portraitSlicesV: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.09, delayChildren: 0.5 } },
+}
+// each vertical slice flies in from alternating top/bottom and locks into place
+const sliceV: Variants = {
+  hidden: (i: number) => ({
+    y: i % 2 === 0 ? '-45%' : '45%',
+    opacity: 0,
+    filter: 'blur(12px)',
+  }),
   show: {
-    clipPath: 'inset(0% 0% 0% 0%)',
+    y: '0%',
     opacity: 1,
-    scale: 1,
-    transition: { duration: 1.05, delay: 0.55, ease: EASE },
+    filter: 'blur(0px)',
+    transition: { duration: 1.15, ease: EASE },
   },
 }
 const glowV: Variants = {
   hidden: { opacity: 0, scale: 0.5 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.9, delay: 1.2, ease: EASE } },
-}
-const sweepV: Variants = {
-  hidden: { top: '-8%', opacity: 0 },
-  show: {
-    top: ['-8%', '108%'],
-    opacity: [0, 0.9, 0],
-    transition: { duration: 0.9, delay: 0.65, ease: 'easeInOut' },
-  },
+  show: { opacity: 1, scale: 1, transition: { duration: 1.3, delay: 1.7, ease: EASE } },
 }
 const lineV: Variants = {
   hidden: { scaleY: 0 },
-  show: { scaleY: 1, transition: { duration: 0.6, delay: 1.0, ease: EASE } },
+  show: { scaleY: 1, transition: { duration: 0.9, delay: 1.5, ease: EASE } },
 }
 const contentV: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.11, delayChildren: 1.15 } },
+  show: { transition: { staggerChildren: 0.16, delayChildren: 1.75 } },
 }
 const itemV: Variants = {
   hidden: { opacity: 0, x: -34 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.6, ease: EASE } },
+  show: { opacity: 1, x: 0, transition: { duration: 0.95, ease: EASE } },
 }
 const pointsWrapV: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } },
+  show: { transition: { staggerChildren: 0.13, delayChildren: 0.1 } },
 }
 
 const LeadersSection = () => {
@@ -162,32 +164,58 @@ const LeadersSection = () => {
         </motion.span>
       </motion.div>
 
-      {/* Layer 2 — cut-out portrait revealed via clip-path wipe + light sweep */}
+      {/* Layer 2 — cut-out portrait assembles from vertical slices */}
       <motion.div className="lead__portrait-wrap" style={{ x: portraitX, y: portraitY }}>
         <motion.span className="lead__portrait-glow" variants={glowV} initial="hidden" animate={state} aria-hidden />
-        <motion.div className="lead__portrait" variants={portraitV} initial="hidden" animate={state}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={featured.portrait} alt={`${featured.name}, ${featured.role}`} />
-          <motion.span className="lead__sweep" variants={sweepV} initial="hidden" animate={state} aria-hidden />
-        </motion.div>
+        <div className="lead__portrait">
+          <motion.div
+            className="lead__slices"
+            variants={portraitSlicesV}
+            initial="hidden"
+            animate={state}
+          >
+            {Array.from({ length: SLICES }).map((_, i) => {
+              const w = 100 / SLICES
+              const l = Math.max(0, i * w - 0.6)
+              const r = Math.max(0, 100 - (i + 1) * w - 0.6)
+              return (
+                <motion.div
+                  key={i}
+                  className="lead__slice"
+                  custom={i}
+                  variants={sliceV}
+                  style={{ clipPath: `inset(0 ${r}% 0 ${l}%)` }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={featured.portrait}
+                    alt={i === 0 ? `${featured.name}, ${featured.role}` : ''}
+                  />
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        </div>
       </motion.div>
 
       {/* Layer 3 — foreground content arranging in */}
       <motion.div className="lead__content" style={{ x: contentX, y: contentY }}>
-        <motion.div variants={contentV} initial="hidden" animate={state}>
-          <motion.span className="lead__eyebrow" variants={itemV}>
-            {featured.eyebrow}
-          </motion.span>
-          <div className="lead__namerow">
-            <motion.span className="lead__rule" variants={lineV} aria-hidden />
-            <div>
-              <motion.h2 className="lead__name" variants={itemV}>
-                {featured.name}
+        <motion.div className="lead__inner" variants={contentV} initial="hidden" animate={state}>
+          <div className="lead__head">
+            <motion.span className="lead__eyebrow" variants={itemV}>
+              {featured.eyebrow}
+            </motion.span>
+            <div className="lead__namerow">
+              <motion.span className="lead__rule" variants={lineV} aria-hidden />
+              <div>
+                <motion.h2 className="lead__name" variants={itemV}>
+                  {featured.name}
               </motion.h2>
               <motion.span className="lead__role" variants={itemV}>
                 {featured.role}
               </motion.span>
             </div>
+          </div>
           </div>
           <motion.ul className="lead__points" variants={pointsWrapV}>
             {featured.points.map((p, i) => (
