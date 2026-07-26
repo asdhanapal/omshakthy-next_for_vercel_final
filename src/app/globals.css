@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Heritage Indigo brand palette */
+  --ink: #0B1F3A;
+  --paper: #FBF8F2;
+  --brass: #C8A15A;
+  --mist: #8DB4D1;
+  --ink-light: #12315A;
+  --ink-dark: #060D18;
+  --brass-light: #D8BC86;
+  --brass-dark: #A6823F;
+  --gold: #C8A15A;
+  --gold-light: #D8BC86;
+  --gold-dark: #A6823F;
+  --navy: #0B1F3A;
+  --navy-light: #12315A;
+  --navy-dark: #060D18;
+  --bg-light: #FBF8F2;
+  --bg-white: #FFFFFF;
+  --omshakthy-blue: #0D6BB2;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ink-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brass);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brass-light);
+}

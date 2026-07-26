@@ -1,0 +1,420 @@
+/* ============================================================
+   Testimonials — 3-card "Living Portrait" grid
+   Content from Figma: Customer Stories / Trusted by 20,000+ Families.
+   Innovations: cursor 3D tilt + layered parallax, moving glare,
+   animated gold corner brackets, conic gold ring, duotone→color photo.
+   ============================================================ */
+
+.tw {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(3.5rem, 9vh, 7rem) clamp(1.25rem, 6vw, 6rem);
+  background:
+    radial-gradient(130% 90% at 15% 0%, #12315a 0%, #0b1f3a 40%, #060d18 100%);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+/* soft aurora */
+.tw__aurora {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  filter: blur(70px);
+  pointer-events: none;
+}
+.tw__blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+.tw__blob--1 {
+  width: 40vw;
+  height: 40vw;
+  left: -8vw;
+  top: -10vh;
+  background: radial-gradient(circle, rgba(200, 161, 90, 0.55), transparent 70%);
+}
+.tw__blob--2 {
+  width: 34vw;
+  height: 34vw;
+  right: -8vw;
+  bottom: -12vh;
+  background: radial-gradient(circle, rgba(141, 180, 209, 0.5), transparent 70%);
+}
+
+/* cursor-tracking spotlight over the whole section */
+.tw__spot {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    460px circle at var(--sx, 50%) var(--sy, 50%),
+    rgba(200, 161, 90, 0.12),
+    transparent 60%
+  );
+}
+.tw:hover .tw__spot {
+  opacity: 1;
+}
+
+/* ---- header ---- */
+.tw__header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2rem, 5vh, 3.5rem);
+}
+.tw__eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #c8a15a;
+  margin-bottom: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(200, 161, 90, 0.35);
+  border-radius: 999px;
+}
+.tw__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.05;
+}
+.tw__title em {
+  font-style: italic;
+  color: #d8bc86;
+}
+.tw__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.3rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+.tw__rating-score {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+.tw__rating-sub {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.2rem;
+}
+
+/* ---- odometer digit reels ---- */
+.odo {
+  display: inline-flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1;
+}
+.odo__sep {
+  display: inline-block;
+  line-height: 1;
+  /* drop separators (comma / dot / +) down to sit on the digit baseline */
+  transform: translateY(0.22em);
+}
+.reel {
+  display: inline-block;
+  height: 1.7em; /* keep in sync with CELL in TestimonialsSection.tsx */
+  line-height: 1.7em;
+  overflow: hidden;
+  vertical-align: middle;
+  /* tiny fade only at the extreme top edge as a safety net — small enough
+     that it never touches the (centered) landing digit */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 93%, transparent);
+}
+.reel__col {
+  display: flex;
+  flex-direction: column;
+}
+.reel__digit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.7em;
+  line-height: 1;
+}
+
+/* ---- shared stars ---- */
+.tw-stars {
+  display: inline-flex;
+  gap: 2px;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.25);
+}
+.tw-stars .is-on {
+  color: #c8a15a;
+}
+
+/* ---- grid ---- */
+.tw__grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2vw, 1.8rem);
+  perspective: 1400px;
+}
+
+/* ---- card ---- */
+.tw-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 0%;
+  position: relative;
+  border-radius: 22px;
+  padding: 1.6rem;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  transform-style: preserve-3d;
+  transform: perspective(1400px) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.25s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  overflow: hidden;
+}
+.tw-card:hover {
+  border-color: rgba(200, 161, 90, 0.5);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+}
+
+/* moving glare follows cursor */
+.tw-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    340px circle at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.18),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.tw-card:hover .tw-glare {
+  opacity: 1;
+}
+
+/* animated gold corner brackets */
+.tw-bracket {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 2px solid #c8a15a;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.tw-bracket--tl {
+  top: 12px;
+  left: 12px;
+  border-right: none;
+  border-bottom: none;
+  transform: translate(6px, 6px);
+}
+.tw-bracket--br {
+  bottom: 12px;
+  right: 12px;
+  border-left: none;
+  border-top: none;
+  transform: translate(-6px, -6px);
+}
+.tw-card:hover .tw-bracket {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* layered content lifts toward viewer */
+.tw-inner {
+  position: relative;
+  transform: translateZ(40px);
+  transform-style: preserve-3d;
+}
+
+.tw-top {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+.tw-avatar {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  flex: none;
+  transform: translateZ(30px);
+}
+.tw-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  /* editorial duotone at rest → full colour on hover */
+  filter: grayscale(0.7) contrast(1.05) sepia(0.15);
+  transition: filter 0.5s ease, transform 0.6s ease;
+}
+.tw-card:hover .tw-avatar img {
+  filter: grayscale(0) contrast(1);
+  transform: scale(1.05);
+}
+.tw-avatar-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #c8a15a, #d8bc86, #8db4d1, #c8a15a);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0);
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+}
+.tw-card:hover .tw-avatar-ring {
+  opacity: 1;
+  animation: twSpin 4s linear infinite;
+}
+@keyframes twSpin {
+  to { transform: rotate(360deg); }
+}
+
+.tw-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.tw-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
+}
+.tw-google svg {
+  color: #d8bc86;
+}
+
+.tw-quotemark {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.4rem;
+  line-height: 0.4;
+  color: rgba(200, 161, 90, 0.35);
+  display: block;
+  height: 1.4rem;
+}
+.tw-quote {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.12rem;
+  line-height: 1.5;
+  color: #f2ede4;
+  margin: 0 0 1.4rem;
+}
+.tw-cite {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.tw-name {
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: #fff;
+}
+.tw-detail {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---- "wall of love" marquee ribbon ---- */
+.tw__marquee {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(1.5rem, 4vh, 2.75rem);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.tw__marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 0.9rem;
+  animation: twMarquee 32s linear infinite;
+}
+.tw__marquee:hover .tw__marquee-track {
+  animation-play-state: paused;
+}
+@keyframes twMarquee {
+  to {
+    transform: translateX(-33.333%);
+  }
+}
+.tw__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+}
+.tw__chip-stars {
+  color: #c8a15a;
+  letter-spacing: 1px;
+  font-size: 0.7rem;
+}
+.tw__chip-text {
+  color: #f2ede4;
+}
+.tw__chip-name {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 900px) {
+  .tw__grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-card { transform: none !important; }
+  .tw-card:hover .tw-avatar-ring { animation: none; }
+  .tw__marquee-track { animation: none; }
+}

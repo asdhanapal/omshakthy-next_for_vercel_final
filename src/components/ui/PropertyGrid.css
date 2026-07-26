@@ -1,0 +1,261 @@
+/* ============================================
+   PROPERTY ACCORDION GALLERY
+   Heider-style expanding strips
+   ============================================ */
+
+.property-section {
+  background-color: #f0f0f0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+/* 1. Flexbox row layout — items expand on hover */
+.property-list {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+@media (max-width: 992px) {
+  .property-list {
+    flex-direction: column;
+  }
+}
+
+/* Each item is a narrow strip by default, expands when active */
+.property-item {
+  flex: 1;
+  min-width: 10vw;
+  min-height: auto;
+  transition: 0.15s all ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 1. Active item expands to fill most of the row */
+.property-item.active {
+  flex-grow: 99;
+}
+
+@media (max-width: 992px) {
+  .property-item {
+    min-width: auto;
+    max-width: 100%;
+  }
+}
+
+.property-item__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+/* 6. Full height, full-width images with object-fit cover */
+.property-item__img {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.property-item__img img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: 0.15s filter ease-out;
+}
+
+/* 2. Only SOLD items are GRAYSCALE when not active */
+.property-item.sold:not(.active) .property-item__img img {
+  filter: grayscale(1);
+}
+
+/* Ongoing items always full color */
+.property-item:not(.sold) .property-item__img img {
+  filter: grayscale(0);
+}
+
+/* Active sold items turn to full color */
+.property-item.sold.active .property-item__img img {
+  filter: grayscale(0);
+}
+
+/* Gradient overlay on image (for text readability) */
+.property-item__gradient {
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.25), transparent);
+  pointer-events: none;
+}
+
+/* 4. Vertical rotated label — visible when NOT active */
+.property-item__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+  width: auto;
+  text-align: center;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 43px;
+  font-weight: 300;
+  line-height: 1;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: transparent;
+  padding: 0;
+  opacity: 0;
+  transition: 0.15s opacity ease-out;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 4. Label visible only when NOT active */
+.property-item:not(.active) .property-item__label {
+  opacity: 1;
+  text-transform: uppercase;
+}
+
+/* 4. Label hidden when active — becomes small gold badge on mobile */
+.property-item.active .property-item__label {
+  opacity: 0;
+}
+
+@media (max-width: 992px) {
+  .property-item__label {
+    transform: none;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: auto;
+    font-size: 12px;
+    padding: 6px 14px;
+    background-color: #C8A15A;
+    color: #fff;
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 1 !important;
+    line-height: 1;
+    font-weight: 500;
+  }
+}
+
+/* 7. Text positioned absolute bottom-left over the image */
+.property-item__text {
+  position: absolute;
+  bottom: 2rem;
+  left: 0;
+  padding: 0 2rem;
+  width: 100%;
+  background-color: transparent;
+  color: white;
+  text-align: left;
+  transition: 0.15s all ease-out;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  z-index: 4;
+}
+
+@media (max-width: 992px) {
+  .property-item__text {
+    padding-inline: 1rem;
+  }
+}
+
+.property-item__text h4 {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 992px) {
+  .property-item__text h4 {
+    font-size: 21px;
+  }
+}
+
+.property-item__text p {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@media (max-width: 992px) {
+  .property-item__text p {
+    font-size: 14px;
+  }
+}
+
+.property-item__price {
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  margin-top: 0.2rem !important;
+}
+
+/* 3. When NOT active — text is hidden */
+.property-item:not(.active) .property-item__text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* 3. When active — text is visible */
+.property-item.active .property-item__text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 5. No hover overlay with buttons — display none */
+.property-item__hover {
+  display: none;
+}
+
+/* View More CTA */
+.property-cta {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  background-color: #f0f0f0;
+}
+
+.property-cta__btn {
+  display: inline-block;
+  padding: 20px 46px;
+  background-color: #C8A15A;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid #C8A15A;
+  border-radius: 30px;
+  transition: 0.3s all ease;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.property-cta__btn:hover {
+  background-color: #8F592D;
+  border-color: #8F592D;
+}
