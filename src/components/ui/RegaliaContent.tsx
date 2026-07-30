@@ -185,8 +185,13 @@ const Regalia = () => {
           src="/regalia-video.mp4"
           autoPlay
           muted
-          loop
           playsInline
+          onEnded={(e) => {
+            // freeze on the final frame instead of looping
+            const v = e.currentTarget
+            v.pause()
+            if (v.duration) v.currentTime = v.duration
+          }}
         />
         <div
           className="absolute inset-0 pointer-events-none"

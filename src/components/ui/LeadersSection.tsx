@@ -27,7 +27,6 @@ const featured = {
 
 const EASE = [0.16, 1, 0.3, 1] as const
 const SPRING = { stiffness: 60, damping: 20, mass: 0.8 }
-const SLICES = 8 // vertical slices the portrait assembles from
 
 /* ---- entrance variants (played when the section snaps into view) ---- */
 const emblemV: Variants = {
@@ -54,22 +53,19 @@ const letterV: Variants = {
     transition: { duration: 1.15, ease: EASE },
   },
 }
-const portraitSlicesV: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.5 } },
-}
-// each vertical slice flies in from alternating top/bottom and locks into place
-const sliceV: Variants = {
-  hidden: (i: number) => ({
-    y: i % 2 === 0 ? '-45%' : '45%',
+const portraitV: Variants = {
+  hidden: {
     opacity: 0,
-    filter: 'blur(12px)',
-  }),
+    scale: 1.14,
+    rotateY: -35,
+    filter: 'blur(18px) grayscale(1) brightness(0.35)',
+  },
   show: {
-    y: '0%',
     opacity: 1,
-    filter: 'blur(0px)',
-    transition: { duration: 1.15, ease: EASE },
+    scale: 1,
+    rotateY: 0,
+    filter: 'blur(0px) grayscale(0) brightness(1)',
+    transition: { duration: 1.7, delay: 0.6, ease: EASE },
   },
 }
 const glowV: Variants = {
@@ -164,38 +160,13 @@ const LeadersSection = () => {
         </motion.span>
       </motion.div>
 
-      {/* Layer 2 — cut-out portrait assembles from vertical slices */}
+      {/* Layer 2 — cut-out portrait: cinematic focus-pull + 3D turn reveal */}
       <motion.div className="lead__portrait-wrap" style={{ x: portraitX, y: portraitY }}>
         <motion.span className="lead__portrait-glow" variants={glowV} initial="hidden" animate={state} aria-hidden />
-        <div className="lead__portrait">
-          <motion.div
-            className="lead__slices"
-            variants={portraitSlicesV}
-            initial="hidden"
-            animate={state}
-          >
-            {Array.from({ length: SLICES }).map((_, i) => {
-              const w = 100 / SLICES
-              const l = Math.max(0, i * w - 0.6)
-              const r = Math.max(0, 100 - (i + 1) * w - 0.6)
-              return (
-                <motion.div
-                  key={i}
-                  className="lead__slice"
-                  custom={i}
-                  variants={sliceV}
-                  style={{ clipPath: `inset(0 ${r}% 0 ${l}%)` }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={featured.portrait}
-                    alt={i === 0 ? `${featured.name}, ${featured.role}` : ''}
-                  />
-                </motion.div>
-              )
-            })}
-          </motion.div>
-        </div>
+        <motion.div className="lead__portrait" variants={portraitV} initial="hidden" animate={state}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={featured.portrait} alt={`${featured.name}, ${featured.role}`} />
+        </motion.div>
       </motion.div>
 
       {/* Layer 3 — foreground content arranging in */}

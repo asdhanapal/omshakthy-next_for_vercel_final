@@ -85,33 +85,25 @@
   width: min(56vw, 760px);
   z-index: 2;
   will-change: transform;
+  perspective: 1200px; /* enables the 3D turn on reveal */
 }
 .lead__portrait {
   position: relative;
   width: 100%;
-  aspect-ratio: 558 / 447; /* native size of the cut-out */
-  /* one shadow for the whole figure (not per-slice) */
-  filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.55));
+  transform-origin: center bottom;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  /* NOTE: the reveal animates `filter` here (blur/grayscale/brightness),
+     so the figure's drop-shadow lives on the <img> instead. */
   /* fade the base so the chair/feet melt into the section instead of a hard crop */
   -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 86%, transparent 100%);
 }
-.lead__slices {
-  position: absolute;
-  inset: 0;
-}
-.lead__slice {
-  position: absolute;
-  inset: 0;
-  will-change: transform, opacity, filter;
-}
-.lead__slice img {
-  position: absolute;
-  inset: 0;
+.lead__portrait img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center bottom;
+  height: auto;
+  filter: drop-shadow(0 40px 60px rgba(0, 0, 0, 0.55));
 }
 /* soft floor shadow to ground the figure */
 .lead__portrait-wrap::after {
