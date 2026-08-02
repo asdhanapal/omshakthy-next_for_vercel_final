@@ -142,7 +142,7 @@
     width: auto;
     font-size: 12px;
     padding: 6px 14px;
-    background-color: #C8A15A;
+    background-color: #0499de;
     color: #fff;
     text-transform: none;
     letter-spacing: normal;
@@ -240,7 +240,7 @@
 .property-cta__btn {
   display: inline-block;
   padding: 20px 46px;
-  background-color: #C8A15A;
+  background-color: #0499de;
   color: #ffffff;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
@@ -248,7 +248,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;
-  border: 1px solid #C8A15A;
+  border: 1px solid #0499de;
   border-radius: 30px;
   transition: 0.3s all ease;
   white-space: normal;

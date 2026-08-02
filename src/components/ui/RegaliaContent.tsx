@@ -12,10 +12,10 @@ import {
    Omshakthy Brand Guidelines V1.0 — Direction 01 · Heritage Indigo
    ------------------------------------------------------------------ */
 const C = {
-  ink: '#0B1F3A', // Deep Ink (primary dark)
-  paper: '#FBF8F2', // Paper White
-  brass: '#C8A15A', // Brass (accent — earn the colour)
-  cream: '#F4EFE6', // Warm Cream
+  ink: '#025f8a', // Deep Ink (primary dark)
+  paper: '#F8F8F5', // Paper White
+  brass: '#C9A227', // Brass (accent — earn the colour)
+  cream: '#F8F8F5', // Warm Cream
   mist: '#8DB4D1', // Mist Blue (accent only)
   field: '#2D6A3F', // Field Green (status only)
   paperMuted: 'rgba(251, 248, 242, 0.66)',
@@ -117,7 +117,7 @@ const TICK = 'Generating Real Assets ✦ Since 1991 ✦ Clear Title ✦ DTCP App
 const Marquee = () => (
   <div
     className="overflow-hidden py-4"
-    style={{ backgroundColor: C.ink, borderTop: `1px solid ${C.hairLight}`, borderBottom: `1px solid ${C.hairLight}` }}
+    style={{ backgroundColor: C.paper, color: C.ink, borderTop: `1px solid ${C.hairLight}`, borderBottom: `1px solid ${C.hairLight}` }}
   >
     <motion.div
       className="flex whitespace-nowrap"
@@ -133,7 +133,7 @@ const Marquee = () => (
 const Regalia = () => {
   // Set page background to ink on mount
   useEffect(() => {
-    document.body.style.backgroundColor = C.ink
+    document.body.style.backgroundColor = C.paper
     return () => { document.body.style.backgroundColor = '' }
   }, [])
 
@@ -161,7 +161,7 @@ const Regalia = () => {
   const storyGhostY = useTransform(storyProgress, [0, 1], [120, -120])
 
   return (
-    <div style={{ backgroundColor: C.ink, color: C.paper, ...body }}>
+    <div style={{ backgroundColor: C.paper, color: C.ink, ...body }}>
       {/* Scroll progress bar */}
       <motion.div
         style={{
@@ -268,7 +268,7 @@ const Regalia = () => {
       <div
         ref={storyRef}
         className="relative -mt-16 rounded-t-[2.5rem] overflow-hidden"
-        style={{ backgroundColor: C.ink, boxShadow: '0 -40px 80px rgba(11,31,58,0.6)' }}
+        style={{ backgroundColor: C.paper, boxShadow: '0 -40px 80px rgba(11,31,58,0.6)' }}
       >
         {/* parallax ghost number */}
         <motion.span
@@ -280,7 +280,7 @@ const Regalia = () => {
             top: '10%',
             fontSize: 'clamp(8rem, 30vw, 28rem)',
             color: 'transparent',
-            WebkitTextStroke: `1px ${C.hairDark}`,
+            WebkitTextStroke: `1px ${C.hairLight}`,
             opacity: 0.5,
             pointerEvents: 'none',
             lineHeight: 0.8,
@@ -294,12 +294,12 @@ const Regalia = () => {
             <Kicker>Generating Real Assets</Kicker>
           </Reveal>
           <Reveal delay={0.08}>
-            <h2 className="text-3xl md:text-5xl mb-8" style={{ ...display, color: C.paper, fontWeight: 300 }}>
+            <h2 className="text-3xl md:text-5xl mb-8" style={{ ...display, color: C.ink, fontWeight: 300 }}>
               We don't sell plots. We help families plant something that outlives us.
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
-            <p style={{ color: C.paperMuted }}>
+            <p style={{ color: C.inkMuted }}>
               Omshakthy begins with a simple conviction — that the most honest wealth a family can
               build is rooted, measured in acres not algorithms. From DTCP-approved layouts to gated
               farm communities, every project is a promise: clear title, transparent paperwork, and
@@ -313,24 +313,24 @@ const Regalia = () => {
       <Marquee />
 
       {/* ---------------- Key figures (paper) — animated count-up ---------------- */}
-      <section className="px-6 md:px-16 py-24" style={{ backgroundColor: C.paper, color: C.ink }}>
+      <section className="px-6 md:px-16 py-24" style={{ backgroundColor: C.ink, color: C.paper }}>
         <div className="max-w-7xl mx-auto">
           <Reveal className="text-center mb-16">
             <Kicker>By The Numbers</Kicker>
-            <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.ink, fontWeight: 300 }}>
+            <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.paper, fontWeight: 300 }}>
               Thirty-plus years. Zero title disputes.
             </h2>
           </Reveal>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-6">
             {[
-              { to: 45, unit: 'Lakh+ Sq.Ft', label: 'Residential development sold' },
-              { to: 5000, unit: 'Acres', label: 'Land aggregated', plus: true },
+              { to: 7500, unit: 'Acres', label: 'Successfully aggregated & developed', plus: true },
+              { to: 30, unit: 'Projects', label: 'Landmark projects delivered', plus: true },
               { to: 2, unit: 'Lakh+ Sq.Ft', label: 'Commercial space leased' },
-              { to: 20000, unit: 'Families', label: 'Have trusted us since 1991', plus: true },
+              { to: 7500, unit: 'Customers', label: 'Happy customers since 1991', plus: true },
             ].map((s, i) => (
               <Reveal key={s.label} delay={i * 0.08} className="text-center md:text-left">
                 <div className="flex items-baseline justify-center md:justify-start gap-1">
-                  <span className="text-4xl md:text-6xl" style={{ ...display, color: C.ink }}>
+                  <span className="text-4xl md:text-6xl" style={{ ...display, color: C.paper }}>
                     <CountUp to={s.to} />
                   </span>
                   {s.plus && (
@@ -340,7 +340,7 @@ const Regalia = () => {
                   )}
                 </div>
                 <p className="mt-2" style={{ ...mono, color: C.brass, fontSize: '0.66rem' }}>{s.unit}</p>
-                <p className="mt-3" style={{ ...body, color: C.inkMuted, fontSize: '0.9rem' }}>{s.label}</p>
+                <p className="mt-3" style={{ ...body, color: C.paperMuted, fontSize: '0.9rem' }}>{s.label}</p>
               </Reveal>
             ))}
           </div>
@@ -348,15 +348,15 @@ const Regalia = () => {
       </section>
 
       {/* ---------------- What we do (ink) — editorial sticky scroll ---------------- */}
-      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.ink, color: C.paper }}>
+      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.paper, color: C.ink }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-[0.8fr_1.2fr] gap-12 md:gap-20 items-start">
           {/* Sticky heading */}
           <div className="md:sticky md:top-28 md:self-start">
             <Kicker>What We Do</Kicker>
-            <h2 className="text-3xl md:text-5xl" style={{ ...display, color: C.paper, fontWeight: 300 }}>
+            <h2 className="text-3xl md:text-5xl" style={{ ...display, color: C.ink, fontWeight: 300 }}>
               Paper first. Promise second.
             </h2>
-            <p className="mt-6" style={{ color: C.paperMuted }}>
+            <p className="mt-6" style={{ color: C.inkMuted }}>
               Four disciplines, one standard — legally verified, patiently built, transparently
               handed over.
             </p>
@@ -369,13 +369,13 @@ const Regalia = () => {
                 n: '01',
                 title: 'Land Aggregation',
                 text: 'With over 20 years of experience, Omshakthy is a reliable land promoter in Chennai. Extensive local research and a deep understanding of value let us identify high-potential land with every legal clearance in place.',
-                hl: 'Aggregated more than 5,000 Acres',
+                hl: 'Aggregated more than 7,500 Acres',
               },
               {
                 n: '02',
                 title: 'Residential Developments',
                 text: 'Every residential project should generate enduring value for homeowners and investors alike — quality infrastructure, community living and patient, long-term appreciation.',
-                hl: 'More than 45 Lakh Sq. Ft. sold',
+                hl: '30+ Landmark Projects Delivered',
               },
               {
                 n: '03',
@@ -394,14 +394,14 @@ const Regalia = () => {
                 <div className="relative pl-8" style={{ borderLeft: `2px solid ${C.brass}` }}>
                   <span
                     className="absolute -top-6 right-0"
-                    style={{ ...display, color: C.hairDark, fontSize: '4rem', fontWeight: 300 }}
+                    style={{ ...display, color: C.hairLight, fontSize: '4rem', fontWeight: 300 }}
                   >
                     {d.n}
                   </span>
-                  <h3 className="text-2xl md:text-4xl mb-4" style={{ ...display, color: C.paper }}>
+                  <h3 className="text-2xl md:text-4xl mb-4" style={{ ...display, color: C.ink }}>
                     {d.title}
                   </h3>
-                  <p className="mb-4" style={{ color: C.paperMuted }}>{d.text}</p>
+                  <p className="mb-4" style={{ color: C.inkMuted }}>{d.text}</p>
                   <p style={{ ...mono, color: C.brass }}>{d.hl}</p>
                 </div>
               </Reveal>
@@ -411,13 +411,13 @@ const Regalia = () => {
       </section>
 
       {/* ---------------- Since 1991 (paper, oversized statement) ---------------- */}
-      <section className="px-6 md:px-16 py-28 text-center" style={{ backgroundColor: C.paper, color: C.ink }}>
+      <section className="px-6 md:px-16 py-28 text-center" style={{ backgroundColor: C.ink, color: C.paper }}>
         <div className="max-w-3xl mx-auto">
           <Reveal>
             <Kicker>Est. 1991 · Chennai</Kicker>
           </Reveal>
           <Reveal delay={0.1}>
-            <p className="text-2xl md:text-4xl" style={{ ...display, color: C.ink, fontWeight: 300 }}>
+            <p className="text-2xl md:text-4xl" style={{ ...display, color: C.paper, fontWeight: 300 }}>
               Incorporated in 1991 to consolidate land for the future — industries, Special Economic
               Zones and residential spaces around the prime corridors of the city.
             </p>
@@ -426,11 +426,11 @@ const Regalia = () => {
       </section>
 
       {/* ---------------- Project highlights (ink, mist accents + hover) ---------------- */}
-      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.ink, color: C.paper }}>
+      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.paper, color: C.ink }}>
         <div className="max-w-7xl mx-auto">
           <Reveal className="text-center mb-16">
             <Kicker>Why Regalia</Kicker>
-            <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.paper }}>
+            <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.ink }}>
               Project Highlights
             </h2>
           </Reveal>
@@ -447,7 +447,7 @@ const Regalia = () => {
                   >
                     ✦
                   </motion.div>
-                  <p style={{ ...mono, color: C.paper, fontSize: '0.66rem' }}>{h}</p>
+                  <p style={{ ...mono, color: C.ink, fontSize: '0.66rem' }}>{h}</p>
                 </Reveal>
               )
             )}
@@ -456,7 +456,7 @@ const Regalia = () => {
       </section>
 
       {/* ---------------- Mission / Vision (paper) ---------------- */}
-      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.paper, color: C.ink }}>
+      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.ink, color: C.paper }}>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
           {[
             { t: 'Our Mission', p: 'To turn every rupee of trust into a real, title-clear asset that lasts for generations.' },
@@ -464,7 +464,7 @@ const Regalia = () => {
           ].map((m, i) => (
             <Reveal key={m.t} delay={i * 0.1}>
               <Kicker>{m.t}</Kicker>
-              <p className="text-2xl md:text-3xl" style={{ ...display, color: C.ink, fontWeight: 300 }}>
+              <p className="text-2xl md:text-3xl" style={{ ...display, color: C.paper, fontWeight: 300 }}>
                 {m.p}
               </p>
             </Reveal>
@@ -476,11 +476,11 @@ const Regalia = () => {
       <section className="px-6 md:px-16 py-28 max-w-7xl mx-auto">
         <Reveal className="text-center mb-16">
           <Kicker>The People</Kicker>
-          <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.paper }}>
+          <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.ink }}>
             Leadership
           </h2>
         </Reveal>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px" style={{ backgroundColor: C.hairDark }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px" style={{ backgroundColor: C.hairLight }}>
           {[
             {
               name: 'R. Ramachandran',
@@ -529,11 +529,11 @@ const Regalia = () => {
       </section>
 
       {/* ---------------- FAQ (paper) ---------------- */}
-      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.paper, color: C.ink }}>
+      <section className="px-6 md:px-16 py-28" style={{ backgroundColor: C.ink, color: C.paper }}>
         <div className="max-w-4xl mx-auto">
           <Reveal className="text-center mb-16">
             <Kicker>Good to Know</Kicker>
-            <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.ink, fontWeight: 300 }}>
+            <h2 className="text-2xl md:text-4xl" style={{ ...display, color: C.paper, fontWeight: 300 }}>
               Frequently Asked Questions
             </h2>
           </Reveal>
@@ -562,10 +562,10 @@ const Regalia = () => {
             ].map((f, i) => (
               <Reveal key={f.q} delay={i * 0.04}>
                 <div className="py-7" style={{ borderTop: `1px solid ${C.hairLight}` }}>
-                  <h3 className="text-lg md:text-xl mb-3" style={{ ...display, color: C.ink }}>
+                  <h3 className="text-lg md:text-xl mb-3" style={{ ...display, color: C.paper }}>
                     {f.q}
                   </h3>
-                  <p style={{ color: C.inkMuted }}>{f.a}</p>
+                  <p style={{ color: C.paperMuted }}>{f.a}</p>
                 </div>
               </Reveal>
             ))}
@@ -574,13 +574,13 @@ const Regalia = () => {
       </section>
 
       {/* ---------------- Contact (ink) ---------------- */}
-      <section className="px-6 md:px-16 py-24 text-center" style={{ backgroundColor: C.ink, color: C.paper }}>
+      <section className="px-6 md:px-16 py-24 text-center" style={{ backgroundColor: C.paper, color: C.ink }}>
         <Reveal>
           <Kicker>Get in Touch</Kicker>
-          <p className="text-2xl md:text-4xl mb-4" style={{ ...display, color: C.paper, fontWeight: 300 }}>
+          <p className="text-2xl md:text-4xl mb-4" style={{ ...display, color: C.ink, fontWeight: 300 }}>
             Omshakthy Agencies (Madras) Pvt Ltd
           </p>
-          <p style={{ ...mono, color: C.paperMuted, fontSize: '0.7rem' }}>
+          <p style={{ ...mono, color: C.inkMuted, fontSize: '0.7rem' }}>
             No. 14, Second Main Road · Anna Nagar East · Chennai 600 102
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4" style={{ ...mono, color: C.brass }}>
@@ -588,7 +588,7 @@ const Regalia = () => {
             <span style={{ color: C.hairLight }}>·</span>
             <a href="mailto:marketing@omshakthy.net" className="hover:opacity-70">marketing@omshakthy.net</a>
           </div>
-          <p className="mt-10" style={{ ...mono, color: C.paperMuted, fontSize: '0.66rem' }}>
+          <p className="mt-10" style={{ ...mono, color: C.inkMuted, fontSize: '0.66rem' }}>
             Generating Real Assets
           </p>
         </Reveal>

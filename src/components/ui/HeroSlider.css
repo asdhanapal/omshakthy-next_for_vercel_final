@@ -2,7 +2,7 @@
   position: relative;
   height: 100vh;
   overflow: hidden;
-  background: #0B1F3A;
+  background: linear-gradient(135deg, #025f8a 0%, #0499de 100%);
   
 }
 
@@ -167,7 +167,7 @@
 }
 
 .hero-slider__dot--active {
-  background: #C8A15A;
-  border-color: #C8A15A;
+  background: #C9A227;
+  border-color: #C9A227;
   transform: scale(1.3);
 }

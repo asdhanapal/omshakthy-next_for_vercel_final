@@ -12,9 +12,9 @@ interface Series {
 
 const quarters = ["Q1'24", "Q2'24", "Q3'24", "Q4'24", "Q1'25", "Q2'25", "Q3'25", "Q4'25"]
 const series: Series[] = [
-  { name: 'Tambaram', color: '#8DB4D1', yoy: '+12.5%', values: [2100, 2250, 2380, 2500, 2600, 2690, 2750, 2800] },
-  { name: 'Avadi', color: '#C8A15A', yoy: '+18.2%', values: [4200, 4480, 4700, 4900, 5100, 5260, 5390, 5500] },
-  { name: 'Guduvancheri', color: '#6BCB77', yoy: '+22.4%', values: [5500, 5900, 6250, 6600, 6900, 7130, 7320, 7500] },
+  { name: 'Tambaram', color: '#9CC9E8', yoy: '+12.5%', values: [2100, 2250, 2380, 2500, 2600, 2690, 2750, 2800] },
+  { name: 'Avadi', color: '#E4C27A', yoy: '+18.2%', values: [4200, 4480, 4700, 4900, 5100, 5260, 5390, 5500] },
+  { name: 'Guduvancheri', color: '#79E3A5', yoy: '+22.4%', values: [5500, 5900, 6250, 6600, 6900, 7130, 7320, 7500] },
 ]
 
 // Blogs — the Avadi property-tax post is from Figma; the others are derived.
@@ -105,20 +105,32 @@ const PriceTrends = () => {
 
   return (
     <section ref={ref} className="mp" aria-label="Market intelligence">
-      <motion.img
-        src="/leaders/emblem.png"
-        alt=""
-        aria-hidden
-        className="mp__watermark"
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: state === 'show' ? 0.05 : 0, scale: state === 'show' ? 1 : 0.85 }}
-        transition={{ duration: 1.6, ease: EASE }}
-      />
-      <div className="mp__aurora" aria-hidden>
-        <span className="mp__blob mp__blob--1" />
-        <span className="mp__blob mp__blob--2" />
+      {/* Waving background animation — waves only */}
+      <div className="mp__waves" aria-hidden>
+        {/* Wave 1 — brand blue, mid */}
+        <div className="mp__wave mp__wave--1">
+          <svg viewBox="0 0 2880 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,600 C240,540 480,660 720,600 C960,540 1200,660 1440,600 C1680,540 1920,660 2160,600 C2400,540 2640,660 2880,600 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.07)" />
+            <path d="M0,650 C240,610 480,690 720,650 C960,610 1200,690 1440,650 C1680,610 1920,690 2160,650 C2400,610 2640,690 2880,650 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.045)" />
+          </svg>
+        </div>
+
+        {/* Wave 2 — lighter, higher */}
+        <div className="mp__wave mp__wave--2">
+          <svg viewBox="0 0 2880 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,500 C240,440 480,560 720,500 C960,440 1200,560 1440,500 C1680,440 1920,560 2160,500 C2400,440 2640,560 2880,500 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.05)" />
+            <path d="M0,560 C240,510 480,610 720,560 C960,510 1200,610 1440,560 C1680,510 1920,610 2160,560 C2400,510 2640,610 2880,560 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.035)" />
+          </svg>
+        </div>
+
+        {/* Wave 3 — gold, deepest */}
+        <div className="mp__wave mp__wave--3">
+          <svg viewBox="0 0 2880 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M0,700 C240,660 480,740 720,700 C960,660 1200,740 1440,700 C1680,660 1920,740 2160,700 C2400,660 2640,740 2880,700 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.06)" />
+            <path d="M0,740 C240,710 480,770 720,740 C960,710 1200,770 1440,740 C1680,710 1920,770 2160,740 C2400,710 2640,770 2880,740 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.04)" />
+          </svg>
+        </div>
       </div>
-      <div className="mp__grain" aria-hidden />
 
       <header className="mp__header">
         <span className="mp__eyebrow">Market Intelligence · 2024</span>
@@ -225,6 +237,16 @@ const PriceTrends = () => {
                 </g>
               )}
             </svg>
+            <div className="mp__yaxis" aria-hidden>
+              {gridVals
+                .slice()
+                .reverse()
+                .map((g) => (
+                  <span key={g} style={{ top: `${(yAt(g) / H) * 100}%` }}>
+                    ₹{(g / 1000).toFixed(0)}k
+                  </span>
+                ))}
+            </div>
             <div className="mp__axis">
               {quarters.map((q) => (
                 <span key={q}>{q}</span>
@@ -248,16 +270,11 @@ const PriceTrends = () => {
 
           {/* large open content */}
           <div className="mp__feature">
-            <AnimatePresence mode="wait">
-              <motion.a
-                key={openIdx}
-                href="/blog"
-                className="mp__feature-card"
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: EASE }}
-              >
+            <a
+              key={openIdx}
+              href="/blog"
+              className="mp__feature-card"
+            >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={post.image} alt="" className="mp__feature-img" />
                 <div className="mp__feature-shade" />
@@ -271,8 +288,7 @@ const PriceTrends = () => {
                   <p className="mp__feature-excerpt">{post.excerpt}</p>
                   <span className="mp__feature-read">Read article →</span>
                 </div>
-              </motion.a>
-            </AnimatePresence>
+            </a>
           </div>
 
           {/* selector list */}

@@ -22,8 +22,8 @@ const HeroScene = () => {
           castShadow
           shadow-mapSize={[1024, 1024]}
         />
-        <pointLight position={[-3, 2, -3]} intensity={0.5} color="#C8A15A" />
-        <pointLight position={[3, 1, 3]} intensity={0.3} color="#D8BC86" />
+        <pointLight position={[-3, 2, -3]} intensity={0.5} color="#C9A227" />
+        <pointLight position={[3, 1, 3]} intensity={0.3} color="#D4B84A" />
 
         {/* 3D Township Model */}
         <Township />

@@ -2,8 +2,8 @@
 <path fill-rule="evenodd" clip-rule="evenodd" d="M1920 0H0V1080H1920V0ZM884.359 456.321C884.359 482.773 897.817 506.083 918.259 519.776L888 699H1032L1003.14 519.747C1023.56 506.05 1037 482.755 1037 456.321C1037 414.17 1002.83 380 960.679 380C918.529 380 884.359 414.17 884.359 456.321Z" fill="url(#paint0_linear_omshakthy)"/>
 <defs>
 <linearGradient id="paint0_linear_omshakthy" x1="960" y1="0" x2="960" y2="1080" gradientUnits="userSpaceOnUse">
-<stop stop-color="#0B1F3A"/>
-<stop offset="1" stop-color="#060D18"/>
+<stop stop-color="#025f8a"/>
+<stop offset="1" stop-color="#013d57"/>
 </linearGradient>
 </defs>
 </svg>

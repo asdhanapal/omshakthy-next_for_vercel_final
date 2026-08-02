@@ -1,6 +1,6 @@
 'use client'
-import { useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import './TestimonialsSection.css'
 
 interface Review {
@@ -137,20 +137,70 @@ const highlights = [
   { t: 'Value up 22% in just 18 months.', n: 'Suresh R.' },
 ]
 
-const TestimonialCard = ({ review, index }: { review: Review; index: number }) => {
-  const ref = useRef<HTMLElement>(null)
+/* ── Stacked deck ─────────────────────────────────────────────────────────────
+   One card at the front with two layered behind on each side. Depth is a pure
+   transform/opacity/filter mapping off the card's offset from the active index,
+   so every animated property is compositor-driven.
 
-  // Cursor-driven 3D tilt + glare position (CSS custom properties)
+   Only 3 testimonials exist, so the ring repeats them. Any window wider than 3
+   unavoidably repeats a quote — the ±2 rank is therefore blurred to 5px and
+   held at 24% opacity so the text there is not readable, and the ordering keeps
+   duplicates 3 positions apart so they are never adjacent. */
+const DECK_REPEAT = 2
+const ROTATE_MS = 5000
+
+/* Two cards share the front rank, so the deck reads as a pair with the rest
+   fanned behind on both sides.
+
+   Offset -> (rank, side):  p<=0 goes left at rank -p, p>=1 goes right at rank
+   p-1. With 6 slots that fills exactly rank 0/1/2 on each side.
+
+   FRONT_X is half the front pair's footprint; each rank steps further out by
+   `dx`. Previously the steps (172/304px) were far smaller than the 560px card,
+   so the stack hid behind the front card instead of fanning out. */
+const FRONT_X = 232
+
+const DEPTH = [
+  { dx: 0, z: 0, scale: 1, opacity: 1, blur: 0, ry: 0 },
+  { dx: 250, z: -170, scale: 0.88, opacity: 0.34, blur: 4, ry: 12 },
+  { dx: 430, z: -330, scale: 0.78, opacity: 0.16, blur: 7, ry: 16 },
+]
+const MAX_RANK = DEPTH.length - 1
+
+/* The card is a fixed size, so the quote's type scales to fit it instead.
+   1.12rem is the design size; it eases down to a 0.92rem floor as the quote
+   gets longer. */
+const quoteSize = (len: number) => {
+  const size = 1.12 - Math.max(0, len - 115) * 0.0022
+  return `${Math.max(0.92, Math.min(1.12, size)).toFixed(3)}rem`
+}
+
+const place = (p: number) =>
+  p <= 0 ? { rank: -p, side: -1 } : { rank: p - 1, side: 1 }
+
+const DeckCard = ({
+  review,
+  offset,
+  isActive,
+}: {
+  review: Review
+  offset: number
+  isActive: boolean
+}) => {
+  const ref = useRef<HTMLElement>(null)
+  const { rank, side } = place(offset)
+  const hidden = rank > MAX_RANK
+  const d = DEPTH[Math.min(rank, MAX_RANK)]
+
+  // Cursor-driven 3D tilt + glare position (front card only)
   const onMove = (e: React.MouseEvent) => {
     const el = ref.current
-    if (!el) return
+    if (!el || !isActive) return
     const r = el.getBoundingClientRect()
     const x = (e.clientX - r.left) / r.width
     const y = (e.clientY - r.top) / r.height
     el.style.setProperty('--rx', `${(0.5 - y) * 10}deg`)
     el.style.setProperty('--ry', `${(x - 0.5) * 12}deg`)
-    el.style.setProperty('--mx', `${x * 100}%`)
-    el.style.setProperty('--my', `${y * 100}%`)
   }
   const onLeave = () => {
     const el = ref.current
@@ -160,18 +210,29 @@ const TestimonialCard = ({ review, index }: { review: Review; index: number }) =
   }
 
   return (
-    <motion.article
-      ref={ref}
-      className="tw-card"
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.6, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
+    <motion.div
+      className="tw__slot"
+      style={{ zIndex: 20 - rank, pointerEvents: isActive ? 'auto' : 'none' }}
+      animate={{
+        x: side * (FRONT_X + d.dx),
+        z: d.z,
+        scale: d.scale,
+        rotateY: -side * d.ry,
+        opacity: hidden ? 0 : d.opacity,
+        filter: `blur(${d.blur}px)`,
+      }}
+      transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+      aria-hidden={!isActive}
     >
-      {/* moving glare */}
-      <span className="tw-glare" aria-hidden />
+      <article
+        ref={ref}
+        className={`tw-card${isActive ? ' is-front' : ''}`}
+        style={
+          { '--tw-quote-size': quoteSize(review.quote.length) } as React.CSSProperties
+        }
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+      >
       {/* animated gold corner brackets */}
       <span className="tw-bracket tw-bracket--tl" aria-hidden />
       <span className="tw-bracket tw-bracket--br" aria-hidden />
@@ -207,32 +268,48 @@ const TestimonialCard = ({ review, index }: { review: Review; index: number }) =
           <span className="tw-detail">{review.detail}</span>
         </footer>
       </div>
-    </motion.article>
+      </article>
+    </motion.div>
   )
 }
 
 const TestimonialsSection = () => {
-  const onSpot = (e: React.MouseEvent<HTMLElement>) => {
-    const el = e.currentTarget
-    const r = el.getBoundingClientRect()
-    el.style.setProperty('--sx', `${e.clientX - r.left}px`)
-    el.style.setProperty('--sy', `${e.clientY - r.top}px`)
+  // The ring repeats the source reviews so the deck has enough ranks to fill.
+  const deck = useMemo(
+    () => Array.from({ length: DECK_REPEAT }, () => reviews).flat(),
+    [],
+  )
+  const n = deck.length
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const reduce = useReducedMotion()
+
+  useEffect(() => {
+    if (paused || reduce) return
+    const id = setInterval(() => setActive((a) => (a + 1) % n), ROTATE_MS)
+    return () => clearInterval(id)
+  }, [paused, reduce, n])
+
+  // Signed distance to the active card, wrapped so cards travel the short way
+  // round rather than sweeping across the stage.
+  const offsetOf = (i: number) => {
+    let o = (i - active) % n
+    if (o > n / 2) o -= n
+    if (o < -n / 2) o += n
+    return o
   }
 
   return (
-    <section className="tw" aria-label="Customer testimonials" onMouseMove={onSpot}>
+    <section className="tw" aria-label="Customer testimonials">
       <div className="tw__aurora" aria-hidden>
         <span className="tw__blob tw__blob--1" />
         <span className="tw__blob tw__blob--2" />
       </div>
-      {/* cursor-tracking spotlight across the whole section */}
-      <div className="tw__spot" aria-hidden />
-
       <header className="tw__header">
         <div>
           <span className="tw__eyebrow">Customer Stories</span>
           <h2 className="tw__title">
-            Trusted by <em><Odometer value="20,000" suffix="+" /></em> Families.
+            Trusted by <em><Odometer value="7,500" suffix="+" /></em> Happy Customers.
           </h2>
         </div>
         <div className="tw__rating">
@@ -248,10 +325,25 @@ const TestimonialsSection = () => {
         </div>
       </header>
 
-      <div className="tw__grid">
-        {reviews.map((r, i) => (
-          <TestimonialCard key={r.name} review={r} index={i} />
-        ))}
+      {/* Auto-rotating stacked deck. Pauses only on keyboard focus — a hover
+          pause stopped rotation whenever the cursor merely rested anywhere in
+          this full-width band, which read as the rotation being broken. */}
+      <div
+        className="tw__deck"
+        onFocusCapture={() => setPaused(true)}
+        onBlurCapture={() => setPaused(false)}
+      >
+        {deck.map((r, i) => {
+          const offset = offsetOf(i)
+          return (
+            <DeckCard
+              key={`${r.name}-${i}`}
+              review={r}
+              offset={offset}
+              isActive={place(offset).rank === 0}
+            />
+          )
+        })}
       </div>
 
       {/* auto-scrolling "wall of love" ribbon */}

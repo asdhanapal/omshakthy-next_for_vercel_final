@@ -46,7 +46,7 @@ const milestones = [
   {
     year: '2024',
     title: 'Legacy Continues',
-    description: '33+ years. 45L sq.ft sold. 5000+ acres aggregated.',
+    description: '35+ years. 7,500+ customers. 7,500+ acres. 30+ projects.',
     stat: '5,000+',
     statLabel: 'Acres Aggregated',
     image: '/timeline-2024.png',

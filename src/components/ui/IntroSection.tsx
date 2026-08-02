@@ -180,8 +180,9 @@ const IntroSection = () => {
           >
             <defs>
               <linearGradient id="introInk" x1="960" y1="0" x2="960" y2="1080" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#0B1F3A" />
-                <stop offset="1" stopColor="#060D18" />
+                <stop stopColor="#013d57" />
+                <stop offset="0.5" stopColor="#037ab8" />
+                <stop offset="1" stopColor="#025f8a" />
               </linearGradient>
               <mask id="introKeyhole">
                 <rect x="0" y="0" width="1920" height="1080" fill="white" />
@@ -196,7 +197,7 @@ const IntroSection = () => {
           </svg>
           <motion.div className="intro-loader-box" style={{ y: boxY, opacity: boxOpacity }}>
             <div className="intro-line">
-              <div className="intro-line-inner">Generating Real Assets</div>
+              <div className="intro-line-inner">Building Trust. Creating Landmarks. Inspiring Generations.</div>
             </div>
             <div className="intro-line">
               <div className="intro-line-inner">Land that outlives the owner.</div>

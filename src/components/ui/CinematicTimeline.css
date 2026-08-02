@@ -88,7 +88,7 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2em;
-  color: #C8A15A;
+  color: #C9A227;
   padding: 6px 16px;
   background: rgba(165, 107, 61, 0.08);
   border-radius: 20px;
@@ -99,7 +99,7 @@
   font-family: 'Fraunces', Georgia, serif;
   font-size: clamp(28px, 3.5vw, 44px);
   font-weight: 400;
-  color: #0B1F3A;
+  color: #025f8a;
   line-height: 1.2;
   margin-bottom: 16px;
 }
@@ -123,7 +123,7 @@
   font-family: 'Fraunces', Georgia, serif;
   font-size: clamp(40px, 5vw, 64px);
   font-weight: 400;
-  color: #C8A15A;
+  color: #C9A227;
   line-height: 1;
 }
 
@@ -163,7 +163,7 @@
   font-family: 'Fraunces', Georgia, serif;
   font-size: 64px;
   line-height: 0.9;
-  color: #0B1F3A;
+  color: #025f8a;
   letter-spacing: 0.02em;
   display: inline-block;
   animation: yearRise 0.7s cubic-bezier(0.16, 1, 0.3, 1);
@@ -180,7 +180,7 @@
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #C8A15A;
+  color: #C9A227;
   margin-top: 8px;
 }
 
@@ -210,7 +210,7 @@
   position: absolute;
   inset: 0;
   border-radius: 4px;
-  background: linear-gradient(90deg, #C8A15A, #D8BC86);
+  background: linear-gradient(90deg, #0499de, #C9A227);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
@@ -248,7 +248,7 @@
 }
 
 .ct-seg--active .ct-seg__year {
-  color: #C8A15A;
+  color: #C9A227;
   font-weight: 700;
 }
 
@@ -268,7 +268,7 @@
 .ct-bar__counter-current {
   font-family: 'Fraunces', Georgia, serif;
   font-size: 28px;
-  color: #C8A15A;
+  color: #C9A227;
   line-height: 1;
 }
 

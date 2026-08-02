@@ -56,7 +56,7 @@ const Township = () => {
 
   const buildings = useMemo(() => [
     // Main buildings
-    { pos: [0, 0.5, 0] as [number, number, number], scale: [0.6, 1.0, 0.6] as [number, number, number], color: '#C8A15A' },
+    { pos: [0, 0.5, 0] as [number, number, number], scale: [0.6, 1.0, 0.6] as [number, number, number], color: '#C9A227' },
     { pos: [-1.2, 0.35, 0.5] as [number, number, number], scale: [0.5, 0.7, 0.5] as [number, number, number], color: '#2D2D44' },
     { pos: [1.0, 0.4, -0.8] as [number, number, number], scale: [0.4, 0.8, 0.4] as [number, number, number], color: '#3D3D54' },
     { pos: [-0.5, 0.3, -1.2] as [number, number, number], scale: [0.5, 0.6, 0.4] as [number, number, number], color: '#2D2D44' },
@@ -108,15 +108,15 @@ const Township = () => {
       <group position={[0, 0, 3.2]}>
         <mesh position={[-0.2, 0.2, 0]} castShadow>
           <boxGeometry args={[0.08, 0.4, 0.08]} />
-          <meshStandardMaterial color="#C8A15A" />
+          <meshStandardMaterial color="#C9A227" />
         </mesh>
         <mesh position={[0.2, 0.2, 0]} castShadow>
           <boxGeometry args={[0.08, 0.4, 0.08]} />
-          <meshStandardMaterial color="#C8A15A" />
+          <meshStandardMaterial color="#C9A227" />
         </mesh>
         <mesh position={[0, 0.4, 0]} castShadow>
           <boxGeometry args={[0.5, 0.05, 0.08]} />
-          <meshStandardMaterial color="#C8A15A" />
+          <meshStandardMaterial color="#C9A227" />
         </mesh>
       </group>
     </group>

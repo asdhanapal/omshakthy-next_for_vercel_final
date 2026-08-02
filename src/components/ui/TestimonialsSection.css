@@ -14,7 +14,7 @@
   justify-content: center;
   padding: clamp(3.5rem, 9vh, 7rem) clamp(1.25rem, 6vw, 6rem);
   background:
-    radial-gradient(130% 90% at 15% 0%, #12315a 0%, #0b1f3a 40%, #060d18 100%);
+    radial-gradient(130% 90% at 15% 0%, #0499de 0%, #037ab8 40%, #013d57 100%);
   color: #fff;
   font-family: 'Inter', sans-serif;
 }
@@ -48,24 +48,6 @@
   background: radial-gradient(circle, rgba(141, 180, 209, 0.5), transparent 70%);
 }
 
-/* cursor-tracking spotlight over the whole section */
-.tw__spot {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  background: radial-gradient(
-    460px circle at var(--sx, 50%) var(--sy, 50%),
-    rgba(200, 161, 90, 0.12),
-    transparent 60%
-  );
-}
-.tw:hover .tw__spot {
-  opacity: 1;
-}
-
 /* ---- header ---- */
 .tw__header {
   position: relative;
@@ -82,21 +64,23 @@
   font-size: 0.72rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: #c8a15a;
+  color: #C9A227;
   margin-bottom: 0.9rem;
   padding: 0.4rem 0.9rem;
   border: 1px solid rgba(200, 161, 90, 0.35);
+  font-weight: 900;
   border-radius: 999px;
 }
 .tw__title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 700;
+  font-weight: 250;
   font-size: 2rem;
   line-height: 1.05;
+  color: #FBF8F2;
 }
 .tw__title em {
   font-style: italic;
-  color: #d8bc86;
+  color: #D4B84A;
 }
 .tw__rating {
   display: flex;
@@ -161,41 +145,75 @@
   gap: 2px;
   font-size: 0.85rem;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(11, 31, 58, 0.18);
 }
 .tw-stars .is-on {
-  color: #c8a15a;
+  color: #C9A227;
 }
 
 /* ---- grid ---- */
-.tw__grid {
+/* Stacked deck stage. Replaces the former 3-column grid; the section shell,
+   palette and type are unchanged. */
+.tw__deck {
   position: relative;
   z-index: 2;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1rem, 2vw, 1.8rem);
+  height: clamp(340px, 44vh, 430px);
   perspective: 1400px;
+  transform-style: preserve-3d;
+}
+
+/* One absolutely-centred slot per card. Framer animates this element only, so
+   the card keeps its own styling and the tilt stays independent. */
+.tw__slot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+}
+
+/* Front pair reads as denser glass. The base .tw-card fill is only 9% -> 3%
+   white, which let the stacked cards show through and made the active cards
+   look washed out. */
+.tw__deck .tw-card.is-front {
+  background: #FBF8F2;
+  border-color: rgba(11, 31, 58, 0.14);
+  box-shadow: 0 33px 80px rgba(1, 20, 40, 0.42);
+}
+
+/* .is-front outranks .tw-card:hover, so the gold hover border is restated. */
+.tw__deck .tw-card.is-front:hover {
+  border-color: rgba(200, 161, 90, 0.55);
+}
+
+.tw__deck .tw-card {
+  /* Two cards share the front rank, so each takes roughly half the stage.
+     FRONT_X in the component is half this pair's footprint. */
+  width: min(432px, 43vw);
+  /* Static — the card never grows with its content. Longer quotes scale their
+     type down instead (--tw-quote-size, set per review in the component). */
+  height: clamp(300px, 38vh, 360px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* ---- card ---- */
 .tw-card {
   --rx: 0deg;
   --ry: 0deg;
-  --mx: 50%;
-  --my: 0%;
   position: relative;
   border-radius: 22px;
   padding: 1.6rem;
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.09),
-    rgba(255, 255, 255, 0.03)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(14px);
+  /* Brand Paper White. Stacked cards keep a little translucency so they still
+     recede; the front pair is solid. */
+  background: rgba(251, 248, 242, 0.86);
+  border: 1px solid rgba(11, 31, 58, 0.1);
   transform-style: preserve-3d;
-  transform: perspective(1400px) rotateX(var(--rx)) rotateY(var(--ry));
-  transition: transform 0.25s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  /* transform is driven by the deck (Framer) on .tw__slot; the cursor tilt is
+     applied to .tw-inner so the two never overwrite each other. */
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
   overflow: hidden;
 }
@@ -205,29 +223,13 @@
 }
 
 /* moving glare follows cursor */
-.tw-glare {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    340px circle at var(--mx) var(--my),
-    rgba(255, 255, 255, 0.18),
-    transparent 45%
-  );
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-.tw-card:hover .tw-glare {
-  opacity: 1;
-}
 
 /* animated gold corner brackets */
 .tw-bracket {
   position: absolute;
   width: 26px;
   height: 26px;
-  border: 2px solid #c8a15a;
+  border: 2px solid #C9A227;
   opacity: 0;
   transition: opacity 0.4s ease, transform 0.4s ease;
   pointer-events: none;
@@ -254,8 +256,9 @@
 /* layered content lifts toward viewer */
 .tw-inner {
   position: relative;
-  transform: translateZ(40px);
+  transform: translateZ(40px) rotateX(var(--rx)) rotateY(var(--ry));
   transform-style: preserve-3d;
+  transition: transform 0.25s ease;
 }
 
 .tw-top {
@@ -276,19 +279,16 @@
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  /* editorial duotone at rest → full colour on hover */
-  filter: grayscale(0.7) contrast(1.05) sepia(0.15);
   transition: filter 0.5s ease, transform 0.6s ease;
 }
 .tw-card:hover .tw-avatar img {
-  filter: grayscale(0) contrast(1);
   transform: scale(1.05);
 }
 .tw-avatar-ring {
   position: absolute;
   inset: -5px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, #c8a15a, #d8bc86, #8db4d1, #c8a15a);
+  background: conic-gradient(from 0deg, #C9A227, #0499de, #D4B84A, #0499de, #C9A227);
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0);
   mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 0);
   opacity: 0.6;
@@ -312,27 +312,27 @@
   align-items: center;
   gap: 0.35rem;
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(11, 31, 58, 0.6);
   letter-spacing: 0.02em;
 }
 .tw-google svg {
-  color: #d8bc86;
+  color: #A6851E;
 }
 
 .tw-quotemark {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 3.4rem;
   line-height: 0.4;
-  color: rgba(200, 161, 90, 0.35);
+  color: rgba(166, 133, 30, 0.45);
   display: block;
   height: 1.4rem;
 }
 .tw-quote {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 400;
-  font-size: 1.12rem;
+  font-size: var(--tw-quote-size, 1.12rem);
   line-height: 1.5;
-  color: #f2ede4;
+  color: #0B1F3A;
   margin: 0 0 1.4rem;
 }
 .tw-cite {
@@ -340,16 +340,16 @@
   flex-direction: column;
   gap: 0.15rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(11, 31, 58, 0.14);
 }
 .tw-name {
   font-weight: 600;
   font-size: 0.98rem;
-  color: #fff;
+  color: #0B1F3A;
 }
 .tw-detail {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(11, 31, 58, 0.62);
 }
 
 /* ---- "wall of love" marquee ribbon ---- */
@@ -393,7 +393,7 @@
   font-size: 0.85rem;
 }
 .tw__chip-stars {
-  color: #c8a15a;
+  color: #C9A227;
   letter-spacing: 1px;
   font-size: 0.7rem;
 }
@@ -406,14 +406,21 @@
 
 /* ---- responsive ---- */
 @media (max-width: 900px) {
-  .tw__grid {
-    grid-template-columns: 1fr;
-    max-width: 480px;
-    margin: 0 auto;
+  .tw__deck {
+    height: clamp(320px, 52vh, 420px);
+  }
+
+  .tw__deck .tw-card {
+    width: min(400px, 84vw);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .tw__slot {
+    filter: none !important;
+    will-change: auto;
+  }
+
   .tw-card { transform: none !important; }
   .tw-card:hover .tw-avatar-ring { animation: none; }
   .tw__marquee-track { animation: none; }

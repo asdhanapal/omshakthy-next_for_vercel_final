@@ -1,0 +1,276 @@
+.ms-section{position:relative;
+  --ms-blue:#0D6BB2;--ms-navy:#0B1F3A;--ms-ivory:#FBF8F2;
+  --ms-blue-lit:#3D96D6;--ms-blue-pale:#7FC0EF;
+  /* data pair: light step = cleared, deep step = blocked */
+  --ms-cleared:#0D6BB2;--ms-blocked:#08375F;
+  --ms-glass:rgba(11,90,155,.5);
+  --ms-hair:rgba(251,248,242,.12);
+  /* Blue is the plane, end to end. Navy is reduced to a thin seam at the very
+     top and bottom edges (~5% of the surface) instead of anchoring the field. */
+  background:
+    radial-gradient(ellipse 1200px 760px at 50% 44%,rgba(30,130,200,.6),transparent 72%),
+    linear-gradient(180deg,#0a3a66 0%,var(--ms-blue) 8%,#1279c6 30%,
+      #1a86d2 50%,#1279c6 70%,var(--ms-blue) 92%,#0a3a66 100%)}
+
+/* Pinned stage — 3 explicit rows: header, rail, then the card deck takes the
+   remaining space and centres inside it. (Flex centring left a dead ~180px
+   well below the card.) Row order must match child order: head, progress, cards. */
+.ms-stage{height:100vh;min-height:660px;width:100%;position:relative;overflow:hidden;
+  display:grid;grid-template-rows:auto auto minmax(0,1fr);justify-items:center;
+  row-gap:clamp(22px,3.2vh,38px);
+  /* Bottom padding is heavier than top so the optical centre of the card
+     lands slightly above true centre — measured, not eyeballed. */
+  padding:clamp(34px,4.6vh,58px) clamp(24px,4vw,56px) clamp(34px,4.6vh,56px)}
+.ms-stage > .ms-head{align-self:start}
+.ms-stage > .ms-progress{align-self:start}
+.ms-stage > .ms-cards{align-self:center}
+
+/* --- Atmosphere: city canvas, vignette, grain --- */
+.ms-atmosphere{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+/* Full-height canvas. The city now runs to the BOTTOM edge, so the mask fades
+   only the top (into the header) and holds full strength all the way down —
+   the previous fade-out at 72% erased exactly the area we want filled. */
+#cityCanvas{position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;opacity:.95;
+  mask-image:linear-gradient(180deg,transparent 4%,rgba(0,0,0,.5) 15%,#000 26%,#000 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 4%,rgba(0,0,0,.5) 15%,#000 26%,#000 100%)}
+/* Vignette darkens the CORNERS to seat the card — it must not wash the
+   centre band where the skyline lives. */
+/* Corners only, and lighter at the bottom now that the city fills it. */
+.ms-vignette{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    radial-gradient(ellipse 138% 106% at 50% 46%,transparent 72%,rgba(10,58,102,.34) 100%),
+    linear-gradient(180deg,rgba(10,58,102,.34) 0%,transparent 14%,transparent 95%,rgba(10,58,102,.16) 100%)}
+.ms-grain{position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.035;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ms-horizon{position:absolute;left:0;right:0;top:30%;height:1px;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(61,150,214,.3),rgba(251,248,242,.16),rgba(61,150,214,.3),transparent)}
+/* One ambient layer, not three: a very slow cool-light drift above the skyline.
+   28s and barely-there opacity — it reads as atmosphere, not as an effect. */
+.ms-aurora{position:absolute;left:-20%;right:-20%;top:0;height:56%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 42% 60% at 28% 40%,rgba(13,107,178,.3),transparent 70%),
+    radial-gradient(ellipse 34% 52% at 68% 32%,rgba(61,150,214,.18),transparent 70%);
+  filter:blur(38px);opacity:.85;
+  animation:auroraDrift 28s ease-in-out infinite alternate}
+@keyframes auroraDrift{
+  0%{transform:translate3d(-3%,0,0) scale(1)}
+  100%{transform:translate3d(3%,-2%,0) scale(1.07)}}
+@media(prefers-reduced-motion:reduce){.ms-aurora{animation:none}}
+
+/* --- Header --- */
+/* Left-aligned editorial header. Centred type + a centred card stacked into a
+   narrow visual spine and left both top corners empty; ranging it left uses the
+   full measure and gives the eye a single entry point. */
+.ms-head{text-align:left;position:relative;z-index:3;width:100%;max-width:1000px;
+  padding:0 clamp(28px,3.4vw,46px);display:grid;
+  grid-template-columns:1fr auto;align-items:end;gap:24px}
+.ms-eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:var(--roman);font-size:8.5px;
+  letter-spacing:.46em;text-transform:uppercase;color:var(--ms-ivory);opacity:.9;margin-bottom:14px}
+.ms-eyebrow::after{content:"";width:46px;height:1px;
+  background:linear-gradient(90deg,rgba(251,248,242,.6),transparent)}
+.ms-head h2{font-family:var(--roman);font-size:clamp(26px,3.9vw,54px);font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ivory);line-height:1;
+  grid-column:1;text-shadow:0 2px 30px rgba(6,42,76,.45)}
+.ms-head p{font-family:var(--serif);font-style:italic;font-size:clamp(15px,1.5vw,19px);
+  color:rgba(251,248,242,.82);margin-top:10px;letter-spacing:.02em;grid-column:1}
+/* Eyebrow + heading + subtitle occupy col 1; the counter moves up into col 2 */
+.ms-eyebrow{grid-column:1}
+.ms-head .ms-count-inline{grid-column:2;grid-row:2;align-self:baseline;text-align:right;
+  font-family:var(--roman);font-size:8.5px;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(251,248,242,.6);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ms-head .ms-count-inline b{color:var(--ms-ivory);font-weight:600;font-size:26px;
+  letter-spacing:.02em;display:block;margin-bottom:2px;line-height:1}
+
+/* --- Progress rail --- */
+/* Sits in the header band with real air above it, so it reads as its own
+   element rather than a third line of the title block. */
+/* Matches the card deck width so rail and card read as one column.
+   Inset by half a node (+ active scale headroom) so the first and last
+   nodes sit inside the track instead of hanging off its ends. */
+.ms-progress{width:100%;max-width:1000px;position:relative;z-index:4;margin:0 auto;
+  padding:0 clamp(28px,3.4vw,46px)}
+.ms-rail{height:2px;background:rgba(251,248,242,.09);position:relative;border-radius:1px}
+.ms-rail-fill{position:absolute;top:0;left:0;bottom:0;width:0%;border-radius:1px;
+  background:linear-gradient(90deg,var(--ms-blue),var(--ms-blue-lit) 55%,var(--ms-ivory));
+  box-shadow:0 0 10px rgba(61,150,214,.45)}
+.ms-rail-glow{position:absolute;top:-7px;left:0;height:16px;width:0%;border-radius:8px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(13,107,178,.3),rgba(61,150,214,.55),rgba(251,248,242,.4));
+  filter:blur(7px)}
+
+/* Nodes are real buttons — click + keyboard reach every milestone.
+   NOTE: vertical centering lives ONLY on .ms-nodes. Node transforms are
+   scale-only, so an active node cannot drift off the rail. */
+.ms-nodes{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);
+  display:flex;justify-content:space-between;align-items:center}
+.ms-node{width:22px;height:22px;padding:0;border-radius:50%;cursor:pointer;
+  border:2px solid rgba(251,248,242,.3);background:#0A4A82;
+  display:grid;place-items:center;position:relative;
+  transition:transform .55s cubic-bezier(.2,.8,.2,1),border-color .55s,background .55s,box-shadow .55s}
+.ms-node::after{content:"";width:6px;height:6px;border-radius:50%;
+  background:rgba(251,248,242,.18);transition:all .55s}
+.ms-node::before{content:"";position:absolute;inset:-9px;border-radius:50%;
+  border:1px solid transparent;transition:border-color .55s}
+/* Generous hit area — the 22px dot is the mark, not the target */
+.ms-hit{position:absolute;inset:-12px;border-radius:50%}
+.ms-node:hover{border-color:rgba(251,248,242,.5);transform:scale(1.2)}
+.ms-node:focus-visible{outline:2px solid var(--ms-ivory);outline-offset:6px}
+.ms-node.done{border-color:var(--blue-lit);background:var(--blue)}
+.ms-node.done::after{background:var(--ivory);box-shadow:0 0 6px rgba(251,248,242,.35)}
+.ms-node.active{border-color:var(--ivory);transform:scale(1.55);background:rgba(13,107,178,.45);
+  box-shadow:0 0 22px rgba(13,107,178,.55),0 0 46px rgba(61,150,214,.22)}
+.ms-node.active::before{border-color:rgba(251,248,242,.22);animation:ringPulse 2s ease-out infinite}
+.ms-node.active::after{background:var(--ivory);box-shadow:0 0 14px var(--ivory),0 0 34px rgba(251,248,242,.45)}
+@keyframes ringPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.1);opacity:0}}
+
+.ms-dates{display:flex;justify-content:space-between;margin-top:20px}
+.ms-date{font-family:var(--roman);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(251,248,242,.55);transition:color .5s,text-shadow .5s;text-align:center;
+  font-variant-numeric:tabular-nums}
+.ms-date.done{color:rgba(251,248,242,.8)}
+.ms-date.active{color:var(--ivory);text-shadow:0 0 14px rgba(251,248,242,.45)}
+
+/* --- Card deck --- */
+.ms-cards{position:relative;width:100%;max-width:1000px;
+  height:100%;min-height:360px;max-height:500px;z-index:3;perspective:1400px}
+.ms-card{position:absolute;inset:0;display:grid;grid-template-columns:clamp(200px,24%,268px) 1fr;
+  border:1px solid rgba(251,248,242,.5);border-radius:18px;overflow:hidden;
+  /* INVERTED: an ivory sheet on the blue field. Reads as a printed plate rather
+     than another pane of dark glass, and carries the ivory quarter of the
+     palette as real surface instead of a trace of text. */
+  background:linear-gradient(160deg,#FDFBF7 0%,#F7F2E8 55%,#EFE7D7 100%);
+  /* Layered shadow: contact + mid + ambient bloom reads as real elevation */
+  box-shadow:
+    0 2px 8px -2px rgba(5,38,70,.32),
+    0 26px 52px -20px rgba(5,38,70,.38),
+    0 60px 110px -36px rgba(5,38,70,.42);
+  opacity:0;transform:translateY(30px) scale(.972);pointer-events:none;
+  transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1)}
+.ms-card.visible{opacity:1;transform:none;pointer-events:auto}
+/* Top seam: blue hairline on the ivory sheet */
+.ms-card::before{content:"";position:absolute;top:0;left:7%;right:7%;height:1px;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(13,107,178,.5),rgba(13,107,178,.28),rgba(13,107,178,.5),transparent)}
+/* Soft interior sheen sweeping the glass */
+.ms-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(112deg,rgba(255,255,255,.4) 0%,transparent 34%,transparent 74%,rgba(13,107,178,.04) 100%)}
+
+/* Left visual — deeper well, ivory hairline divider, engraved guilloche rings */
+/* BLUE PANEL. The card is now ivory, so the numeral well inverts to blue —
+   it becomes the card's anchor and the guilloche rings read as ivory engraving. */
+.ms-visual{position:relative;display:grid;place-items:center;overflow:hidden;
+  background:
+    repeating-radial-gradient(circle at 50% 52%,transparent 0 17px,rgba(251,248,242,.07) 17px 18px),
+    linear-gradient(155deg,#1279c6 0%,var(--ms-blue) 52%,#0a4f8c 100%)}
+.ms-visual::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 44% 40%,rgba(251,248,242,.2),transparent 66%)}
+/* Divider: gradient hairline, brightest at the middle */
+.ms-visual::after{content:"";position:absolute;top:0;bottom:0;right:0;width:1px;
+  background:linear-gradient(180deg,rgba(251,248,242,.28),rgba(251,248,242,.14) 50%,rgba(251,248,242,.28))}
+/* Blue numeral on the ivory plate — the section's strongest colour contrast. */
+.ms-numeral{font-family:var(--roman);font-weight:900;font-size:clamp(104px,12.5vw,168px);line-height:.86;
+  position:relative;user-select:none;letter-spacing:.01em;
+  background:linear-gradient(168deg,rgba(251,248,242,.95) 0%,rgba(251,248,242,.62) 60%,rgba(251,248,242,.34) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ms-icon-svg{position:absolute;bottom:24px;right:24px;width:40px;height:40px;
+  opacity:.55;color:var(--ms-ivory)}
+.ms-icon-svg svg{width:100%;height:100%}
+
+/* Right content — generous, editorial */
+.ms-content{padding:clamp(30px,3.4vw,44px) clamp(30px,3.6vw,50px);
+  display:flex;flex-direction:column;min-width:0;position:relative;z-index:2}
+.ms-tag{font-family:var(--roman);font-size:9px;letter-spacing:.44em;text-transform:uppercase;
+  color:var(--ms-blue);margin-bottom:14px;display:flex;align-items:center;gap:15px}
+.ms-tag::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(13,107,178,.4),transparent)}
+.ms-title{font-family:var(--roman);font-size:clamp(25px,2.9vw,39px);font-weight:700;
+  letter-spacing:.02em;line-height:1.06;margin-bottom:14px;color:#08375F}
+.ms-desc{font-family:var(--serif);font-size:clamp(15.5px,1.5vw,18px);line-height:1.66;
+  color:#14456F;margin-bottom:0;max-width:60ch;text-wrap:pretty}
+
+/* --- Per-milestone metric strip -------------------------------------------
+   Real figures from DATA. Numerals wear the sans (proportional), never the
+   serif — a display serif on a data figure reads as decoration. --------- */
+.ms-metric{margin:24px 0 0}
+.ms-stats{display:flex;gap:0;flex-wrap:wrap;align-items:flex-start}
+/* When stats follow a bar, they need their own air + a separating hairline */
+.ms-stats-after-bar{margin-top:20px;padding-top:20px;
+  border-top:1px solid rgba(8,55,95,.14)}
+.ms-stats div{padding-right:28px;margin-right:28px;border-right:1px solid rgba(8,55,95,.16)}
+.ms-stats div:last-child{border-right:none;margin-right:0;padding-right:0}
+/* Figures wear the sans, proportional — a display serif on a data figure
+   reads as decoration, and tabular-nums makes big numbers look loose. */
+.ms-stats .sv{font-family:var(--sans);font-size:clamp(24px,2.4vw,30px);font-weight:500;
+  color:#08375F;line-height:1;letter-spacing:-.01em}
+.ms-stats .sk{font-family:var(--roman);font-size:8px;letter-spacing:.26em;text-transform:uppercase;
+  color:rgba(8,55,95,.62);margin-top:9px;white-space:nowrap}
+
+/* Stacked bar: 2 series, 2px surface gap, both direct-labelled + legend,
+   so identity never rides on hue alone. Inset track gives it a groove. */
+/* Segments are flex-basis'd and the 2px gap is subtracted from the track, so
+   cleared + gap + blocked fills the width exactly — no overflow, no short bar. */
+/* The 2px gap shows the IVORY track through it, giving the two same-hue steps
+   a hard edge between them — the seam does the work a second hue would. */
+.ms-bar{display:flex;gap:2px;height:10px;margin-bottom:14px;border-radius:5px;
+  background:rgba(13,107,178,.16);overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(6,42,76,.14)}
+.ms-bar i{display:block;height:100%;border-radius:4px;flex:0 0 0%;
+  transition:flex-basis 1.05s cubic-bezier(.2,.85,.25,1)}
+.ms-card.visible .ms-bar i{flex-basis:var(--w)}
+.ms-bar .c{background:linear-gradient(90deg,#1a86d2,var(--ms-cleared))}
+.ms-bar .b{background:linear-gradient(90deg,#0a4479,var(--ms-blocked))}
+/* On the ivory sheet the seam shows the ivory card through it */
+.ms-legend{display:flex;gap:24px;flex-wrap:wrap}
+.ms-legend span{display:inline-flex;align-items:center;gap:9px;font-family:var(--sans);
+  font-size:11.5px;color:rgba(8,55,95,.78);letter-spacing:.03em}
+.ms-legend i{width:8px;height:8px;border-radius:2px;flex:0 0 auto}
+/* Two steps of ONE hue can't carry identity on colour alone, so each swatch
+   also differs in form: the deep step gets an ivory ring. With the direct
+   labels beside them that's two secondary channels, not just lightness. */
+.ms-legend .sw-c{background:var(--ms-cleared)}
+.ms-legend .sw-b{background:var(--ms-blocked);box-shadow:0 0 0 1px rgba(251,248,242,.9)}
+.ms-legend b{color:#08375F;font-weight:700;font-variant-numeric:tabular-nums;font-size:12.5px}
+
+/* Footer row: date + optional flag */
+.ms-foot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:auto;padding-top:24px}
+.ms-date-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--roman);
+  font-size:9.5px;letter-spacing:.22em;color:var(--ms-blue);text-transform:uppercase;
+  padding:10px 16px;border:1px solid rgba(13,107,178,.32);border-radius:5px;
+  background:rgba(13,107,178,.07);width:fit-content}
+.ms-date-badge::before{content:"";width:5px;height:5px;border-radius:50%;
+  background:var(--blue-lit);box-shadow:0 0 9px var(--blue-lit),0 0 18px rgba(61,150,214,.5)}
+/* Status flag ships icon + label — never colour alone */
+.ms-flag{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:11.5px;
+  font-weight:600;color:var(--ms-ivory);padding:9px 15px;border-radius:5px;letter-spacing:.01em;
+  border:1px solid transparent;background:var(--ms-blue)}
+.ms-flag svg{width:13px;height:13px;flex:0 0 auto;opacity:.9}
+
+/* --- Counter + scroll cue --- */
+/* (the old floating corner counter is now part of the header grid) */
+.ms-cue{position:absolute;bottom:clamp(16px,2.6vh,30px);left:50%;transform:translateX(-50%);
+  z-index:4;text-align:center;transition:opacity .4s}
+.ms-cue span{font-family:var(--roman);font-size:8px;letter-spacing:.34em;text-transform:uppercase;
+  color:rgba(251,248,242,.6)}
+.ms-cue .chevrons{display:flex;flex-direction:column;align-items:center;margin-top:7px;gap:1px}
+.ms-cue .chevrons i{display:block;width:10px;height:10px;
+  border-right:1px solid rgba(251,248,242,.26);border-bottom:1px solid rgba(251,248,242,.26);
+  transform:rotate(45deg);animation:chevAnim 2s infinite}
+.ms-cue .chevrons i:nth-child(2){animation-delay:.15s;opacity:.55}
+.ms-cue .chevrons i:nth-child(3){animation-delay:.3s;opacity:.28}
+@keyframes chevAnim{0%{opacity:0;transform:rotate(45deg) translateY(-4px)}50%{opacity:1}100%{opacity:0;transform:rotate(45deg) translateY(4px)}}
+
+/* --- Particles (single definition — the old duplicate block is gone) --- */
+.ms-particles{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.ms-p{position:absolute;border-radius:50%;background:rgba(61,150,214,.7);opacity:0;
+  animation:floatUp var(--dur) var(--delay) infinite ease-out}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(0)}15%{opacity:var(--peak)}
+  85%{opacity:var(--peak)}100%{opacity:0;transform:translateY(var(--drift)) scale(0)}}
+
+/* --- No-JS / no-GSAP fallback: cards become a readable stack --- */
+.ms-section.ms-static .ms-stage{height:auto;min-height:0;padding:80px 40px}
+.ms-section.ms-static .ms-cards{height:auto;display:flex;flex-direction:column;gap:28px}
+.ms-section.ms-static .ms-card{position:relative;inset:auto;opacity:1;transform:none;pointer-events:auto}
+.ms-section.ms-static .ms-bar i{width:var(--w)}
+.ms-section.ms-static .ms-cue,
+.ms-section.ms-static .ms-progress,
+.ms-section.ms-static .ms-counter{display:none}
+
