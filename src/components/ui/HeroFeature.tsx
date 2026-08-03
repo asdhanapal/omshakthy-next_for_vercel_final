@@ -93,7 +93,7 @@ const leaders: Leader[] = [
     cell: 'ed2',
     name: 'Shakthi',
     role: 'Executive Director',
-    data: 'APPOINTMENT PENDING',
+    data: 'TDB',
     image: null,
   },
 ]

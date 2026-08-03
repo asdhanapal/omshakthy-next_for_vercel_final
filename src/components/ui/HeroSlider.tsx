@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react'
 import './HeroSlider.css'
 
 const slides = [
-  { image: '/hero-new-2.png', title: 'Premium Living', subtitle: 'Gated Communities Across Chennai' },
   { image: '/hero-new-3.png', title: 'OmShakthy Regalia', subtitle: '70 Acre Futuristic Township in Avadi' },
   { image: '/hero-slide-9.png', title: 'Elite Residential Apartments', subtitle: 'Modern Living Redefined' },
   { image: '/hero-slide-3.png', title: 'Elite Grand', subtitle: 'Premium Plots in Thirumullaivoyal' },
   { image: '/hero-slide-1.png', title: 'OmShakthy Mathura', subtitle: 'Premium Residential Plots in Tambaram' },
   { image: '/hero-slide-8.png', title: 'Elite Residential Apartments', subtitle: 'Modern Living Redefined' },
   { image: '/hero-slide-2.png', title: 'Canopus Magha', subtitle: 'Gated Community in Guduvanchery' },
+  { image: '/hero-new-2.png', title: 'Premium Living', subtitle: 'Gated Communities Across Chennai' },
 ]
 
 const HeroSlider = () => {

@@ -321,7 +321,7 @@
 
 .tw-quotemark {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 3.4rem;
+  font-size: 2rem;
   line-height: 0.4;
   color: rgba(166, 133, 30, 0.45);
   display: block;
@@ -329,8 +329,8 @@
 }
 .tw-quote {
   font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 400;
-  font-size: var(--tw-quote-size, 1.12rem);
+  font-weight: 300;
+  font-size: var(--tw-quote-size, 0.75rem);
   line-height: 1.5;
   color: #0B1F3A;
   margin: 0 0 1.4rem;
@@ -343,12 +343,12 @@
   border-top: 1px solid rgba(11, 31, 58, 0.14);
 }
 .tw-name {
-  font-weight: 600;
-  font-size: 0.98rem;
+  font-weight: 500;
+  font-size: 0.7rem;
   color: #0B1F3A;
 }
 .tw-detail {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   color: rgba(11, 31, 58, 0.62);
 }
 

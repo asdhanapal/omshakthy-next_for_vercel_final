@@ -35,19 +35,21 @@
        3. the body gradient
      NOTE: #6aa2e8 / #019ade are outside the Heritage Indigo palette (brand
      blue is #0D6BB2). Set per client direction.                            */
-  --xf-card:
-    radial-gradient(125% 85% at 0% 0%, #17549b9e 0%, #17549b1f 42%, transparent 64%),
-    radial-gradient(80% 60% at 100% 108%, #c8a15a29 0%, transparent 58%),
-    linear-gradient(var(--xf-card-angle, 155deg), #0b1215 0%, #0a2f4a 26%, #019ade 62%, #eaf6fd 100%);
-
-  /* Hovered — the blue midpoint widens and warms so hover is still the payoff. */
-  --xf-card-hover:
-    radial-gradient(125% 85% at 0% 0%, #17549bc4 0%, #17549b2e 42%, transparent 64%),
-    radial-gradient(80% 60% at 100% 108%, #c8a15a3d 0%, transparent 58%),
-    linear-gradient(var(--xf-card-angle, 155deg), #0e1a20 0%, #0c3a5c 24%, #0aa8ea 60%, #f4fbff 100%);
-
-  /* Spotlight behind the figure, in Mist Blue. */
-  --xf-spot: radial-gradient(105% 78% at 72% 102%, rgba(141, 180, 209, 0.42) 0%, rgba(141, 180, 209, 0.16) 38%, rgba(141, 180, 209, 0.04) 60%, transparent 74%);
+  /* Glass, not colour. A light translucent fill over the section's blue
+     gradient, blurred behind — see backdrop-filter on .x-id-feature__item. */
+  /* Smoked glass. Tinted dark rather than light, so the card reads darker than
+     the section's bright blue and light copy has something to sit against —
+     while the low alpha keeps it genuinely see-through. */
+  --xf-card: linear-gradient(
+    160deg,
+    rgba(6, 20, 40, 0.34),
+    rgba(6, 20, 40, 0.14)
+  );
+  --xf-card-hover: linear-gradient(
+    160deg,
+    rgba(6, 20, 40, 0.44),
+    rgba(6, 20, 40, 0.2)
+  );
 
   /* Brass rule + brass button. */
   --xf-brass-grad: linear-gradient(135deg, var(--os-brass-lift) 0%, var(--os-brass) 55%, var(--os-brass-deep) 100%);
@@ -177,9 +179,11 @@
   overflow: hidden;
   border-radius: 24px;
   background-image: var(--xf-card);
-  border: 1px solid rgba(251, 248, 242, 0.16);
+  backdrop-filter: blur(32px) saturate(1.3);
+  -webkit-backdrop-filter: blur(32px) saturate(1.3);
+  border: 1px solid rgba(251, 248, 242, 0.3);
   box-shadow:
-    inset 0 1px 0 rgba(251, 248, 242, 0.1),
+    inset 0 1px 0 rgba(251, 248, 242, 0.32),
     0 22px 48px -20px rgba(6, 13, 24, 0.7);
   transition: background-image 0.55s var(--xf-ease-item),
     box-shadow 0.55s var(--xf-ease-item);
@@ -192,37 +196,6 @@
   box-shadow:
     inset 0 1px 0 rgba(251, 248, 242, 0.18),
     0 30px 60px -20px rgba(6, 13, 24, 0.8);
-}
-
-/* Mist Blue spotlight rising behind the figure. */
-.x-id-feature__item::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: var(--xf-spot);
-  opacity: 0.8;
-  transition: opacity 0.55s var(--xf-ease-item);
-  pointer-events: none;
-}
-
-.x-id-feature__item:hover::after,
-.x-id-feature__item:focus-within::after {
-  opacity: 1;
-}
-
-/* Large dark gradients band on 8-bit displays. A faint grain breaks the steps
-   up and adds a little tactile richness. */
-.x-hero-cover__block::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  border-radius: 24px;
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
 .x-id-feature__item.for-prime {
@@ -324,9 +297,9 @@
   justify-content: center;
   align-items: center;
   gap: 6px;
-  border: 1px dashed rgba(11, 31, 58, 0.38);
+  border: 1px dashed rgba(251, 248, 242, 0.4);
   border-radius: 50%;
-  color: rgba(11, 31, 58, 0.62);
+  color: rgba(251, 248, 242, 0.75);
   text-align: center;
 }
 
@@ -385,9 +358,7 @@
   font-weight: 400;
   letter-spacing: 0.16em;
   line-height: 1.5;
-  /* Brass is too low-contrast here; brass presence is carried instead by the
-     role star, the panel rule, the bullets and the button. */
-  color: rgba(217, 181, 112, 0.92);
+  color: #A8D8F5;
   text-transform: uppercase;
 }
 
@@ -398,7 +369,6 @@
   font-family: var(--font-heading);
   color: var(--os-paper);
   letter-spacing: -0.01em;
-  text-shadow: 0 2px 20px rgba(8, 23, 41, 0.4);
 }
 
 .x-vlarge__label {
@@ -426,6 +396,9 @@
 .x-large__label.for-sm {
   font-size: 22px;
   line-height: 28px;
+  /* heavier than the 250 the big cards use — small cards only */
+  font-weight: 400;
+  color: #fff;
 }
 
 /* ── role marker + role text ─────────────────────────────────────────────── */
@@ -453,7 +426,7 @@
 .x-pos__text {
   flex: 1;
   /* Mist Blue washes out on the light card — paper at 88% instead. */
-  color: rgba(251, 248, 242, 0.88);
+  color: rgba(251, 248, 242, 0.92);
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
@@ -469,7 +442,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(251, 248, 242, 0.9);
   font-size: 12.5px;
   line-height: 17px;
 }

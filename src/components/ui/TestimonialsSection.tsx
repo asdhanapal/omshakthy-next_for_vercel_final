@@ -39,6 +39,30 @@ const reviews: Review[] = [
     photo: '/testimonials/suresh.png',
     rating: 5,
   },
+  {
+    quote:
+      'The construction quality is exceptional. Every detail shows their commitment to excellence and customer satisfaction.',
+    name: 'Priya Sharma',
+    detail: 'OmShakthy Heights',
+    photo: '/testimonials/priya.png',
+    rating: 5,
+  },
+  {
+    quote:
+      'Great location, amazing amenities, and the after-sales service is outstanding. I recommend OmShakthy to all my friends.',
+    name: 'Rajesh Kumar',
+    detail: 'OmShakthy Crown',
+    photo: '/testimonials/rajesh.png',
+    rating: 5,
+  },
+  {
+    quote:
+      'The best real estate investment I could have made. OmShakthy delivered exactly what they promised.',
+    name: 'Anitha Patel',
+    detail: 'OmShakthy Residency',
+    photo: '/testimonials/anitha.png',
+    rating: 5,
+  },
 ]
 
 const Stars = ({ n }: { n: number }) => (
