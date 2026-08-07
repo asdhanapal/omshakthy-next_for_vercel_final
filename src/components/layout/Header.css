@@ -9,21 +9,12 @@
   right: 0;
   z-index: 1000;
   color: #fff;
-  background: linear-gradient(#87ddff00, #00679059, #0000);
+  background: linear-gradient(90deg, rgba(0, 103, 144, 0) 0%, rgba(0, 103, 144, 0) 30%, rgba(0, 103, 144, 0.2) 55%, rgba(4, 153, 222, 0.55) 80%, rgba(2, 63, 87, 0.9) 100%);
 }
 
 .site-nav--scrolled {
-  background: linear-gradient(#87ddff00, #00679059, #0000);
+  background: linear-gradient(90deg, rgba(0, 103, 144, 0) 0%, rgba(0, 103, 144, 0) 30%, rgba(0, 103, 144, 0.2) 55%, rgba(4, 153, 222, 0.55) 80%, rgba(2, 63, 87, 0.9) 100%);
   color: #fff;
-}
-
-/* Solid bar on content pages once scrolled past the hero */
-.site-nav--solid {
-  background: rgba(2, 63, 87, 0.97);
-  backdrop-filter: blur(16px) saturate(1.4);
-  border-bottom: 1px solid rgba(4, 153, 222, 0.25);
-  box-shadow: 0 4px 30px rgba(1, 61, 87, 0.4);
-  transition: all 0.4s ease;
 }
 
 .site-nav--hidden {
@@ -35,25 +26,19 @@
 
 .site-nav__inner {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0px 30px 10px 15px;
   max-width: 100%;
   transition: padding 0.5s ease;
-}
-
-.site-nav__left {
-  flex-basis: 50%;
-  flex-grow: 1;
-  display: flex;
+  gap: 40px;
 }
 
 .site-nav__right {
-  flex-basis: 50%;
-  flex-grow: 1;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: initial;
 }
 
 /* Logo — centered, pops slightly below the header */
@@ -63,6 +48,7 @@
   cursor: pointer;
   position: relative;
   z-index: 2;
+  padding-left: 20px;
   transform: translateY(10px);
   filter: drop-shadow(0 4px 16px rgba(4, 153, 222, 0.35));
   transition: transform 0.3s ease, filter 0.3s ease;

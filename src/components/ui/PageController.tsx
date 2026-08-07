@@ -31,9 +31,13 @@ const PageController = ({ children }: PageControllerProps) => {
 
     const dir = e.deltaY > 0 ? 1 : -1
 
-    // If current section is the timeline (index 2), let it advance internally first
+    // If current section is the timeline (index 2):
+    // - Scrolling down steps through the horizontal milestones one at a time.
+    // - Scrolling up skips that and exits the section immediately (one scroll
+    //   up moves straight to the previous page section).
     const timelineAdvance = (window as any).__timelineAdvance
-    if (currentSection === 2 && typeof timelineAdvance === 'function') {
+    const timelineReset = (window as any).__timelineReset
+    if (currentSection === 2 && dir === 1 && typeof timelineAdvance === 'function') {
       const consumed = timelineAdvance(dir)
       if (consumed) {
         // Timeline handled it — block section change briefly
@@ -42,6 +46,10 @@ const PageController = ({ children }: PageControllerProps) => {
         return
       }
       // Boundary reached — fall through to move sections
+    }
+
+    if (currentSection === 2 && dir === -1 && typeof timelineReset === 'function') {
+      timelineReset()
     }
 
     goTo(currentSection + dir)

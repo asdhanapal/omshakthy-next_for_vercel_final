@@ -1,0 +1,129 @@
+'use client'
+import { useRef } from 'react'
+import { motion } from 'framer-motion'
+import { useSectionEnter } from '@/lib/useSectionEnter'
+import './TrustedPartnersSection.css'
+
+/* ============================================================
+   TrustedPartnersSection
+   Combines two Figma sections onto one ivory-background page:
+   1. "Trusted Developers in Chennai" — 5 service pillars
+   2. "Financial Partners" — bank/partner logo strip
+   ============================================================ */
+
+const pillars = [
+  {
+    title: 'Land Aggregation',
+    desc: 'Immense knowledge of land and its value, sound research and extended expertise in the realms of real estate properties.',
+  },
+  {
+    title: 'Residential Development',
+    desc: 'Utmost care in revitalization efforts to improve community life across all residential projects that are undertaken.',
+  },
+  {
+    title: 'Hospitality Management',
+    desc: 'Qualified and well trained individuals that provide quick and relevant solutions for all forms of support services.',
+  },
+  {
+    title: 'Commercial Projects',
+    desc: 'Complete transparency in price, regulations, schedule and documentation allows for smooth execution of commercial projects.',
+  },
+  {
+    title: 'Supply Chain Management',
+    desc: 'Complete transparency in price, regulations, schedule and documentation allows for smooth execution of commercial projects.',
+  },
+]
+
+const partnerLogos = [
+  { name: 'HDFC Bank', file: '/partners/hdfc.png' },
+  { name: 'ICICI Bank', file: '/partners/icici.png' },
+  { name: 'Axis Bank', file: '/partners/axis.png' },
+  { name: 'Kotak Mahindra Bank', file: '/partners/kotak.png' },
+  { name: 'IDFC FIRST Bank', file: '/partners/idfc-first.png' },
+  { name: 'Bajaj Finserv', file: '/partners/bajaj-finserv.png' },
+]
+
+const EASE = [0.16, 1, 0.3, 1] as const
+
+const TrustedPartnersSection = () => {
+  const sectionRef = useRef<HTMLElement>(null)
+  const built = useSectionEnter(sectionRef, 150)
+
+  return (
+    <section ref={sectionRef} className="tp" aria-label="Trusted developers and financial partners">
+      <div className="tp__inner">
+        {/* ── Trusted Developers in Chennai ── */}
+        <div className="tp__top">
+          <header className="tp__header">
+            <span className="tp__eyebrow">Since 1991</span>
+            <motion.h2
+              className="tp__title"
+              initial={{ opacity: 0, y: 30 }}
+              animate={built ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1.1, ease: EASE }}
+            >
+              Trusted Developers <em>in Chennai.</em>
+            </motion.h2>
+            <motion.p
+              className="tp__intro"
+              initial={{ opacity: 0, y: 24 }}
+              animate={built ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 1, ease: EASE, delay: 0.22 }}
+            >
+              OmShakthy Agencies (Madras) Private Limited (OSAL) was incorporated in 1991
+              with the purpose to consolidate land that would be used for projects in the
+              future.
+            </motion.p>
+          </header>
+
+          <div className="tp__pillars">
+            {pillars.map((p, i) => (
+              <motion.div
+                className="tp__pillar"
+                key={p.title}
+                initial={{ opacity: 0, y: 34 }}
+                animate={built ? { opacity: 1, y: 0 } : {}}
+                whileHover={{ y: -3 }}
+                transition={{ duration: 0.9, ease: EASE, delay: 0.45 + i * 0.14 }}
+              >
+                <h3 className="tp__pillar-title">{p.title}</h3>
+                <p className="tp__pillar-desc">{p.desc}</p>
+                <span className="tp__pillar-explore">Explore →</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Financial Partners ── */}
+        <div className="tp__bottom">
+          <span className="tp__partners-label">Financial Partners</span>
+          <motion.h3
+            className="tp__partners-title"
+            initial={{ opacity: 0, y: 24 }}
+            animate={built ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.9, ease: EASE, delay: 0.45 }}
+          >
+            Trusted by India&rsquo;s <em>Leading Financial Institutions.</em>
+          </motion.h3>
+          <div className="tp__logos">
+            {partnerLogos.map((p, i) => (
+              <motion.div
+                className="tp__logo"
+                key={p.name}
+                initial={{ opacity: 0, y: 18 }}
+                animate={built ? { opacity: 1, y: 0 } : {}}
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.75, ease: EASE, delay: 0.45 + i * 0.11 }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={p.file} alt={p.name} loading="lazy" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default TrustedPartnersSection

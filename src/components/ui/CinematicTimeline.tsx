@@ -74,8 +74,14 @@ const CinematicTimeline = () => {
       }
       return false // boundary — let page move
     }
+    // Allows PageController to reset the timeline back to the first slide
+    // when the user scrolls away from it (e.g. scrolling up past it).
+    ;(window as any).__timelineReset = () => {
+      setActiveIndex(0)
+    }
     return () => {
       delete (window as any).__timelineAdvance
+      delete (window as any).__timelineReset
     }
   }, [])
 

@@ -8,6 +8,7 @@ import MilestoneSection from '@/components/ui/MilestoneSection'
 import HeroFeature from '@/components/ui/HeroFeature'
 import PriceTrends from '@/components/ui/PriceTrends'
 import TestimonialsSection from '@/components/ui/TestimonialsSection'
+import TrustedPartnersSection from '@/components/ui/TrustedPartnersSection'
 import PageController from '@/components/ui/PageController'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -39,6 +40,7 @@ export default function HomeClient() {
           <HeroFeature />
           <PriceTrends />
           <TestimonialsSection />
+          <TrustedPartnersSection />
         </PageController>
       </main>
       <Footer />

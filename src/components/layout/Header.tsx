@@ -79,26 +79,9 @@ const Header = () => {
 
   return (
     <>
-      <nav className={`site-nav ${scrolled ? 'site-nav--scrolled' : ''} ${solid ? 'site-nav--solid' : ''} ${hidden ? 'site-nav--hidden' : ''}`}>
+      <nav className={`site-nav ${scrolled || solid ? 'site-nav--scrolled' : ''} ${hidden ? 'site-nav--hidden' : ''}`}>
         <div className="site-nav__inner">
-          {/* Left nav */}
-          <div className="site-nav__left">
-            <ul className="site-nav__links">
-              {navLinksLeft.map((link, i) => (
-                <li key={link.name} className="site-nav__item">
-                  <Link
-                    href={link.path}
-                    className="site-nav__link"
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  >
-                    <span>{link.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Center logo */}
+          {/* Logo — left aligned */}
           <Link href="/" className="site-nav__logo">
             <img
               src="/omshakthy-logo.png"
@@ -112,8 +95,21 @@ const Header = () => {
             />
           </Link>
 
-          {/* Right nav */}
+          {/* Right nav: left links + right links + hamburger, all grouped on the right */}
           <div className="site-nav__right">
+            <ul className="site-nav__links">
+              {navLinksLeft.map((link, i) => (
+                <li key={link.name} className="site-nav__item">
+                  <Link
+                    href={link.path}
+                    className="site-nav__link"
+                    style={{ animationDelay: `${i * 0.1}s` }}
+                  >
+                    <span>{link.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
             <ul className="site-nav__links">
               {navLinksRight.map((link, i) => (
                 <li key={link.name} className="site-nav__item">
