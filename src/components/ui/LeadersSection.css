@@ -11,8 +11,15 @@
      instead of spanning the full section (roster is centered and capped
      narrower than the section, so "full width" and "roster width" aren't
      the same number). */
-  --ld3-card-w: min(240px, 30vh);
-  --ld3-gap: clamp(1rem, 2vw, 1.75rem);
+  /* No longer what actually sizes the roster's cards — those are now
+     height-driven (see .ld3__card's aspect-ratio, derived from the row's
+     real stretched height) so they track the viewport for real instead of
+     following a guessed formula. This is kept only as a *nominal* stand-in
+     so .ld3__intro's max-width below has something to line its edges up
+     against; matches .ld3__card's max-width ceiling so the two stay close
+     in the common case, even though they're no longer mathematically tied. */
+  --ld3-card-w: clamp(200px, 20vw, 340px);
+  --ld3-gap: clamp(1rem, 2vw, 2.25rem);
   position: relative;
   height: 100vh;
   overflow: hidden;
@@ -26,7 +33,7 @@
      just the logo tile itself (~92px + its own padding) sitting top-left.
      Tighter than the other sections' clearance on purpose — that's the
      vertical space this was meant to reclaim for the roster. */
-  padding: clamp(6rem, 12vh, 7rem) clamp(1.5rem, 6vw, 4rem) clamp(1.2rem, 3vh, 2rem);
+  padding: clamp(6rem, 12vh, 7rem) clamp(1.5rem, 6vw, 4rem) calc(clamp(1.2rem, 3vh, 2rem) + 30px);
   background: #f4f6f9;
   color: var(--os-ink, #0B1F3A);
   font-family: 'Inter', sans-serif;
@@ -46,94 +53,106 @@
 
 /* ---------------- editorial intro band ---------------- */
 .ld3__intro {
+  position: relative;
+  /* Establishes its own stacking context (position + z-index, not just
+     position alone) so the background video below is guaranteed to stay
+     contained behind THIS element's own text — it can't leak out and
+     stack against unrelated siblings elsewhere in .ld3. */
+  z-index: 0;
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
+  /* Single column now that the lead-paragraph/stats side column is gone —
+     just the eyebrow+heading sitting on the backdrop image. */
+  grid-template-columns: 1fr;
   align-items: end;
   flex: none;
   width: 100%;
+  padding-top: 40px;
   /* Exactly as wide as the roster row below (4 cards + 3 gaps) — not the
      section's full width — so both edges line up with the images instead
      of overhanging them. */
   max-width: calc(4 * var(--ld3-card-w) + 3 * var(--ld3-gap));
 }
+/* Same background clip as TrustedPartnersSection's .tp__bg-video, faded
+   left-to-right instead of tinted — reads as a backdrop the copy sits
+   on, not a competing clip. Fully transparent at the left edge (where
+   the heading text is) rising to 70% opacity at the right. mask-image,
+   not a plain opacity, so the footage itself stays crisp and only how
+   much of it shows through fades. */
+.ld3__intro-video {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Shifts which part of the source frame shows through this same box —
+     container itself is untouched. Lower than center so the crop favors
+     the footage's ground-level content over its sky. */
+  object-position: center 30%;
+  border-radius: 12px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(-40, 0, 0, 0.8) 100%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(-40, 0, 0, 0.8) 100%);
+  pointer-events: none;
+}
+.ld3__intro-main {
+  position: relative;
+  z-index: 1;
+}
 .ld3__eyebrow {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1rem;
   color: var(--os-brass-deep, #A8813F);
-  letter-spacing: 0.3em;
-  font-size: 0.72rem;
-  font-weight: 700;
+  /* Same mono-kicker language used elsewhere on the site (PriceTrends'
+     eyebrow, the spotlight label) rather than the plain system sans —
+     reads as a considered label, not just small caps text. */
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  letter-spacing: 0.24em;
+  font-size: 0.92rem;
+  font-weight: 600;
   animation: ld3Rise 0.6s ease both;
 }
 .ld3__eyebrow-line {
-  width: 32px;
+  width: 40px;
   height: 1.5px;
   background: var(--os-brass, #C8A15A);
   border-radius: 2px;
 }
 .ld3__h1 {
   margin-top: 0.9rem;
+  padding-bottom: 15px;
   font-family: 'Fraunces', Georgia, serif;
   font-size: clamp(1.9rem, 3.4vw, 2.9rem);
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.01em;
   color: var(--os-ink, #0B1F3A);
-  max-width: 13ch;
+  /* Explicit <br/> in the markup after "Three decades." controls the break
+     now — no max-width needed (it was clipping "vision." onto a 3rd line
+     by capping the width too early for "One unwavering vision." to fit
+     on the second). */
   animation: ld3Rise 0.6s ease 0.06s both;
 }
 .ld3__accent {
   font-style: italic;
   color: var(--os-blue, #0D6BB2);
 }
-.ld3__intro-side {
-  padding-bottom: 0.3rem;
-  animation: ld3Rise 0.6s ease 0.12s both;
-}
-.ld3__lead {
-  color: rgba(11, 31, 58, 0.62);
-  font-size: 0.92rem;
-  line-height: 1.55;
-}
-.ld3__meta {
-  margin-top: 1.1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem 1.6rem;
-  font-size: 0.78rem;
-  color: rgba(11, 31, 58, 0.6);
-}
-.ld3__meta b {
-  display: block;
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--os-blue, #0D6BB2);
-  margin-bottom: 0.15rem;
-}
-
 /* ---------------- roster: vertical portrait cards ---------------- */
 .ld3__roster {
+  /* flex row, not a grid with a guessed vw/vh width formula — that formula
+     was the actual bug: it sized cards off an arbitrary constant instead
+     of the real leftover space, so on a tall screen it either stopped
+     scaling (old fixed 240px) or under-shot it (the vw/vh clamp), leaving
+     dead air either above or below the row no matter how the numbers were
+     tuned. flex:1 + align-items:stretch (flex default) makes roster fill
+     exactly the space left in the .ld3 column, and stretches each card to
+     that *actual* height — the card's own aspect-ratio then derives its
+     width from that real height, so cards genuinely grow/shrink with the
+     viewport instead of following a fixed formula. */
   flex: 1;
   min-height: 0;
-  display: grid;
-  /* minmax(0, ...), not 1fr — 1fr stretches each card to fill a wide
-     viewport, and grid's default align-items:stretch then force-fits that
-     wide card into whatever height is left in this fixed-100vh section,
-     landing on square/landscape instead of a portrait card. Capping the
-     column width and centering the row keeps cards narrow no matter how
-     wide the section is; the aspect-ratio below is what actually makes
-     them tall. The min(240px, 30vh) half of that cap is what keeps a card
-     this tall (~1.8x its own width, once the body text is added) actually
-     fitting a *short* viewport too — width shrinks with available height,
-     not just a fixed px that could overflow this section's fixed 100vh. */
-  grid-template-columns: repeat(4, minmax(0, var(--ld3-card-w)));
+  display: flex;
   justify-content: center;
-  align-items: start;
-  align-content: center;
   gap: var(--ld3-gap);
 }
 .ld3__card {
@@ -146,6 +165,17 @@
   box-shadow: 0 20px 44px -26px rgba(11, 31, 58, 0.45);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s ease;
   animation: ld3Rise 0.6s ease both;
+  /* height:100% (stretch, from the flex row above) is the real driver now
+     — the card fills the roster's actual available height. aspect-ratio
+     then derives width FROM that real height, which is what makes the
+     roster's total size genuinely track the viewport instead of a static
+     formula. max-width is just a sane ceiling so an unusually tall+narrow
+     viewport can't blow 4 cards out past the section's own width — if
+     that ceiling ever binds, the browser lets the ratio give a little
+     rather than overflow, which is the right tradeoff for an edge case. */
+  height: 100%;
+  aspect-ratio: 3 / 4;
+  max-width: clamp(200px, 20vw, 340px);
 }
 .ld3__card:hover {
   transform: translateY(-6px);
@@ -157,7 +187,12 @@
    portrait rather than however much space happened to be left over. */
 .ld3__media {
   position: relative;
-  aspect-ratio: 3 / 4;
+  /* flex:1, not its own aspect-ratio — the card above now owns the 3:4
+     ratio and derives its size from the real available height; media just
+     fills whatever's left in the card once the body block below claims
+     its (fixed, content-sized) space. */
+  flex: 1;
+  min-height: 0;
   background: linear-gradient(180deg, #f1efe9 0%, #e6e2d9 100%);
   overflow: hidden;
 }
@@ -234,9 +269,6 @@
     padding-top: clamp(5.5rem, 12vh, 7rem);
     gap: 0.8rem;
   }
-  .ld3__lead {
-    display: none;
-  }
   .ld3__body {
     padding: 0.5rem 0.8rem;
   }
@@ -252,17 +284,24 @@
        --ld3-card-w, so the intro shouldn't be capped by it either. */
     max-width: 100%;
   }
-  .ld3__h1 {
-    max-width: none;
-  }
   .ld3__roster {
+    /* Below this width the section stops being height-constrained the way
+       a fixed-100vh desktop slide is (2 rows now, cards will wrap), so the
+       height-driven sizing above stops making sense — back to a plain
+       width-based grid of 2, with each card's own aspect-ratio deciding
+       its height instead of a stretched row height. */
     width: 100%;
-    grid-template-columns: repeat(2, 1fr);
+    flex-wrap: wrap;
+  }
+  .ld3__card {
+    height: auto;
+    max-width: none;
+    flex: 1 1 calc(50% - var(--ld3-gap) / 2);
   }
 }
 @media (max-width: 640px) {
-  .ld3__roster {
-    grid-template-columns: 1fr;
+  .ld3__card {
+    flex-basis: 100%;
   }
 }
 

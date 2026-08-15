@@ -80,11 +80,75 @@
   gap: 40px;
 }
 
-.site-nav__right {
+/* Nav links live here now — flex:1 + centered, so they sit in the middle
+   of the header between the logo and the phone/CTA group, instead of
+   bunched next to those on the right. */
+.site-nav__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.site-nav__actions {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: initial;
+  flex-shrink: 0;
+}
+
+/* Phone pill — outlined, blends with whatever theme (color: inherit/
+   currentColor) is active on .site-nav, same as the nav links. */
+.site-nav__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  color: inherit;
+  opacity: 0.85;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: opacity 0.25s ease;
+}
+.site-nav__phone:hover {
+  opacity: 1;
+}
+
+/* "Book Site Visit" CTA — solid brand blue regardless of theme, so it
+   stays the one unmistakably-clickable element across every section. */
+.site-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 1.2rem;
+  padding: 0.65rem 1.4rem;
+  background: var(--os-blue, #0D6BB2);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: 0 10px 24px -12px rgba(13, 107, 178, 0.7);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.site-nav__cta:hover {
+  transform: translateY(-1px);
+  background: var(--os-blue-lift, #17549B);
+}
+
+@media (max-width: 1180px) {
+  .site-nav__phone {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
+  .site-nav__cta {
+    display: none;
+  }
 }
 
 /* Logo — centered, pops slightly below the header */
@@ -94,7 +158,7 @@
   cursor: pointer;
   position: relative;
   z-index: 2;
-  padding-left: 20px;
+  padding-left: 80px;
   transform: translateY(10px);
   filter: drop-shadow(0 4px 16px rgba(4, 153, 222, 0.35));
   transition: transform 0.3s ease, filter 0.3s ease;

@@ -58,13 +58,6 @@ const leaders: Leader[] = [
   },
 ]
 
-const stats = [
-  { value: '30+', label: 'Years' },
-  { value: '1991', label: 'Founded' },
-  { value: '20,000+', label: 'Families' },
-  { value: '₹5,000CR+', label: 'and Growing' },
-]
-
 function Card({ leader, index }: { leader: Leader; index: number }) {
   return (
     <article className="ld3__card" style={{ animationDelay: `${0.2 + index * 0.09}s` }}>
@@ -93,29 +86,29 @@ const LeadersSection = () => {
   return (
     <section className="ld3" id="leadership" data-snap="true" aria-label="Our leadership" data-header-theme="transparent">
       <div className="ld3__intro">
-        <div>
+        {/* Same background clip TrustedPartnersSection uses behind its
+            pillars — reused here rather than the static skyline photo, so
+            the backdrop is footage instead of a still. */}
+        <video
+          className="ld3__intro-video"
+          src="/trusted-partners-bg.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        />
+        <div className="ld3__intro-main">
           <p className="ld3__eyebrow">
             <span className="ld3__eyebrow-line" />
             OUR LEADERSHIP
             <span className="ld3__eyebrow-line" />
           </p>
           <h1 className="ld3__h1">
-            Three decades. One unwavering <span className="ld3__accent">vision.</span>
+            Three decades.
+            <br />
+            One unwavering <span className="ld3__accent">vision.</span>
           </h1>
-        </div>
-        <div className="ld3__intro-side">
-          <p className="ld3__lead">
-            Three decades of real estate leadership — built on trust, land
-            expertise and an unwavering commitment to every family we serve.
-          </p>
-          <div className="ld3__meta">
-            {stats.map((s) => (
-              <span key={s.label}>
-                <b>{s.value}</b>
-                {s.label}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
 

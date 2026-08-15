@@ -71,9 +71,9 @@ const Header = () => {
         // Left padding fixed at 15px; right padding stays wide/compact per section
         nav.style.paddingLeft = '15px'
         if (currentSection >= 1) {
-          nav.style.paddingRight = '50px'
+          nav.style.paddingRight = '90px'
         } else {
-          nav.style.paddingRight = '30px'
+          nav.style.paddingRight = '90px'
         }
       }
     }
@@ -127,8 +127,10 @@ const Header = () => {
             />
           </Link>
 
-          {/* Right nav: left links + right links + hamburger, all grouped on the right */}
-          <div className="site-nav__right">
+          {/* Center nav: both link lists, pushed to the middle of the header
+              (flex:1 + justify-content:center) instead of bunched next to
+              the phone/CTA on the right. */}
+          <div className="site-nav__center">
             <ul className="site-nav__links">
               {navLinksLeft.map((link, i) => (
                 <li key={link.name} className="site-nav__item">
@@ -155,6 +157,22 @@ const Header = () => {
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Right: phone + CTA, kept separate from the (now centered) links */}
+          <div className="site-nav__actions">
+            <a href="tel:04440303040" className="site-nav__phone">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden>
+                <path
+                  fill="currentColor"
+                  d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8Z"
+                />
+              </svg>
+              <span>044 4030 3040</span>
+            </a>
+            <Link href="/contact" className="site-nav__cta">
+              Book Site Visit
+            </Link>
             <button
               className={`site-nav__hamburger ${menuOpen ? 'active' : ''}`}
               onClick={() => setMenuOpen(!menuOpen)}
