@@ -99,7 +99,11 @@ const CinematicTimeline = () => {
             <div className="ct-slide__bgwrap">
               <div
                 className="ct-slide__bg"
-                style={{ backgroundImage: `url(${m.image})` }}
+                style={{
+                  backgroundImage: `url(${m.image})`,
+                  backgroundPosition: m.image === '/timeline-1997.png' ? 'center 50%' : m.image === '/timeline-1998.png' ? 'center 40%' : ['/timeline-1993.png', '/timeline-2000.png', '/timeline-2024.png'].includes(m.image) ? 'center 30%' : 'center',
+                  backgroundSize: 'cover',
+                }}
               />
             </div>
             <div className="ct-slide__overlay" />

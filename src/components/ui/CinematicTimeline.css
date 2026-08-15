@@ -9,6 +9,8 @@
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* WebGL canvas — full section */
@@ -21,10 +23,12 @@
   z-index: 0;
 }
 
-/* Horizontal track — holds all slides side by side */
+/* Horizontal track — holds all slides side by side. Takes the remaining
+   height above the separated .ct-bar footer band, not the full section. */
 .ct-track {
   display: flex;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
   will-change: transform;
 }
@@ -66,12 +70,7 @@
 .ct-slide__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 1) 100%
-  );
+  background: linear-gradient(#fff0 0% 95%, #fff 100%);
   z-index: 1;
 }
 
@@ -138,16 +137,20 @@
 
 /* ============================================
    INNOVATIVE TIMELINE BAR
+   Separated footer band — not an overlay on the slide image. Sits below
+   the image area in normal flow, with its own solid background so it
+   never visually overlaps the photo.
    ============================================ */
 .ct-bar {
-  position: absolute;
-  bottom: 48px;
-  left: 8vw;
-  right: 8vw;
+  position: relative;
+  flex-shrink: 0;
   z-index: 10;
   display: flex;
   align-items: flex-end;
   gap: 48px;
+  padding: 28px 8vw 32px;
+  background: #fff;
+  border-top: 1px solid rgba(30, 35, 45, 0.08);
 }
 
 /* ---- Big morphing year ---- */
@@ -176,8 +179,8 @@
 
 .ct-bar__bigyear-label {
   font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #C9A227;
@@ -210,7 +213,7 @@
   position: absolute;
   inset: 0;
   border-radius: 4px;
-  background: linear-gradient(90deg, #0499de, #C9A227);
+  background: linear-gradient(90deg, #025f8a, #0499de);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
@@ -226,7 +229,7 @@
 
 .ct-seg--active .ct-seg__fill {
   transform: scaleX(1);
-  box-shadow: 0 0 16px rgba(165, 107, 61, 0.5);
+  box-shadow: 0 0 16px rgba(4, 153, 222, 0.5);
   animation: segPulse 2s ease-in-out infinite;
 }
 
@@ -240,8 +243,8 @@
   top: -24px;
   left: 0;
   font-family: 'Inter', sans-serif;
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 700;
   letter-spacing: 0.08em;
   color: rgba(30, 35, 45, 0.3);
   transition: color 0.4s ease;
@@ -282,8 +285,6 @@
 @media (max-width: 768px) {
   .ct-slide {
     padding: 0 6vw;
-    align-items: flex-end;
-    padding-bottom: 120px;
   }
 
   .ct-slide__content {
@@ -291,8 +292,7 @@
   }
 
   .ct-bar {
-    left: 5vw;
-    right: 5vw;
-    bottom: 30px;
+    padding: 20px 5vw 24px;
+    gap: 24px;
   }
 }

@@ -1,0 +1,168 @@
+/* ============================================================
+   GalleryContent — masonry photo grid, ivory palette matching
+   TrustedPartnersSection / the rest of the site.
+   ============================================================ */
+
+.gc {
+  --gc-ink: #025f8a;
+  --gc-ink-muted: rgba(2, 95, 138, 0.68);
+  --gc-paper: #F8F8F5;
+  --gc-brass: #C9A227;
+  --gc-hair: rgba(200, 161, 90, 0.35);
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--gc-paper);
+  color: var(--gc-ink);
+  font-family: 'Inter', sans-serif;
+}
+
+.gc__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  /* Clears the fixed .site-nav (102px). */
+  padding: calc(102px + clamp(2rem, 5vh, 3rem)) clamp(1.25rem, 6vw, 6rem) clamp(4rem, 8vh, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 5vh, 3.5rem);
+}
+
+/* ---- header ---- */
+.gc__header {
+  max-width: 640px;
+}
+
+.gc__eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gc-brass);
+  margin-bottom: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--gc-hair);
+  font-weight: 900;
+  border-radius: 999px;
+}
+
+.gc__title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.08;
+  color: var(--gc-ink);
+}
+
+.gc__title em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* ---- bento grid ---- */
+/* A fixed-row grid with three tile sizes (lg/md/sm) spanning different
+   col/row counts — this is what creates visual hierarchy, since every
+   source photo here is roughly the same 3:2 landscape ratio and a plain
+   equal-width grid gives zero size variation otherwise. No overlap —
+   tiles sit in clean grid order. */
+.gc__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: 130px;
+  grid-auto-flow: dense;
+  gap: 1rem;
+}
+
+.gc__tile {
+  position: relative;
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(11, 31, 58, 0.08);
+  box-shadow:
+    0 2px 6px rgba(11, 31, 58, 0.06),
+    0 14px 30px -14px rgba(11, 31, 58, 0.2);
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.gc__tile:hover {
+  box-shadow:
+    0 4px 10px rgba(11, 31, 58, 0.08),
+    0 22px 44px -16px rgba(11, 31, 58, 0.26);
+  transform: translateY(-3px);
+  z-index: 2;
+}
+
+/* Large — the featured/anchor tiles. Width is 4 (not 3) so it always
+   combines cleanly with 2-wide md/sm tiles on the 6-col track — a 3-wide
+   span left a stray 1-column gap that nothing else could fill. */
+.gc__tile--lg {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+
+/* Medium */
+.gc__tile--md {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Small — the connective tissue between anchors */
+.gc__tile--sm {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.gc__tile img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.gc__tile:hover img {
+  transform: scale(1.05);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .gc__grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 110px;
+  }
+
+  .gc__tile--lg {
+    grid-column: span 4;
+    grid-row: span 3;
+  }
+
+  .gc__tile--md {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .gc__tile--sm {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .gc__grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 140px;
+  }
+
+  .gc__tile--lg,
+  .gc__tile--md,
+  .gc__tile--sm {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}

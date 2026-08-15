@@ -8,6 +8,11 @@ interface PageControllerProps {
 
 const PageController = ({ children }: PageControllerProps) => {
   const [currentSection, setCurrentSection] = useState(0)
+  // Once true, this component stops owning the wheel — native scrolling
+  // takes over so whatever is rendered after <PageController> in normal
+  // document flow becomes reachable. Re-engaged if the user scrolls back up
+  // to the very top of that free-flow content (see handleWheel below).
+  const [released, setReleased] = useState(false)
   const isAnimating = useRef(false)
   const totalSections = children.length
 
@@ -19,12 +24,25 @@ const PageController = ({ children }: PageControllerProps) => {
   }, [totalSections])
 
   const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault()
-
     // Block all section navigation while the intro overlay is still on screen
     // (keyhole + video + swipe). This prevents scrolling from advancing the
     // hidden sections in the background and landing the user on the wrong page.
     if (document.querySelector('.intro-section')) return
+
+    if (released) {
+      // Free-flowing — leave native scroll alone. The only thing we still
+      // watch for is scrolling up past the top of that free-flow content,
+      // which means the user wants back into the snapped section stack.
+      if (window.scrollY <= 0 && e.deltaY < 0 && !isAnimating.current) {
+        e.preventDefault()
+        isAnimating.current = true
+        setReleased(false)
+        setTimeout(() => { isAnimating.current = false }, 750)
+      }
+      return
+    }
+
+    e.preventDefault()
 
     if (isAnimating.current) return
     if (Math.abs(e.deltaY) < 8) return
@@ -52,8 +70,16 @@ const PageController = ({ children }: PageControllerProps) => {
       timelineReset()
     }
 
+    // At the last snapped section and still scrolling down: hand off to
+    // native scroll for whatever comes after PageController, rather than
+    // just sitting stuck (goTo is a no-op past the last index).
+    if (currentSection === totalSections - 1 && dir === 1) {
+      setReleased(true)
+      return
+    }
+
     goTo(currentSection + dir)
-  }, [currentSection, goTo])
+  }, [currentSection, goTo, released, totalSections])
 
   useEffect(() => {
     window.addEventListener('wheel', handleWheel, { passive: false })
@@ -67,7 +93,7 @@ const PageController = ({ children }: PageControllerProps) => {
   }, [currentSection])
 
   return (
-    <div className="page-controller">
+    <div className={`page-controller${released ? ' page-controller--released' : ''}`}>
       <div
         className="page-controller__track"
         style={{ transform: `translateY(-${currentSection * 100}vh)` }}

@@ -1,86 +1,131 @@
 'use client'
 import './LeadersSection.css'
 
-const COMPANY = 'OmShakthy Agencies'
-const LOGO = '/omshakthy-logo.png'
-const FLAG = '🇮🇳'
+/* Ported from the "page3" leadership layout (portrait card roster +
+   editorial intro band) — replaces the previous hover-accordion design.
+   Content is Omshakthy's real leadership (same four people/photos/bios the
+   old version used), not the source demo's placeholder team. The source
+   also had a "values" strip (icons + a "Join our team" link) below the
+   roster; dropped per request. */
 
-const prime = {
-  name: 'R. Ramachandran',
-  role: 'Chairman',
-  photo: '/leaders/chairman.png',
+type Leader = {
+  name: string
+  role: string
+  tag: string
+  // No `img` = no real photo exists yet (see Shakthi below) — renders an
+  // initials placeholder instead of misattributing someone else's photo.
+  img?: string
+  pos: string
+  size: string
 }
 
-const secondary = [
-  { name: 'N R Manigantan', role: 'Managing Director', photo: '/leaders/md.png' },
-  { name: 'Rajib Kumar Hota', role: 'Executive Director', photo: '/leaders/hota.png' },
-  { name: 'Shakthi', role: 'Executive Director', photo: null },
-  { name: null, role: null, photo: null, reserved: true },
+const leaders: Leader[] = [
+  {
+    name: 'R. Ramachandran',
+    role: 'Chairman',
+    tag: 'Vision & Legacy',
+    img: '/leaders/chairman.png',
+    // Same photo/pose as the page3 source's own reference crop for this
+    // person — using its exact values rather than my own estimate.
+    pos: '38% 6%',
+    size: 'auto 168%',
+  },
+  {
+    name: 'N R Manigantan',
+    role: 'Managing Director',
+    tag: 'Strategy & Growth',
+    img: '/leaders/manigantan.png',
+    pos: '44% 8%',
+    size: 'auto 138%',
+  },
+  {
+    name: 'Rajib Kumar Hota',
+    role: 'Executive Director',
+    tag: 'Governance & Ethics',
+    img: '/leaders/hota.png',
+    pos: 'center 22%',
+    size: 'cover',
+  },
+  {
+    name: 'Shakthi',
+    role: 'Executive Director',
+    tag: 'To Be Announced',
+    // No distinct photo exists — every "Shakthi" asset in /public/leaders
+    // (md-cutout.png) is byte-identical to manigantan.png. That's someone
+    // else's actual face, not a placeholder, so it doesn't belong here.
+    pos: 'center 15%',
+    size: 'cover',
+  },
 ]
 
-function Badge() {
+const stats = [
+  { value: '30+', label: 'Years' },
+  { value: '1991', label: 'Founded' },
+  { value: '20,000+', label: 'Families' },
+  { value: '₹5,000CR+', label: 'and Growing' },
+]
+
+function Card({ leader, index }: { leader: Leader; index: number }) {
   return (
-    <span className="lead__badge">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={LOGO} alt="OmShakthy" />
-      <span>{COMPANY}</span>
-    </span>
+    <article className="ld3__card" style={{ animationDelay: `${0.2 + index * 0.09}s` }}>
+      <div className="ld3__media">
+        {leader.img ? (
+          <span
+            className="ld3__photo"
+            style={{ backgroundImage: `url(${leader.img})`, backgroundPosition: leader.pos, backgroundSize: leader.size }}
+          />
+        ) : (
+          <div className="ld3__photo-placeholder" aria-hidden>
+            <span>{leader.name.charAt(0)}</span>
+          </div>
+        )}
+      </div>
+      <div className="ld3__body">
+        <h3 className="ld3__name">{leader.name}</h3>
+        <p className="ld3__role">{leader.role}</p>
+        <p className="ld3__tag">{leader.tag}</p>
+      </div>
+    </article>
   )
 }
 
-export default function LeadersSection() {
+const LeadersSection = () => {
   return (
-    <section className="lead">
-      <div className="lead__header">
-        <span className="lead__eyebrow">Our Leadership</span>
-        <h2 className="lead__title">The People Behind the Promise</h2>
+    <section className="ld3" id="leadership" data-snap="true" aria-label="Our leadership" data-header-theme="transparent">
+      <div className="ld3__intro">
+        <div>
+          <p className="ld3__eyebrow">
+            <span className="ld3__eyebrow-line" />
+            OUR LEADERSHIP
+            <span className="ld3__eyebrow-line" />
+          </p>
+          <h1 className="ld3__h1">
+            Three decades. One unwavering <span className="ld3__accent">vision.</span>
+          </h1>
+        </div>
+        <div className="ld3__intro-side">
+          <p className="ld3__lead">
+            Three decades of real estate leadership — built on trust, land
+            expertise and an unwavering commitment to every family we serve.
+          </p>
+          <div className="ld3__meta">
+            {stats.map((s) => (
+              <span key={s.label}>
+                <b>{s.value}</b>
+                {s.label}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="lead__wrap">
-        {/* ── Prime card — Chairman ── */}
-        <article className="lead__card lead__card--prime">
-          <div className="lead__info">
-            <h3 className="lead__name">{prime.name}</h3>
-            <span className="lead__role">
-              <span className="lead__flag">{FLAG}</span> {prime.role}
-            </span>
-            <Badge />
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="lead__photo" src={prime.photo} alt={prime.name} />
-        </article>
-
-        {/* ── 2×2 grid ── */}
-        <div className="lead__secondary">
-          {secondary.map((person, i) => {
-            if (person.reserved) {
-              return (
-                <article className="lead__card lead__card--sec lead__card--reserved" key={`res-${i}`}>
-                  <span className="lead__reserved-icon" aria-hidden="true">+</span>
-                  <span className="lead__reserved-text">To be announced</span>
-                </article>
-              )
-            }
-            return (
-              <article className="lead__card lead__card--sec" key={person.name}>
-                <div className="lead__info">
-                  <h3 className="lead__name">{person.name}</h3>
-                  <span className="lead__role">
-                    <span className="lead__flag">{FLAG}</span> {person.role}
-                  </span>
-                  <Badge />
-                </div>
-                {person.photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="lead__photo" src={person.photo} alt={person.name ?? ''} />
-                ) : (
-                  <div className="lead__mono" aria-hidden="true">{person.name?.[0]}</div>
-                )}
-              </article>
-            )
-          })}
-        </div>
+      <div className="ld3__roster">
+        {leaders.map((leader, i) => (
+          <Card key={leader.name} leader={leader} index={i} />
+        ))}
       </div>
     </section>
   )
 }
+
+export default LeadersSection

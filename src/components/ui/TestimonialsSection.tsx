@@ -9,11 +9,19 @@ interface Review {
   detail: string
   photo: string
   rating: number
+  // Alternates the card with a video-thumbnail layout (poster + play button)
+  // instead of the written quote. `photo` doubles as the poster image since
+  // there's no actual video file per customer yet — see `video` field below.
+  video?: boolean
+  videoDuration?: string
 }
 
 // Content sourced from the Figma "Customer Stories" section.
 // NOTE: `photo` images in /public/testimonials are royalty-free placeholders
 // (randomuser.me). Swap them for real customer / licensed Indian portraits.
+// `video: true` entries render a video-testimonial card (see DeckCard) —
+// no real video files exist yet, so the poster/play button is a styled
+// affordance only; wire `videoSrc` up once actual clips are shot/uploaded.
 const reviews: Review[] = [
   {
     quote:
@@ -30,6 +38,8 @@ const reviews: Review[] = [
     detail: 'OmShakthy Santha Towers',
     photo: '/testimonials/dhanasekaran.png',
     rating: 5,
+    video: true,
+    videoDuration: '0:48',
   },
   {
     quote:
@@ -46,6 +56,8 @@ const reviews: Review[] = [
     detail: 'OmShakthy Heights',
     photo: '/testimonials/priya.png',
     rating: 5,
+    video: true,
+    videoDuration: '1:05',
   },
   {
     quote:
@@ -60,8 +72,20 @@ const reviews: Review[] = [
       'The best real estate investment I could have made. OmShakthy delivered exactly what they promised.',
     name: 'Anitha Patel',
     detail: 'OmShakthy Residency',
-    photo: '/testimonials/anitha.png',
+    photo: '/testimonials/anitha.jpg',
     rating: 5,
+    video: true,
+    videoDuration: '0:36',
+  },
+  {
+    quote:
+      'Getting the keys to our first home together was one of the happiest days of our lives. OmShakthy made the entire journey smooth, transparent and stress-free.',
+    name: 'Vikram & Meera Iyer',
+    detail: 'OmShakthy Meadows, Guduvancheri',
+    photo: '/testimonials/vikram-meera.jpg',
+    rating: 5,
+    video: true,
+    videoDuration: '0:52',
   },
 ]
 
@@ -192,11 +216,11 @@ const DEPTH = [
 const MAX_RANK = DEPTH.length - 1
 
 /* The card is a fixed size, so the quote's type scales to fit it instead.
-   1.12rem is the design size; it eases down to a 0.92rem floor as the quote
+   1.22rem is the design size; it eases down to a 1.02rem floor as the quote
    gets longer. */
 const quoteSize = (len: number) => {
-  const size = 1.12 - Math.max(0, len - 115) * 0.0022
-  return `${Math.max(0.92, Math.min(1.12, size)).toFixed(3)}rem`
+  const size = 1.22 - Math.max(0, len - 115) * 0.0022
+  return `${Math.max(1.02, Math.min(1.22, size)).toFixed(3)}rem`
 }
 
 const place = (p: number) =>
@@ -250,7 +274,7 @@ const DeckCard = ({
     >
       <article
         ref={ref}
-        className={`tw-card${isActive ? ' is-front' : ''}`}
+        className={`tw-card${isActive ? ' is-front' : ''}${review.video ? ' tw-card--video' : ''}`}
         style={
           { '--tw-quote-size': quoteSize(review.quote.length) } as React.CSSProperties
         }
@@ -262,36 +286,65 @@ const DeckCard = ({
       <span className="tw-bracket tw-bracket--br" aria-hidden />
 
       {/* layered content — different translateZ for parallax depth */}
-      <div className="tw-inner">
-        <div className="tw-top">
-          <div className="tw-avatar">
-            <span className="tw-avatar-ring" aria-hidden />
+      {review.video ? (
+        <div className="tw-inner tw-inner--video">
+          <div className="tw-video-thumb">
             <img src={review.photo} alt={review.name} loading="lazy" />
-          </div>
-          <div className="tw-meta">
-            <Stars n={review.rating} />
-            <span className="tw-google">
-              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden>
-                <path
-                  fill="currentColor"
-                  d="M12 11v2.8h4c-.2 1-1.3 3-4 3a4.4 4.4 0 010-8.8c1.3 0 2.1.5 2.6 1l1.9-1.8C15.3 6.1 13.8 5.5 12 5.5a6.5 6.5 0 100 13c3.8 0 6.3-2.6 6.3-6.4 0-.4 0-.7-.1-1H12z"
-                />
+            <span className="tw-video-scrim" aria-hidden />
+            {/* No real video file exists per customer yet — this is a styled
+                affordance, not wired to playback. Point it at a real source
+                (videoSrc on the Review) once clips are shot/uploaded. */}
+            <button
+              type="button"
+              className="tw-play"
+              aria-label={`Play video testimonial from ${review.name}`}
+            >
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
+                <path fill="currentColor" d="M8 5.5v13l11-6.5-11-6.5z" />
               </svg>
-              Verified Review
-            </span>
+            </button>
+            {review.videoDuration && (
+              <span className="tw-video-badge">▶ {review.videoDuration}</span>
+            )}
+            <div className="tw-video-caption">
+              <Stars n={review.rating} />
+              <span className="tw-name">{review.name}</span>
+              <span className="tw-detail">{review.detail}</span>
+            </div>
           </div>
         </div>
+      ) : (
+        <div className="tw-inner">
+          <div className="tw-top">
+            <div className="tw-avatar">
+              <span className="tw-avatar-ring" aria-hidden />
+              <img src={review.photo} alt={review.name} loading="lazy" />
+            </div>
+            <div className="tw-meta">
+              <Stars n={review.rating} />
+              <span className="tw-google">
+                <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden>
+                  <path
+                    fill="currentColor"
+                    d="M12 11v2.8h4c-.2 1-1.3 3-4 3a4.4 4.4 0 010-8.8c1.3 0 2.1.5 2.6 1l1.9-1.8C15.3 6.1 13.8 5.5 12 5.5a6.5 6.5 0 100 13c3.8 0 6.3-2.6 6.3-6.4 0-.4 0-.7-.1-1H12z"
+                  />
+                </svg>
+                Verified Review
+              </span>
+            </div>
+          </div>
 
-        <span className="tw-quotemark" aria-hidden>
-          &ldquo;
-        </span>
-        <blockquote className="tw-quote">{review.quote}</blockquote>
+          <span className="tw-quotemark" aria-hidden>
+            &ldquo;
+          </span>
+          <blockquote className="tw-quote">{review.quote}</blockquote>
 
-        <footer className="tw-cite">
-          <span className="tw-name">{review.name}</span>
-          <span className="tw-detail">{review.detail}</span>
-        </footer>
-      </div>
+          <footer className="tw-cite">
+            <span className="tw-name">{review.name}</span>
+            <span className="tw-detail">{review.detail}</span>
+          </footer>
+        </div>
+      )}
       </article>
     </motion.div>
   )

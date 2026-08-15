@@ -124,7 +124,7 @@ const Footer = () => {
         href="https://api.whatsapp.com/send?text=Hi,%20I%20am%20interested%20in%20OmShakthy.&phone=919150088097"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-[999] w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30 hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 z-[999] w-14 h-14 bg-brand rounded-full flex items-center justify-center shadow-lg shadow-brand/30 hover:scale-110 transition-transform"
         aria-label="Chat on WhatsApp"
       >
         <span className="text-2xl">💬</span>

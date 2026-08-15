@@ -1,154 +1,276 @@
 /* ============================================================
-   Leadership — ACES x-id-feature grid replica
-   Light paper bg · grey cards · accent-bordered prime card
-   Bold sans names · flag + role · company badge · grayscale photos
+   LEADERSHIP — portrait roster (ported from the "page3" layout)
+   Original was a free-scrolling standalone page; this version is fitted to
+   a fixed 100vh scroll-jacked slide (overflow:hidden, no page scroll), so
+   sizing throughout is fluid (clamp) rather than the fixed px of the source.
    ============================================================ */
 
-.lead {
-  --blue:    #0499dd;
-  --paper:   #fcf8f2;
-  --card:    #ededed;
-  --card-2:  #e4e4e4;
-  --ink:     #1c1c1c;
-  --ink-2:   #555;
-  --line:    #d8d8d8;
-
+.ld3 {
+  /* Shared with .ld3__roster's grid + .ld3__intro's width below, so the
+     intro band's edges line up with the roster's actual rendered width
+     instead of spanning the full section (roster is centered and capped
+     narrower than the section, so "full width" and "roster width" aren't
+     the same number). */
+  --ld3-card-w: min(240px, 30vh);
+  --ld3-gap: clamp(1rem, 2vw, 1.75rem);
   position: relative;
-  width: 100%;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  padding: clamp(2.5rem, 5vh, 4.5rem) clamp(1.25rem, 4vw, 4rem) clamp(3.5rem, 7vh, 6rem);
-}
-
-/* ─── Header ─── */
-.lead__header {
-  max-width: 1600px; margin: 0 auto clamp(1.5rem, 3vh, 2.5rem);
-}
-.lead__eyebrow {
-  display: inline-block;
-  font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase;
-  color: var(--blue); font-weight: 700; margin-bottom: 0.6rem;
-}
-.lead__title {
-  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
-  font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1;
-}
-
-/* ─── Master layout: prime (left) + 2x2 grid (right) ─── */
-.lead__wrap {
-  max-width: 1600px; margin: 0 auto;
-  display: grid;
-  grid-template-columns: 0.85fr 1.5fr;
-  gap: clamp(1rem, 1.6vw, 1.5rem);
-  align-items: stretch;
-}
-.lead__secondary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: clamp(1rem, 1.6vw, 1.5rem);
-}
-
-/* ─── Card base ─── */
-.lead__card {
-  position: relative;
-  background: var(--card);
-  border-radius: 24px;
+  height: 100vh;
   overflow: hidden;
-  transition: background 0.55s cubic-bezier(0.77, 0, 0.175, 1), transform 0.4s ease, box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.2rem, 2.6vh, 2rem);
+  /* Header nav is transparent on this section (data-header-theme
+     ="transparent" — see Header.css), so there's no bar to clear anymore,
+     just the logo tile itself (~92px + its own padding) sitting top-left.
+     Tighter than the other sections' clearance on purpose — that's the
+     vertical space this was meant to reclaim for the roster. */
+  padding: clamp(6rem, 12vh, 7rem) clamp(1.5rem, 6vw, 4rem) clamp(1.2rem, 3vh, 2rem);
+  background: #f4f6f9;
+  color: var(--os-ink, #0B1F3A);
+  font-family: 'Inter', sans-serif;
 }
-.lead__card:hover {
-  background: var(--card-2);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -18px rgba(0, 0, 0, 0.25);
-}
-
-.lead__card--prime {
-  border: 1.5px solid var(--blue);
-  min-height: clamp(440px, 62vh, 660px);
-}
-.lead__card--sec { min-height: clamp(220px, 28vh, 320px); }
-
-/* ─── Info overlay (top-left) ─── */
-.lead__info {
-  position: absolute; z-index: 3;
-  top: clamp(1rem, 1.8vw, 1.5rem); left: clamp(1rem, 1.8vw, 1.5rem); right: clamp(1rem, 1.8vw, 1.5rem);
-  display: flex; flex-direction: column; align-items: flex-start;
-  gap: 0.55rem;
-}
-.lead__name {
-  font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 1.02;
-  margin: 0;
-}
-.lead__card--prime .lead__name { font-size: clamp(2.2rem, 3.4vw, 3.4rem); }
-.lead__card--sec .lead__name   { font-size: clamp(1.1rem, 1.5vw, 1.5rem); }
-
-.lead__role {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  font-size: clamp(0.75rem, 0.95vw, 0.9rem); color: var(--ink-2); font-weight: 500;
-}
-.lead__flag { font-size: 1.05em; line-height: 1; }
-
-/* Company badge chip */
-.lead__badge {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  background: #fff; border: 1px solid var(--line);
-  border-radius: 8px; padding: 0.28rem 0.55rem; overflow: hidden;
-  transition: border-color 0.3s ease;
-}
-.lead__card:hover .lead__badge { border-color: var(--blue); }
-.lead__badge img {
-  height: 22px; width: auto; object-fit: contain; display: block;
-  background: #fff;
-}
-.lead__badge span {
-  font-size: 0.72rem; color: var(--ink); font-weight: 600; white-space: nowrap;
+.ld3 svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* ─── Photo — grayscale cut-out, bottom anchored ─── */
-.lead__photo {
-  position: absolute; z-index: 1; bottom: 0;
-  height: 88%; width: auto; max-width: 100%;
-  object-fit: contain; object-position: bottom;
-  filter: grayscale(1);
+@keyframes ld3Rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------- editorial intro band ---------------- */
+.ld3__intro {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: end;
+  flex: none;
+  width: 100%;
+  /* Exactly as wide as the roster row below (4 cards + 3 gaps) — not the
+     section's full width — so both edges line up with the images instead
+     of overhanging them. */
+  max-width: calc(4 * var(--ld3-card-w) + 3 * var(--ld3-gap));
+}
+.ld3__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: var(--os-brass-deep, #A8813F);
+  letter-spacing: 0.3em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  animation: ld3Rise 0.6s ease both;
+}
+.ld3__eyebrow-line {
+  width: 32px;
+  height: 1.5px;
+  background: var(--os-brass, #C8A15A);
+  border-radius: 2px;
+}
+.ld3__h1 {
+  margin-top: 0.9rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--os-ink, #0B1F3A);
+  max-width: 13ch;
+  animation: ld3Rise 0.6s ease 0.06s both;
+}
+.ld3__accent {
+  font-style: italic;
+  color: var(--os-blue, #0D6BB2);
+}
+.ld3__intro-side {
+  padding-bottom: 0.3rem;
+  animation: ld3Rise 0.6s ease 0.12s both;
+}
+.ld3__lead {
+  color: rgba(11, 31, 58, 0.62);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.ld3__meta {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem 1.6rem;
+  font-size: 0.78rem;
+  color: rgba(11, 31, 58, 0.6);
+}
+.ld3__meta b {
   display: block;
-}
-.lead__card--prime .lead__photo { left: 50%; transform: translateX(-50%); height: 92%; }
-.lead__card--sec .lead__photo   { right: -2%; height: 90%; }
-
-/* Monogram fallback (no photo) */
-.lead__mono {
-  position: absolute; inset: 0; z-index: 0;
-  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8%;
-  font-weight: 800; font-size: clamp(4rem, 8vw, 8rem);
-  color: rgba(0, 0, 0, 0.12);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--os-blue, #0D6BB2);
+  margin-bottom: 0.15rem;
 }
 
-/* ─── Reserved (to-be-announced) card ─── */
-.lead__card--reserved {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0.8rem;
-  background: transparent;
-  border: 1.5px dashed var(--line);
+/* ---------------- roster: vertical portrait cards ---------------- */
+.ld3__roster {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* minmax(0, ...), not 1fr — 1fr stretches each card to fill a wide
+     viewport, and grid's default align-items:stretch then force-fits that
+     wide card into whatever height is left in this fixed-100vh section,
+     landing on square/landscape instead of a portrait card. Capping the
+     column width and centering the row keeps cards narrow no matter how
+     wide the section is; the aspect-ratio below is what actually makes
+     them tall. The min(240px, 30vh) half of that cap is what keeps a card
+     this tall (~1.8x its own width, once the body text is added) actually
+     fitting a *short* viewport too — width shrinks with available height,
+     not just a fixed px that could overflow this section's fixed 100vh. */
+  grid-template-columns: repeat(4, minmax(0, var(--ld3-card-w)));
+  justify-content: center;
+  align-items: start;
+  align-content: center;
+  gap: var(--ld3-gap);
 }
-.lead__card--reserved:hover { background: rgba(4, 153, 221, 0.04); border-color: var(--blue); transform: none; box-shadow: none; }
-.lead__reserved-icon {
-  width: 52px; height: 52px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  border: 1.5px solid var(--line); color: var(--ink-2); font-size: 1.6rem; font-weight: 300;
+.ld3__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(11, 31, 58, 0.1);
+  box-shadow: 0 20px 44px -26px rgba(11, 31, 58, 0.45);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s ease;
+  animation: ld3Rise 0.6s ease both;
 }
-.lead__reserved-text {
-  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);
+.ld3__card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 55px -26px rgba(11, 31, 58, 0.5);
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 1024px) {
-  .lead__wrap { grid-template-columns: 1fr; }
-  .lead__card--prime { min-height: 520px; }
-  .lead__card--prime .lead__photo { height: 88%; }
+/* image area — uniform soft backdrop so mismatched shots read as one set.
+   aspect-ratio (not flex:1 filling the card) is what makes this a vertical
+   portrait rather than however much space happened to be left over. */
+.ld3__media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(180deg, #f1efe9 0%, #e6e2d9 100%);
+  overflow: hidden;
 }
-@media (max-width: 560px) {
-  .lead__secondary { grid-template-columns: 1fr; grid-template-rows: none; }
-  .lead__card--sec { min-height: 300px; }
+.ld3__photo {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ld3__card:hover .ld3__photo {
+  transform: scale(1.04);
+}
+/* Stands in for a real photo that doesn't exist yet — an initial on a flat
+   brand tint, not another person's face. */
+.ld3__photo-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--os-blue, #0D6BB2) 0%, var(--os-blue-deep, #0B2C4E) 100%);
+}
+.ld3__photo-placeholder span {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+}
+/* thin gold reveal line under the image on hover */
+.ld3__media::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--os-brass, #C8A15A);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.ld3__card:hover .ld3__media::after {
+  transform: scaleX(1);
+}
+
+.ld3__body {
+  flex: none;
+  padding: clamp(0.7rem, 1.4vh, 1.1rem) clamp(0.9rem, 1.4vw, 1.2rem);
+}
+.ld3__name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(0.92rem, 1.1vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--os-ink, #0B1F3A);
+}
+.ld3__role {
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: rgba(11, 31, 58, 0.6);
+}
+.ld3__tag {
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(11, 31, 58, 0.1);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--os-brass-deep, #A8813F);
+}
+
+/* ---------------- short-viewport compression ---------------- */
+@media (max-height: 700px) {
+  .ld3 {
+    padding-top: clamp(5.5rem, 12vh, 7rem);
+    gap: 0.8rem;
+  }
+  .ld3__lead {
+    display: none;
+  }
+  .ld3__body {
+    padding: 0.5rem 0.8rem;
+  }
+}
+
+/* ---------------- responsive ---------------- */
+@media (max-width: 980px) {
+  .ld3__intro {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-items: start;
+    /* Roster drops to 2 columns of 1fr below — no longer sized off
+       --ld3-card-w, so the intro shouldn't be capped by it either. */
+    max-width: 100%;
+  }
+  .ld3__h1 {
+    max-width: none;
+  }
+  .ld3__roster {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .ld3__roster {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ld3__eyebrow, .ld3__h1, .ld3__intro-side, .ld3__card {
+    animation: none;
+  }
+  .ld3__card, .ld3__photo, .ld3__media::after {
+    transition: none;
+  }
 }

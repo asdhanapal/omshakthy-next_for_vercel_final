@@ -4,6 +4,26 @@
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+  /* Explicit stacking, not just document order: TrustedPartnersSection and
+     SpotlightSection (rendered after this in the DOM, now that they've been
+     pulled out into normal document flow) are themselves position:relative,
+     which makes them positioned elements too. Two positioned elements with
+     z-index:auto stack by DOM order — so without this, those later, normal-
+     flow sections would paint ON TOP of this fixed overlay instead of
+     staying hidden behind it. */
+  z-index: 5;
+}
+
+/* Released: hands off to native scroll for whatever's rendered after
+   PageController in the document. Drops out of the fixed overlay and
+   becomes a normal-flow block instead — still exactly one viewport tall
+   (frozen on the last snapped section), so nothing visibly jumps at the
+   handoff. width:100% rather than 100vw here specifically, because 100vw
+   includes the scrollbar gutter that now exists once the page has real
+   scrollable height — 100vw would overflow the visible area horizontally. */
+.page-controller--released {
+  position: static;
+  width: 100%;
 }
 
 .page-controller__track {

@@ -9,12 +9,58 @@
   right: 0;
   z-index: 1000;
   color: #fff;
-  background: linear-gradient(90deg, rgba(0, 103, 144, 0) 0%, rgba(0, 103, 144, 0) 30%, rgba(0, 103, 144, 0.2) 55%, rgba(4, 153, 222, 0.55) 80%, rgba(2, 63, 87, 0.9) 100%);
+  background: linear-gradient(#023f57e6 0%, #0a5476ba 40%, #00000000 95%);
 }
 
 .site-nav--scrolled {
-  background: linear-gradient(90deg, rgba(0, 103, 144, 0) 0%, rgba(0, 103, 144, 0) 30%, rgba(0, 103, 144, 0.2) 55%, rgba(4, 153, 222, 0.55) 80%, rgba(2, 63, 87, 0.9) 100%);
+  background: linear-gradient(#023f57e6 0%, #0a5476ba 40%, #00000000 95%);
   color: #fff;
+}
+
+/* Light-section variant — for sections that opt in via
+   data-header-theme="light" (e.g. PriceTrends' warm-paper theme). The
+   default dark scrim + white nav text was designed for photo/dark-blue
+   sections; over a light background it either disappears (white-on-white)
+   or sits as a mismatched dark bar. Swap to a soft paper scrim + dark ink
+   text instead of just going transparent, so the header still reads as a
+   header rather than dissolving into the page. */
+.site-nav--light {
+  background: linear-gradient(rgba(251, 248, 242, 0.82) 0%, rgba(251, 248, 242, 0.4) 55%, transparent 100%);
+  color: var(--os-ink, #0B1F3A);
+}
+.site-nav--light .site-nav__link,
+.site-nav--light .site-nav__link span {
+  color: rgba(11, 31, 58, 0.65);
+}
+.site-nav--light .site-nav__link:hover,
+.site-nav--light .site-nav__link:hover span {
+  color: var(--os-ink, #0B1F3A);
+}
+.site-nav--light .site-nav__hamburger {
+  color: var(--os-ink, #0B1F3A);
+}
+
+/* Transparent variant — no bar at all, for sections that opt in via
+   data-header-theme="transparent" (currently Leadership). Nav links sit
+   directly on the section's own background instead of a scrim/color bar,
+   so the section can reclaim the vertical space that bar would've taken.
+   The logo stays visible regardless — it's a self-contained opaque tile,
+   not dependent on the nav background. Text goes dark since it's blending
+   with Leadership's light paper background, same treatment as --light. */
+.site-nav--transparent {
+  background: transparent;
+  color: var(--os-ink, #0B1F3A);
+}
+.site-nav--transparent .site-nav__link,
+.site-nav--transparent .site-nav__link span {
+  color: rgba(11, 31, 58, 0.65);
+}
+.site-nav--transparent .site-nav__link:hover,
+.site-nav--transparent .site-nav__link:hover span {
+  color: var(--os-ink, #0B1F3A);
+}
+.site-nav--transparent .site-nav__hamburger {
+  color: var(--os-ink, #0B1F3A);
 }
 
 .site-nav--hidden {
@@ -106,17 +152,25 @@
   color: inherit;
   position: relative;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 900;
   font-family: 'Inter', sans-serif;
   line-height: 1;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 19px 13px;
+  padding: 8px 18px;
   text-decoration: none;
   white-space: nowrap;
   opacity: 0;
   transform: translateY(100%);
   animation: navFadeInUp 1s forwards;
+  background: none;
+  border-radius: 999px;
+  margin: 6px 4px;
+  transition: background 0.3s ease;
+}
+
+.site-nav__link:hover {
+  background: none;
 }
 
 .site-nav__link span {
@@ -334,7 +388,7 @@
   text-decoration: none;
   display: inline-block;
   text-transform: uppercase;
-  font-weight: 300;
+  font-weight: 900;
   transition: 0.3s linear all;
 }
 

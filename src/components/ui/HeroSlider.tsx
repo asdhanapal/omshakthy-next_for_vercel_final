@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react'
 import './HeroSlider.css'
 
 const slides = [
-  { image: '/hero-new-3.png', title: 'OmShakthy Regalia', subtitle: '70 Acre Futuristic Township in Avadi' },
-  { image: '/hero-slide-9.png', title: 'Elite Residential Apartments', subtitle: 'Modern Living Redefined' },
-  { image: '/hero-slide-3.png', title: 'Elite Grand', subtitle: 'Premium Plots in Thirumullaivoyal' },
-  { image: '/hero-slide-1.png', title: 'OmShakthy Mathura', subtitle: 'Premium Residential Plots in Tambaram' },
-  { image: '/hero-slide-8.png', title: 'Elite Residential Apartments', subtitle: 'Modern Living Redefined' },
-  { image: '/hero-slide-2.png', title: 'Canopus Magha', subtitle: 'Gated Community in Guduvanchery' },
-  { image: '/hero-new-2.png', title: 'Premium Living', subtitle: 'Gated Communities Across Chennai' },
+  { image: '/hero-new-3.png', title: 'OmShakthy Regalia' },
+  { image: '/hero-slide-9.png', title: 'Elite Apartments' },
+  { image: '/hero-slide-3.png', title: 'Elite Grand' },
+  { image: '/hero-slide-1.png', title: 'OmShakthy Santha' },
+  { image: '/hero-slide-8.png', title: 'Elite Apartments' },
+  { image: '/hero-slide-2.png', title: 'Canopus Magha' },
+  { image: '/hero-new-2.png', title: 'Premium Living' },
 ]
 
 const HeroSlider = () => {
@@ -50,7 +50,7 @@ const HeroSlider = () => {
             i === current ? 'hero-slider__slide--active' : ''
           } ${i === prev ? 'hero-slider__slide--prev' : ''}`}
         >
-          <img src={slide.image} alt={slide.title} />
+          <img src={slide.image} alt={slide.title} style={{ objectPosition: ['/hero-slide-9.png', '/hero-slide-8.png'].includes(slide.image) ? 'center 35%' : 'center 20%' }} />
         </div>
       ))}
 
@@ -61,7 +61,6 @@ const HeroSlider = () => {
       {slides[current].title && (
         <div className="hero-slider__content" key={current}>
           <h1 className="hero-slider__title">{slides[current].title}</h1>
-          <p className="hero-slider__subtitle">{slides[current].subtitle}</p>
           <a href="/projects" className="hero-slider__cta">Explore Projects</a>
         </div>
       )}

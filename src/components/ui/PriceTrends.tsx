@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import './PriceTrends.css'
 
 interface Series {
@@ -8,17 +8,42 @@ interface Series {
   color: string
   yoy: string
   values: number[]
+  note: string
 }
 
 const quarters = ["Q1'24", "Q2'24", "Q3'24", "Q4'24", "Q1'25", "Q2'25", "Q3'25", "Q4'25"]
+// Chart-specific accent trio — the previous mist/brass/cream set was three
+// pale, similarly-lit tones that barely separated from each other or from
+// the blue background. These three sit in genuinely different hue families
+// (coral / gold / mint) so each line reads instantly at a glance, while
+// staying warm and premium rather than a generic traffic-light palette.
+// (Full section color revamp is a separate follow-up.)
 const series: Series[] = [
-  { name: 'Tambaram', color: '#9CC9E8', yoy: '+12.5%', values: [2100, 2250, 2380, 2500, 2600, 2690, 2750, 2800] },
-  { name: 'Avadi', color: '#E4C27A', yoy: '+18.2%', values: [4200, 4480, 4700, 4900, 5100, 5260, 5390, 5500] },
-  { name: 'Guduvancheri', color: '#79E3A5', yoy: '+22.4%', values: [5500, 5900, 6250, 6600, 6900, 7130, 7320, 7500] },
+  {
+    name: 'TAMBRAM',
+    color: '#E8916B',
+    yoy: '+12.5%',
+    values: [2100, 2250, 2380, 2500, 2600, 2690, 2750, 2800],
+    note: 'Established southern-suburb demand keeps this corridor a steady, reliable long-term hold.',
+  },
+  {
+    name: 'AVADI',
+    color: '#E0B255',
+    yoy: '+18.2%',
+    values: [4200, 4480, 4700, 4900, 5100, 5260, 5390, 5500],
+    note: 'Industrial-belt infrastructure upgrades are pushing this corridor into its strongest growth window yet.',
+  },
+  {
+    name: 'GUDUVANCHERI',
+    color: '#4FD8B0',
+    yoy: '+22.4%',
+    values: [5500, 5900, 6250, 6600, 6900, 7130, 7320, 7500],
+    note: 'Metro expansion and new SIPCOT corridors are driving Chennai’s steepest appreciation curve.',
+  },
 ]
 
 // Blogs — the Avadi property-tax post is from Figma; the others are derived.
-const blogs = [
+export const blogs = [
   {
     date: 'Aug 21, 2024',
     cat: 'Latest Buzz',
@@ -98,39 +123,16 @@ const PriceTrends = () => {
     setScrub(N - 1)
   }
 
-  // journal master-detail
-  const [openIdx, setOpenIdx] = useState(0)
   const cursorX = xAt(scrub)
-  const post = blogs[openIdx]
+  const topSeries = series.reduce((best, s) => (parseFloat(s.yoy) > parseFloat(best.yoy) ? s : best), series[0])
+  // The spotlight card tracks whichever rung is hovered, falling back to the
+  // fastest-growing corridor when nothing's isolated — hovering a rung was
+  // already isolating that series in the chart, but the card sat frozen.
+  const displayed = isolated !== null ? series[isolated] : topSeries
+  const isTopSeries = displayed === topSeries
 
   return (
     <section ref={ref} className="mp" aria-label="Market intelligence">
-      {/* Waving background animation — waves only */}
-      <div className="mp__waves" aria-hidden>
-        {/* Wave 1 — brand blue, mid */}
-        <div className="mp__wave mp__wave--1">
-          <svg viewBox="0 0 2880 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,600 C240,540 480,660 720,600 C960,540 1200,660 1440,600 C1680,540 1920,660 2160,600 C2400,540 2640,660 2880,600 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.07)" />
-            <path d="M0,650 C240,610 480,690 720,650 C960,610 1200,690 1440,650 C1680,610 1920,690 2160,650 C2400,610 2640,690 2880,650 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.045)" />
-          </svg>
-        </div>
-
-        {/* Wave 2 — lighter, higher */}
-        <div className="mp__wave mp__wave--2">
-          <svg viewBox="0 0 2880 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,500 C240,440 480,560 720,500 C960,440 1200,560 1440,500 C1680,440 1920,560 2160,500 C2400,440 2640,560 2880,500 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.05)" />
-            <path d="M0,560 C240,510 480,610 720,560 C960,510 1200,610 1440,560 C1680,510 1920,610 2160,560 C2400,510 2640,610 2880,560 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.035)" />
-          </svg>
-        </div>
-
-        {/* Wave 3 — gold, deepest */}
-        <div className="mp__wave mp__wave--3">
-          <svg viewBox="0 0 2880 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-            <path d="M0,700 C240,660 480,740 720,700 C960,660 1200,740 1440,700 C1680,660 1920,740 2160,700 C2400,660 2640,740 2880,700 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.06)" />
-            <path d="M0,740 C240,710 480,770 720,740 C960,710 1200,770 1440,740 C1680,710 1920,770 2160,740 C2400,710 2640,770 2880,740 L2880,900 L0,900 Z" fill="rgba(251,248,242,0.04)" />
-          </svg>
-        </div>
-      </div>
 
       <header className="mp__header">
         <span className="mp__eyebrow">Market Intelligence · 2024</span>
@@ -139,173 +141,153 @@ const PriceTrends = () => {
         </h2>
       </header>
 
-      <div className="mp__body">
-        {/* LEFT — price intelligence */}
-        <div className="mp__left">
-          <div className="mp__ladder">
-            {series.map((s, i) => {
-              const live = Math.round(interp(s.values, scrub) / 10) * 10
-              return (
-                <button
-                  key={s.name}
-                  className={`mp__rung ${isolated !== null && isolated !== i ? 'is-dim' : ''} ${
-                    isolated === i ? 'is-active' : ''
-                  }`}
-                  onMouseEnter={() => setIsolated(i)}
-                  onMouseLeave={() => setIsolated(null)}
-                  style={{ ['--c' as string]: s.color }}
-                >
-                  <span className="mp__rung-key" aria-hidden />
-                  <span className="mp__rung-name">{s.name}</span>
-                  <span className="mp__rung-price">₹{live.toLocaleString('en-IN')}</span>
-                  <span className="mp__rung-yoy">▲ {s.yoy}</span>
-                </button>
-              )
-            })}
-          </div>
-
-          <div className="mp__chartband">
-            <div className="mp__chart-cap">
-              <span>Price / sq.ft · Quarterly</span>
-              <span className={`mp__qbadge ${active ? 'is-live' : ''}`}>{quarters[qIndex]}</span>
-            </div>
-            <svg
-              ref={svgRef}
-              className="mp__chart"
-              viewBox={`0 0 ${W} ${H}`}
-              onMouseMove={onChartMove}
-              onMouseLeave={onChartLeave}
-              preserveAspectRatio="none"
-              role="img"
-              aria-label="Price trend ribbons by quarter"
-            >
-              <defs>
-                {series.map((s) => (
-                  <linearGradient key={s.name} id={`mp-fill-${s.name}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={s.color} stopOpacity="0.5" />
-                    <stop offset="100%" stopColor={s.color} stopOpacity="0" />
-                  </linearGradient>
-                ))}
-              </defs>
-              {gridVals.map((g) => (
-                <line key={g} className="mp__grid" x1={padL} x2={W - padR} y1={yAt(g)} y2={yAt(g)} />
-              ))}
-              {series.map((s, si) => {
-                const dim = isolated !== null && isolated !== si
-                const focus = isolated === si
-                return (
-                  <g key={s.name} className={`mp__ribbon ${dim ? 'is-dim' : ''} ${focus ? 'is-focus' : ''}`}>
-                    <motion.path
-                      d={areaPath(s.values)}
-                      fill={`url(#mp-fill-${s.name})`}
-                      className="mp__area"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: state === 'show' ? 1 : 0 }}
-                      transition={{ duration: 0.9, delay: 0.5 + si * 0.18, ease: 'easeOut' }}
-                    />
-                    <motion.path
-                      d={linePath(s.values)}
-                      fill="none"
-                      stroke={s.color}
-                      className="mp__line"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: state === 'show' ? 1 : 0 }}
-                      transition={{ duration: 1.4, delay: si * 0.18, ease: EASE }}
-                    />
-                  </g>
-                )
-              })}
-              {inView && (
-                <g>
-                  <line className="mp__scan" x1={cursorX} x2={cursorX} y1={padT - 6} y2={yAt(0)} />
-                  {series.map((s, si) => {
-                    const dim = isolated !== null && isolated !== si
-                    return (
-                      <circle
-                        key={s.name}
-                        cx={cursorX}
-                        cy={yAt(interp(s.values, scrub))}
-                        r={4}
-                        fill={s.color}
-                        className="mp__scan-dot"
-                        style={{ opacity: dim ? 0.15 : 1 }}
-                      />
-                    )
-                  })}
-                </g>
-              )}
-            </svg>
-            <div className="mp__yaxis" aria-hidden>
-              {gridVals
-                .slice()
-                .reverse()
-                .map((g) => (
-                  <span key={g} style={{ top: `${(yAt(g) / H) * 100}%` }}>
-                    ₹{(g / 1000).toFixed(0)}k
-                  </span>
-                ))}
-            </div>
-            <div className="mp__axis">
-              {quarters.map((q) => (
-                <span key={q}>{q}</span>
-              ))}
-            </div>
-          </div>
-          <div className="mp__source">Source: OmShakthy Research Division · Data updated Q4 2024</div>
+      {/* TOP — price ladder + spotlight, equal-size cards side by side */}
+      <div className="mp__top">
+        <div className="mp__ladder">
+          {series.map((s, i) => {
+            const live = Math.round(interp(s.values, scrub) / 10) * 10
+            return (
+              <button
+                key={s.name}
+                className={`mp__rung ${isolated !== null && isolated !== i ? 'is-dim' : ''} ${
+                  isolated === i ? 'is-active' : ''
+                }`}
+                onMouseEnter={() => setIsolated(i)}
+                onMouseLeave={() => setIsolated(null)}
+                style={{ ['--c' as string]: s.color }}
+              >
+                <span className="mp__rung-key" aria-hidden />
+                <span className="mp__rung-name">{s.name}</span>
+                <span className="mp__rung-price">₹{live.toLocaleString('en-IN')}</span>
+                <span className="mp__rung-yoy">▲ {s.yoy}</span>
+              </button>
+            )
+          })}
         </div>
 
-        {/* RIGHT — journal (master-detail: hover a title, the article opens large) */}
-        <aside className="mp__journal">
-          <span className="mp__journal-label" aria-hidden>
-            JOURNAL
+        <aside className="mp__spotlight">
+          <span className="mp__spotlight-label">
+            {isTopSeries ? 'Fastest-Growing Corridor' : 'Corridor Spotlight'}
           </span>
-          <div className="mp__journal-head">
-            <h3 className="mp__journal-title">Latest <em>Blogs</em></h3>
-            <a className="mp__journal-all" href="/blog">
-              View all →
-            </a>
+          <h3 className="mp__spotlight-name">{displayed.name}</h3>
+          <div className="mp__spotlight-stat">
+            {displayed.yoy}
+            <small>YoY</small>
           </div>
-
-          {/* large open content */}
-          <div className="mp__feature">
-            <a
-              key={openIdx}
-              href="/blog"
-              className="mp__feature-card"
-            >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={post.image} alt="" className="mp__feature-img" />
-                <div className="mp__feature-shade" />
-                <div className="mp__feature-body">
-                  <div className="mp__feature-meta">
-                    <span className="mp__feature-cat">{post.cat}</span>
-                    <span>{post.date}</span>
-                    <span>· {post.read}</span>
-                  </div>
-                  <h4 className="mp__feature-title">{post.title}</h4>
-                  <p className="mp__feature-excerpt">{post.excerpt}</p>
-                  <span className="mp__feature-read">Read article →</span>
-                </div>
-            </a>
-          </div>
-
-          {/* selector list */}
-          <ul className="mp__select">
-            {blogs.map((b, i) => (
-              <li
-                key={b.title}
-                className={`mp__select-item ${openIdx === i ? 'is-active' : ''}`}
-                onMouseEnter={() => setOpenIdx(i)}
-                onClick={() => setOpenIdx(i)}
-              >
-                <span className="mp__select-index">0{i + 1}</span>
-                <span className="mp__select-title">{b.title}</span>
-              </li>
-            ))}
-          </ul>
+          <p className="mp__spotlight-copy">{displayed.note}</p>
+          <a href="/projects" className="mp__spotlight-cta">
+            Explore projects here <span aria-hidden>→</span>
+          </a>
         </aside>
+      </div>
+
+      {/* BOTTOM — full-bleed chart, edge to edge of the viewport */}
+      <div className="mp__chartband">
+        <div className="mp__chart-cap">
+          <span>Price / sq.ft · Quarterly</span>
+          <span className={`mp__qbadge ${active ? 'is-live' : ''}`}>{quarters[qIndex]}</span>
+        </div>
+        <div className="mp__chart-plot">
+          <svg
+            ref={svgRef}
+            className="mp__chart"
+            viewBox={`0 0 ${W} ${H}`}
+            onMouseMove={onChartMove}
+            onMouseLeave={onChartLeave}
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Price trend ribbons by quarter"
+          >
+            <defs>
+              {series.map((s) => (
+                <linearGradient key={s.name} id={`mp-fill-${s.name}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={s.color} stopOpacity="0.28" />
+                  <stop offset="100%" stopColor={s.color} stopOpacity="0" />
+                </linearGradient>
+              ))}
+              {/* Draw-in reveal, take three: pathLength (stroke-dasharray)
+                  kept producing a gap partway through the line — first
+                  traced to a permanent filter, but it persisted even with
+                  the filter removed, pointing to dasharray itself clashing
+                  with vector-effect="non-scaling-stroke" under this chart's
+                  non-uniform preserveAspectRatio="none" scaling. Sidestepping
+                  the whole dasharray mechanism: a clipPath rect grows left to
+                  right in plain viewBox units (just a `width` attribute, no
+                  transform/dasharray involved) and reveals the fully-formed
+                  area+line underneath. */}
+              {series.map((s, si) => (
+                <clipPath key={s.name} id={`mp-reveal-${s.name}`}>
+                  <motion.rect
+                    x={0}
+                    y={0}
+                    height={H}
+                    initial={{ width: 0 }}
+                    animate={{ width: state === 'show' ? W : 0 }}
+                    transition={{ duration: 1.1, delay: si * 0.18, ease: EASE }}
+                  />
+                </clipPath>
+              ))}
+            </defs>
+            {gridVals.map((g) => (
+              <line key={g} className="mp__grid" x1={padL} x2={W - padR} y1={yAt(g)} y2={yAt(g)} />
+            ))}
+            {series.map((s, si) => {
+              const dim = isolated !== null && isolated !== si
+              const focus = isolated === si
+              return (
+                <g
+                  key={s.name}
+                  className={`mp__ribbon ${dim ? 'is-dim' : ''} ${focus ? 'is-focus' : ''}`}
+                  clipPath={`url(#mp-reveal-${s.name})`}
+                >
+                  <path d={areaPath(s.values)} fill={`url(#mp-fill-${s.name})`} className="mp__area" />
+                  <path
+                    d={linePath(s.values)}
+                    fill="none"
+                    stroke={s.color}
+                    className="mp__line"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </g>
+              )
+            })}
+            {inView && (
+              <g>
+                <line className="mp__scan" x1={cursorX} x2={cursorX} y1={padT - 6} y2={yAt(0)} />
+                {series.map((s, si) => {
+                  const dim = isolated !== null && isolated !== si
+                  return (
+                    <circle
+                      key={s.name}
+                      cx={cursorX}
+                      cy={yAt(interp(s.values, scrub))}
+                      r={4}
+                      fill={s.color}
+                      className="mp__scan-dot"
+                      style={{ opacity: dim ? 0.15 : 1 }}
+                    />
+                  )
+                })}
+              </g>
+            )}
+          </svg>
+          <div className="mp__yaxis" aria-hidden>
+            {gridVals
+              .slice()
+              .reverse()
+              .map((g) => (
+                <span key={g} style={{ top: `${(yAt(g) / H) * 100}%` }}>
+                  ₹{(g / 1000).toFixed(0)}k
+                </span>
+              ))}
+          </div>
+        </div>
+        <div className="mp__axis">
+          {quarters.map((q) => (
+            <span key={q}>{q}</span>
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -115,19 +115,27 @@
 
 .xhf__eyebrow {
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--os-mist); /* on the dark ground */
+  background: rgba(0, 0, 0, 0.22);
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
 }
 
 .xhf__title {
   font-family: var(--font-heading);
   font-size: clamp(1.6rem, 3.2vw, 2.6rem);
-  font-weight: 250;
+  font-weight: 400;
   line-height: 1.1;
   letter-spacing: -0.01em;
   color: #f2ede4;
+  background: rgba(0, 0, 0, 0.22);
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 4px;
 }
 
 /* ── .x-hero-feature ─────────────────────────────────────────────────────── */
@@ -305,13 +313,13 @@
 
 .x-id-feature__placeholder-mark {
   font-size: 28px;
-  font-weight: 300;
+  font-weight: 500;
   line-height: 1;
 }
 
 .x-id-feature__placeholder-text {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -355,11 +363,15 @@
 .x-id-feature__data {
   font-family: var(--font-data);
   font-size: 10px;
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0.16em;
   line-height: 1.5;
   color: #A8D8F5;
   text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
 }
 
 /* ── labels ──────────────────────────────────────────────────────────────── */
@@ -369,11 +381,15 @@
   font-family: var(--font-heading);
   color: var(--os-paper);
   letter-spacing: -0.01em;
+  background: rgba(0, 0, 0, 0.22);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
 }
 
 .x-vlarge__label {
   font-size: 80px;
-  font-weight: 250;
+  font-weight: 400;
   line-height: 80px;
 }
 
@@ -388,7 +404,7 @@
 /* The founder cell is roughly half the width of the MD cell. */
 .x-large__label {
   font-size: 40px;
-  font-weight: 250;
+  font-weight: 400;
   line-height: 40px;
 }
 
@@ -397,7 +413,7 @@
   font-size: 22px;
   line-height: 28px;
   /* heavier than the 250 the big cards use — small cards only */
-  font-weight: 400;
+  font-weight: 700;
   color: #fff;
 }
 
@@ -428,10 +444,13 @@
   /* Mist Blue washes out on the light card — paper at 88% instead. */
   color: rgba(251, 248, 242, 0.92);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 900;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 8px;
+  border-radius: 3px;
 }
 
 /* ── bio ─────────────────────────────────────────────────────────────────── */
@@ -445,6 +464,10 @@
   color: rgba(251, 248, 242, 0.9);
   font-size: 12.5px;
   line-height: 17px;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.18);
+  padding: 8px 12px 8px 18px;
+  border-radius: 4px;
 }
 
 .xhf-bio li {

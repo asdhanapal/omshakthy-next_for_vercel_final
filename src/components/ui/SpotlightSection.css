@@ -1,0 +1,217 @@
+/* ============================================================
+   SpotlightSection — "Omshakthy in Spotlight" / "Life at Omshakthy"
+   Same bento-grid system as GalleryContent, sized to one 100vh slide.
+   ============================================================ */
+
+.sl {
+  --sl-ink: #025f8a;
+  --sl-ink-muted: rgba(2, 95, 138, 0.68);
+  --sl-paper: #F8F8F5;
+  --sl-brass: #C9A227;
+  --sl-hair: rgba(200, 161, 90, 0.35);
+
+  position: relative;
+  /* Was height:100%, resolved against the old .page-controller__section
+     wrapper (a hard 100vh box). Now a normal-flow sibling below the
+     scroll-jacked area, so it needs its own definite height for that same
+     100%-height chain (used by descendants like .sl__tile) to keep working. */
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: var(--sl-paper);
+  color: var(--sl-ink);
+  font-family: 'Inter', sans-serif;
+}
+
+.sl__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1.25rem, 6vw, 6rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vh, 2rem);
+}
+
+/* ---- header ---- */
+.sl__header {
+  max-width: 640px;
+}
+
+.sl__eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--sl-brass);
+  margin-bottom: 0.7rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--sl-hair);
+  font-weight: 900;
+  border-radius: 999px;
+}
+
+.sl__title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 2.8vw, 2.3rem);
+  line-height: 1.08;
+  color: var(--sl-ink);
+}
+
+.sl__title em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* ---- bento grid ---- */
+/* Explicit named areas rather than span arithmetic — with exactly 5 fixed
+   categories (not a variable photo count like GalleryContent), a template
+   guarantees zero gaps instead of relying on auto-flow: dense to find a
+   fit for whatever spans happen to add up right.
+
+   Layout:  [ events (2x2) ][ gallery (1x2) ][ awards  (1x1) ]
+            [ events (2x2) ][ gallery (1x2) ][ buzz    (1x1) ]
+            [      newsletter (4x1, full width)              ]
+*/
+.sl__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
+  grid-template-areas:
+    'events gallery awards'
+    'events gallery buzz'
+    'newsletter newsletter newsletter';
+  gap: 1rem;
+  height: clamp(380px, 50vh, 500px);
+}
+
+.sl__tile--events { grid-area: events; }
+.sl__tile--gallery { grid-area: gallery; }
+.sl__tile--awards { grid-area: awards; }
+.sl__tile--buzz { grid-area: buzz; }
+.sl__tile--newsletter { grid-area: newsletter; height: clamp(70px, 10vh, 90px); }
+
+.sl__tile {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+  background: rgba(2, 95, 138, 0.06);
+  border: 1px solid rgba(11, 31, 58, 0.08);
+  box-shadow:
+    0 2px 6px rgba(11, 31, 58, 0.06),
+    0 14px 30px -14px rgba(11, 31, 58, 0.2);
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.sl__tile:hover {
+  box-shadow:
+    0 4px 10px rgba(11, 31, 58, 0.08),
+    0 22px 44px -16px rgba(11, 31, 58, 0.26);
+  transform: translateY(-3px);
+  z-index: 2;
+}
+
+.sl__tile-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.sl__tile:hover .sl__tile-img {
+  transform: scale(1.05);
+}
+
+.sl__tile-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(2, 61, 87, 0.82) 0%, rgba(2, 61, 87, 0.25) 55%, transparent 90%);
+}
+
+.sl__tile-label {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 2.4rem;
+  z-index: 1;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+}
+
+.sl__tile-caption {
+  position: absolute;
+  left: 1.1rem;
+  right: 1.1rem;
+  bottom: 0.9rem;
+  z-index: 1;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.82);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Awards/Buzz are the small tiles — less room, hide the caption */
+.sl__tile--awards .sl__tile-caption,
+.sl__tile--buzz .sl__tile-caption {
+  display: none;
+}
+
+.sl__tile--awards .sl__tile-label,
+.sl__tile--buzz .sl__tile-label {
+  bottom: 0.9rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .sl {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .sl__grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'events events'
+      'gallery awards'
+      'gallery buzz'
+      'newsletter newsletter';
+    grid-template-rows: 220px 130px 130px auto;
+    height: auto;
+  }
+
+  .sl__tile--newsletter {
+    height: clamp(70px, 12vh, 90px);
+  }
+}
+
+@media (max-width: 560px) {
+  .sl__grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'events'
+      'gallery'
+      'awards'
+      'buzz'
+      'newsletter';
+    grid-template-rows: 220px 200px 160px 160px auto;
+  }
+
+  .sl__tile--awards .sl__tile-caption,
+  .sl__tile--buzz .sl__tile-caption {
+    display: -webkit-box;
+  }
+}

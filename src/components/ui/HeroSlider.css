@@ -3,7 +3,6 @@
   height: 100vh;
   overflow: hidden;
   background: linear-gradient(135deg, #025f8a 0%, #0499de 100%);
-  
 }
 
 /* Slides — scale + fade transition */
@@ -32,6 +31,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 20%;
 }
 
 /* Dark gradient overlay */
@@ -51,13 +51,14 @@
 .hero-slider__content {
   position: absolute;
   bottom: 14%;
-  left: 60px;
+  left: 0;
   transform: none;
   text-align: left;
   z-index: 4;
-  width: 90%;
-  max-width: 800px;
+  width: auto;
+  max-width: 700px;
   animation: heroContentIn 0.8s ease forwards;
+  padding: 22px 40px 22px 60px;
 }
 
 @keyframes heroContentIn {
@@ -74,12 +75,20 @@
 .hero-slider__title {
   font-family: 'Fraunces', Georgia, serif;
   font-size: clamp(24px, 3.5vw, 42px);
-  font-weight: 300;
+  font-weight: 600;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 12px;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  text-shadow:
+    2px 2px 0px #000,
+    -1px -1px 0px #000,
+    2px -1px 0px #000,
+    -1px 2px 0px #000,
+    0 0 25px rgba(0,0,0,1),
+    0 0 55px rgba(0,0,0,1),
+    0 0 100px rgba(0,0,0,1),
+    0 0 150px rgba(0,0,0,0.95);
 }
 
 .hero-slider__subtitle {
@@ -98,7 +107,7 @@
   color: #F0FFF0;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;

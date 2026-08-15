@@ -27,8 +27,11 @@ const sideMenuLinks = [
 const Header = () => {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [hidden, setHidden] = useState(false)
   const [solid, setSolid] = useState(false)
+  // Which data-header-theme value the currently-active section declares —
+  // '' (default gradient/dark), 'light' (paper sections), or 'solid-blue'
+  // (flat brand blue, no gradient — currently just Leadership).
+  const [theme, setTheme] = useState('')
   const location = { pathname: usePathname() }
   const isHome = location.pathname === '/'
 
@@ -51,8 +54,16 @@ const Header = () => {
       const currentSection = (window as any).__pageControllerCurrentSection
 
       setScrolled(currentSection >= 1)
-      // Hide header on the timeline section (index 2)
-      setHidden(currentSection === 2)
+
+      // Most sections are dark/photo-backed, so the header defaults to white
+      // text on a dark scrim. A section can opt into a light background by
+      // tagging itself data-header-theme="light" (e.g. PriceTrends' paper
+      // theme) — read that off whichever section is currently active rather
+      // than hardcoding an index, so it keeps working if section order changes.
+      const sections = document.querySelectorAll('.page-controller__section')
+      const activeSection = sections[currentSection]
+      const themedEl = activeSection?.querySelector('[data-header-theme]')
+      setTheme(themedEl?.getAttribute('data-header-theme') || '')
 
       const nav = document.querySelector('.site-nav__inner') as HTMLElement
       if (nav) {
@@ -73,13 +84,34 @@ const Header = () => {
     return () => window.removeEventListener('pageSectionChange', updateNav)
   }, [])
 
+  // The above only tracks theme while PageController owns the scroll (via
+  // pageSectionChange). Once it hands off to native scroll — past the last
+  // snapped section — currentSection stops changing, so that effect goes
+  // stale. This picks theme detection back up from actual scroll position
+  // for whatever's now in normal document flow (also tagged
+  // data-header-theme="light" where relevant, e.g. TrustedPartners/Spotlight).
+  useEffect(() => {
+    const checkThemeByScroll = () => {
+      if (window.scrollY <= 0) return // still in PageController's domain
+      const sections = document.querySelectorAll('[data-header-theme]')
+      sections.forEach((el) => {
+        const r = el.getBoundingClientRect()
+        if (r.top <= 80 && r.bottom >= 0) {
+          setTheme(el.getAttribute('data-header-theme') || '')
+        }
+      })
+    }
+    window.addEventListener('scroll', checkThemeByScroll, { passive: true })
+    return () => window.removeEventListener('scroll', checkThemeByScroll)
+  }, [])
+
   useEffect(() => {
     setMenuOpen(false)
   }, [location])
 
   return (
     <>
-      <nav className={`site-nav ${scrolled || solid ? 'site-nav--scrolled' : ''} ${hidden ? 'site-nav--hidden' : ''}`}>
+      <nav className={`site-nav ${scrolled || solid ? 'site-nav--scrolled' : ''} ${theme ? `site-nav--${theme}` : ''}`}>
         <div className="site-nav__inner">
           {/* Logo — left aligned */}
           <Link href="/" className="site-nav__logo">

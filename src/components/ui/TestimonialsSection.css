@@ -61,13 +61,13 @@
 }
 .tw__eyebrow {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: #C9A227;
+  color: rgba(255, 200, 26, 1);
   margin-bottom: 0.9rem;
   padding: 0.4rem 0.9rem;
-  border: 1px solid rgba(200, 161, 90, 0.35);
+  border: 1px solid rgba(255, 200, 26, 1);
   font-weight: 900;
   border-radius: 999px;
 }
@@ -94,11 +94,13 @@
 }
 .tw__rating-score {
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
+  font-weight: 700;
+  font-size: 2.2rem;
   line-height: 1;
 }
 .tw__rating-sub {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 0.2rem;
 }
@@ -109,6 +111,11 @@
   align-items: center;
   font-variant-numeric: tabular-nums lining-nums;
   line-height: 1;
+  /* !important: .odo also appears inside .tw__title em (the "7,500+" in the
+     heading), which sets its own color at higher specificity and would
+     otherwise silently win there, leaving this color applied everywhere
+     except the one place with the most visible number. */
+  color: rgba(255, 200, 26, 1) !important;
 }
 .odo__sep {
   display: inline-block;
@@ -143,12 +150,13 @@
 .tw-stars {
   display: inline-flex;
   gap: 2px;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   letter-spacing: 1px;
   color: rgba(11, 31, 58, 0.18);
 }
 .tw-stars .is-on {
-  color: #C9A227;
+  color: rgba(255, 200, 26, 1);
 }
 
 /* ---- grid ---- */
@@ -311,7 +319,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: rgba(11, 31, 58, 0.6);
   letter-spacing: 0.02em;
 }
@@ -329,8 +338,8 @@
 }
 .tw-quote {
   font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 300;
-  font-size: var(--tw-quote-size, 0.75rem);
+  font-weight: 500;
+  font-size: var(--tw-quote-size, 0.85rem);
   line-height: 1.5;
   color: #0B1F3A;
   margin: 0 0 1.4rem;
@@ -343,13 +352,98 @@
   border-top: 1px solid rgba(11, 31, 58, 0.14);
 }
 .tw-name {
-  font-weight: 500;
-  font-size: 0.7rem;
+  font-weight: 700;
+  font-size: 0.78rem;
   color: #0B1F3A;
 }
 .tw-detail {
-  font-size: 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 500;
   color: rgba(11, 31, 58, 0.62);
+}
+
+/* ---- video-testimonial card (alternates with the quote card) ---- */
+.tw-inner--video {
+  height: 100%;
+}
+.tw-video-thumb {
+  /* Bleeds past .tw-card's 1.6rem padding to fill the card edge-to-edge —
+     .tw-card's own overflow:hidden + border-radius clip it back to shape. */
+  position: absolute;
+  inset: -1.6rem;
+  border-radius: 22px;
+  overflow: hidden;
+}
+.tw-video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.tw-video-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(1, 20, 40, 0.88) 0%, rgba(1, 20, 40, 0.22) 48%, transparent 72%);
+}
+.tw-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: #0B1F3A;
+  background: rgba(255, 200, 26, 0.92);
+  box-shadow: 0 12px 30px rgba(1, 20, 40, 0.45);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+}
+.tw-play svg {
+  margin-left: 3px; /* optical centering — the play triangle isn't symmetric */
+}
+.tw-play:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: rgba(255, 200, 26, 1);
+}
+.tw-video-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(1, 20, 40, 0.55);
+  backdrop-filter: blur(6px);
+}
+.tw-video-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.3rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+/* .tw-name / .tw-detail / .tw-stars are shared with the quote card, tuned
+   for dark ink on the paper background there — restated for light-on-photo
+   here since the caption sits over the video scrim instead. */
+.tw-video-caption .tw-stars {
+  color: rgba(255, 255, 255, 0.28);
+}
+.tw-video-caption .tw-name {
+  color: #fff;
+}
+.tw-video-caption .tw-detail {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 /* ---- "wall of love" marquee ribbon ---- */
@@ -390,18 +484,21 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 .tw__chip-stars {
-  color: #C9A227;
+  color: rgba(255, 200, 26, 1);
   letter-spacing: 1px;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 .tw__chip-text {
   color: #f2ede4;
+  font-weight: 600;
 }
 .tw__chip-name {
   color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
 }
 
 /* ---- responsive ---- */
