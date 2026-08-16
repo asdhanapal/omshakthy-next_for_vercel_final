@@ -122,10 +122,16 @@ function TPPillarCard({ pillar, index }: { pillar: Pillar; index: number }) {
          (long, scroll-jacked-hero-first) visit the whole sequence had
          already finished off-screen by the time anyone actually saw it.
          whileInView uses a real IntersectionObserver per element, so it
-         genuinely fires when scrolled into view, whenever that happens. */
+         genuinely fires when scrolled into view, whenever that happens.
+         amount:0 (trigger the instant any pixel is visible) + a short
+         duration/stagger — this section sits in the free-scroll zone
+         after PageController releases, with nothing pinning the viewport
+         in place while it animates, so a late trigger + long sequence
+         meant a normal scroll gesture could carry the whole compact
+         section past the viewport before the animation finished. */
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.7, ease: EASE, delay: index * 0.14 }}
+      viewport={{ once: true, amount: 0 }}
+      transition={{ duration: 0.45, ease: EASE, delay: index * 0.08 }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="tp__pillar-bg" src={pillar.img} alt="" aria-hidden loading="lazy" />
@@ -185,15 +191,19 @@ const TrustedPartnersSection = () => {
               {/* Eyebrow sits above the heading visually, but the HEADING
                   is what rolls in first (delay 0) — the eyebrow/intro
                   below are a staggered second pass of the same roll
-                  (delay 0.25/0.3), which of the two elements happens to be
+                  (delay 0.12/0.16), which of the two elements happens to be
                   drawn higher on screen doesn't matter, only the delay
-                  value controls animation order. */}
+                  value controls animation order. Kept short (whole sequence
+                  under ~1s) on purpose — this plays during free, unpinned
+                  native scroll (see whileInView note below), so a long
+                  sequence risks the viewport scrolling past this compact
+                  section before it finishes. */}
               <motion.span
                 className="tp__eyebrow"
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
+                viewport={{ once: true, amount: 0 }}
+                transition={{ duration: 0.5, ease: EASE, delay: 0.12 }}
               >
                 Since 1991
                 <span className="tp__eyebrow-line" />
@@ -203,8 +213,8 @@ const TrustedPartnersSection = () => {
                 className="tp__title"
                 initial={{ opacity: 0, x: -70 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.8, ease: EASE }}
+                viewport={{ once: true, amount: 0 }}
+                transition={{ duration: 0.5, ease: EASE }}
               >
                 Trusted
                 <br />
@@ -219,8 +229,8 @@ const TrustedPartnersSection = () => {
                 className="tp__intro"
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
+                viewport={{ once: true, amount: 0 }}
+                transition={{ duration: 0.5, ease: EASE, delay: 0.16 }}
               >
                 From land to legacy, we create spaces that inspire, empower and endure.
               </motion.p>
@@ -237,19 +247,19 @@ const TrustedPartnersSection = () => {
               <span className="tp__hero-tagline">Building Landmarks. Creating Legacies.</span>
 
               {/* Two real phases, not one blended zoom: scaleY expands the
-                  flat line to full height first (0.7s), and only once
-                  that's done does x start translating in from a more-
-                  centered offset into its actual slot (delay = scaleY's
-                  own duration, so it starts right as expansion ends). */}
+                  flat line to full height first, and only once that's done
+                  does x start translating in from a more-centered offset
+                  into its actual slot (delay = scaleY's own duration, so it
+                  starts right as expansion ends). */}
               <motion.div
                 className="tp__hero-image"
                 initial={{ scaleY: 0.025, x: '-16%', opacity: 0 }}
                 whileInView={{ scaleY: 1, x: '0%', opacity: 1 }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: true, amount: 0 }}
                 transition={{
-                  opacity: { duration: 0.25 },
-                  scaleY: { duration: 0.7, ease: EASE, delay: 0.1 },
-                  x: { duration: 0.6, ease: EASE, delay: 0.8 },
+                  opacity: { duration: 0.2 },
+                  scaleY: { duration: 0.45, ease: EASE, delay: 0.05 },
+                  x: { duration: 0.35, ease: EASE, delay: 0.5 },
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -287,7 +297,7 @@ const TrustedPartnersSection = () => {
             className="tp__partners-title"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: 0 }}
             transition={{ duration: 0.9, ease: EASE }}
           >
             Trusted by India&rsquo;s <em>Leading Financial Institutions.</em>
@@ -299,7 +309,7 @@ const TrustedPartnersSection = () => {
                 key={p.name}
                 initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: true, amount: 0 }}
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.75, ease: EASE, delay: i * 0.11 }}
               >
