@@ -2,7 +2,6 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useSectionEnter } from '@/lib/useSectionEnter'
 import './TrustedPartnersSection.css'
 
 /* ============================================================
@@ -111,21 +110,22 @@ const EASE = [0.16, 1, 0.3, 1] as const
 type Pillar = (typeof pillars)[number]
 
 /* Own component so each card can carry its own stagger delay cleanly. */
-function TPPillarCard({ pillar, index, built }: { pillar: Pillar; index: number; built: boolean }) {
+function TPPillarCard({ pillar, index }: { pillar: Pillar; index: number }) {
   return (
     <motion.a
       href="#"
       className="tp__pillar"
       initial={{ opacity: 0, y: 36 }}
-      /* Concrete values on both sides of the ternary, not `{}` for the
-         "not yet" branch — an empty object here was found to make Framer
-         Motion never actually start the transition once `built` flips
-         true (confirmed: SpotlightSection has the exact same pre-existing
-         bug with the exact same `built ? {...} : {}` pattern). Repeating
-         the initial values explicitly instead of `{}` is what makes the
-         built→true prop change reliably get picked up. */
-      animate={{ opacity: built ? 1 : 0, y: built ? 0 : 36 }}
-      transition={{ duration: 0.7, ease: EASE, delay: 0.9 + index * 0.14 }}
+      /* whileInView, not a shared `built` boolean threaded down from a
+         mount timer — that timer fired ~150ms after the PAGE loaded, not
+         when this section actually scrolled into view, so on a real
+         (long, scroll-jacked-hero-first) visit the whole sequence had
+         already finished off-screen by the time anyone actually saw it.
+         whileInView uses a real IntersectionObserver per element, so it
+         genuinely fires when scrolled into view, whenever that happens. */
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 0.7, ease: EASE, delay: index * 0.14 }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img className="tp__pillar-bg" src={pillar.img} alt="" aria-hidden loading="lazy" />
@@ -140,27 +140,14 @@ function TPPillarCard({ pillar, index, built }: { pillar: Pillar; index: number;
 }
 
 const TrustedPartnersSection = () => {
-  const sectionRef = useRef<HTMLElement>(null)
   const pillarsRef = useRef<HTMLDivElement>(null)
-  /* Triggered once when the section scrolls into view (IntersectionObserver
-     under the hood, via useSectionEnter) — everything below plays out over
-     real TIME from that trigger, not raw scroll-pixel distance. A pixel-
-     distance-mapped version was tried first, but within this section's
-     compact, single-screen height that whole 0→1 range covers under half
-     a viewport — a normal scroll/trackpad gesture blows through it in a
-     fraction of a second, so every phase resolved almost instantly instead
-     of being visible. Making it long enough to scrub properly would need
-     several extra viewport-heights of pinned scroll space, which would
-     break the compact layout the mockup calls for. Time-based keeps the
-     "triggered by scrolling into view" spirit without that tradeoff. */
-  const built = useSectionEnter(sectionRef, 150)
 
   const scrollToPillars = () => {
     pillarsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   return (
-    <section ref={sectionRef} className="tp" aria-label="Trusted developers and financial partners" data-header-theme="light">
+    <section className="tp" aria-label="Trusted developers and financial partners" data-header-theme="light">
       <div className="tp__inner">
         {/* Waves background */}
         <div className="tp__waves" aria-hidden>
@@ -204,7 +191,8 @@ const TrustedPartnersSection = () => {
               <motion.span
                 className="tp__eyebrow"
                 initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: built ? 1 : 0, x: built ? 0 : -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
               >
                 Since 1991
@@ -214,7 +202,8 @@ const TrustedPartnersSection = () => {
               <motion.h2
                 className="tp__title"
                 initial={{ opacity: 0, x: -70 }}
-                animate={{ opacity: built ? 1 : 0, x: built ? 0 : -70 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.8, ease: EASE }}
               >
                 Trusted
@@ -229,7 +218,8 @@ const TrustedPartnersSection = () => {
               <motion.p
                 className="tp__intro"
                 initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: built ? 1 : 0, x: built ? 0 : -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
               >
                 From land to legacy, we create spaces that inspire, empower and endure.
@@ -254,7 +244,8 @@ const TrustedPartnersSection = () => {
               <motion.div
                 className="tp__hero-image"
                 initial={{ scaleY: 0.025, x: '-16%', opacity: 0 }}
-                animate={{ scaleY: built ? 1 : 0.025, x: built ? '0%' : '-16%', opacity: built ? 1 : 0 }}
+                whileInView={{ scaleY: 1, x: '0%', opacity: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
                 transition={{
                   opacity: { duration: 0.25 },
                   scaleY: { duration: 0.7, ease: EASE, delay: 0.1 },
@@ -284,7 +275,7 @@ const TrustedPartnersSection = () => {
 
           <div className="tp__pillars" ref={pillarsRef}>
             {pillars.map((p, i) => (
-              <TPPillarCard key={p.title} pillar={p} index={i} built={built} />
+              <TPPillarCard key={p.title} pillar={p} index={i} />
             ))}
           </div>
         </div>
@@ -295,8 +286,9 @@ const TrustedPartnersSection = () => {
           <motion.h3
             className="tp__partners-title"
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: built ? 1 : 0, y: built ? 0 : 24 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.45 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.9, ease: EASE }}
           >
             Trusted by India&rsquo;s <em>Leading Financial Institutions.</em>
           </motion.h3>
@@ -306,9 +298,10 @@ const TrustedPartnersSection = () => {
                 className="tp__logo"
                 key={p.name}
                 initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: built ? 1 : 0, y: built ? 0 : 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
                 whileHover={{ y: -2 }}
-                transition={{ duration: 0.75, ease: EASE, delay: 0.45 + i * 0.11 }}
+                transition={{ duration: 0.75, ease: EASE, delay: i * 0.11 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.file} alt={p.name} loading="lazy" />
