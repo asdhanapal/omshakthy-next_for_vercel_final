@@ -94,9 +94,16 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* No global scroll-behavior:smooth here on purpose — Chrome applies CSS
+   smooth-scroll to raw mouse-wheel input too, not just programmatic
+   scrolls, and each wheel "notch" starts its own ~300-500ms animation
+   that the NEXT notch interrupts if you scroll more than one at a time
+   (completely normal with a mouse) — that fight between overlapping
+   smooth-scrolls is what reads as stuttery/"not smooth" in the free-flow
+   zone after PageController releases. The two places that actually want
+   smooth scrolling (MilestoneSection's dot nav, TrustedPartnersSection's
+   "Scroll to Explore") already pass `behavior: 'smooth'` explicitly to
+   their own scrollTo/scrollIntoView calls, so they're unaffected. */
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
