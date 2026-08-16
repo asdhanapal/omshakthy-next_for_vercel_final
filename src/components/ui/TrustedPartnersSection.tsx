@@ -1,37 +1,100 @@
 'use client'
 import { useRef } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useSectionEnter } from '@/lib/useSectionEnter'
 import './TrustedPartnersSection.css'
 
 /* ============================================================
    TrustedPartnersSection
-   Combines two Figma sections onto one ivory-background page:
-   1. "Trusted Developers in Chennai" — 5 service pillars
+   Combines two sections onto one ivory-background page:
+   1. "Trusted Developers in Chennai" — aerial hero + 5 service pillars
+      (rebuilt to match the reference mockup — see git history for the
+      earlier video-band version this replaced)
    2. "Financial Partners" — bank/partner logo strip
    ============================================================ */
+
+/* Small stroke icons for the pillar badges — same inline-SVG, currentColor
+   convention as LeadersSection's ported icon set. */
+const pillarIcons = {
+  grid: (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1" />
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1" />
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1" />
+      <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1" />
+    </svg>
+  ),
+  building: (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <rect x="5" y="3" width="14" height="18" rx="1" />
+      <path d="M9 8h1.5M13.5 8H15M9 12h1.5M13.5 12H15M9 16h1.5M13.5 16H15" />
+    </svg>
+  ),
+  bell: (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M4 18c3-1.4 13-1.4 16 0" />
+      <path d="M12 18a6 6 0 0 0 6-6c0-3-2-5-6-5s-6 2-6 5a6 6 0 0 0 6 6Z" />
+      <path d="M11 5V3.5h2V5" />
+    </svg>
+  ),
+  tower: (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M7 21V7l5-4 5 4v14" />
+      <path d="M10 21v-5h4v5M9 10h1.5M13.5 10H15M9 14h1.5M13.5 14H15" />
+    </svg>
+  ),
+  truck: (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path d="M3 7h11v9H3z" />
+      <path d="M14 10h4l3 3v3h-7z" />
+      <circle cx="7" cy="18" r="1.6" />
+      <circle cx="17.5" cy="18" r="1.6" />
+    </svg>
+  ),
+}
 
 const pillars = [
   {
     title: 'Land Aggregation',
     desc: 'Immense knowledge of land and its value, sound research and extended expertise in the realms of real estate properties.',
+    img: '/trusted-partners/land-aggregation.jpg',
+    icon: pillarIcons.grid,
   },
   {
     title: 'Residential Development',
     desc: 'Utmost care in revitalization efforts to improve community life across all residential projects that are undertaken.',
+    img: '/trusted-partners/residential-development.jpg',
+    icon: pillarIcons.building,
   },
   {
     title: 'Hospitality Management',
     desc: 'Qualified and well trained individuals that provide quick and relevant solutions for all forms of support services.',
+    img: '/trusted-partners/hospitality-management.jpg',
+    icon: pillarIcons.bell,
   },
   {
     title: 'Commercial Projects',
     desc: 'Complete transparency in price, regulations, schedule and documentation allows for smooth execution of commercial projects.',
+    img: '/trusted-partners/commercial-projects.jpg',
+    icon: pillarIcons.tower,
   },
   {
     title: 'Supply Chain Management',
     desc: 'Complete transparency in price, regulations, schedule and documentation allows for smooth execution of commercial projects.',
+    img: '/trusted-partners/supply-chain.jpg',
+    icon: pillarIcons.truck,
   },
+]
+
+/* Callouts on the aerial hero — left offset (% of image width) + how far
+   the leader-line drops before the label sits. Outer two (LAND/COMMERCE)
+   drop further, matching the reference's slightly bowed line lengths. */
+const heroLabels = [
+  { text: 'LAND', left: '9%', drop: 150 },
+  { text: 'LIVING', left: '34%', drop: 108 },
+  { text: 'EXPERIENCE', left: '60%', drop: 118 },
+  { text: 'COMMERCE', left: '85%', drop: 155 },
 ]
 
 const partnerLogos = [
@@ -45,9 +108,56 @@ const partnerLogos = [
 
 const EASE = [0.16, 1, 0.3, 1] as const
 
+type Pillar = (typeof pillars)[number]
+
+/* Own component so each card can carry its own stagger delay cleanly. */
+function TPPillarCard({ pillar, index, built }: { pillar: Pillar; index: number; built: boolean }) {
+  return (
+    <motion.a
+      href="#"
+      className="tp__pillar"
+      initial={{ opacity: 0, y: 36 }}
+      /* Concrete values on both sides of the ternary, not `{}` for the
+         "not yet" branch — an empty object here was found to make Framer
+         Motion never actually start the transition once `built` flips
+         true (confirmed: SpotlightSection has the exact same pre-existing
+         bug with the exact same `built ? {...} : {}` pattern). Repeating
+         the initial values explicitly instead of `{}` is what makes the
+         built→true prop change reliably get picked up. */
+      animate={{ opacity: built ? 1 : 0, y: built ? 0 : 36 }}
+      transition={{ duration: 0.7, ease: EASE, delay: 0.9 + index * 0.14 }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="tp__pillar-bg" src={pillar.img} alt="" aria-hidden loading="lazy" />
+      <span className="tp__pillar-scrim" aria-hidden />
+      <span className="tp__pillar-num">{String(index + 1).padStart(2, '0')}</span>
+      <span className="tp__pillar-icon">{pillar.icon}</span>
+      <h3 className="tp__pillar-title">{pillar.title}</h3>
+      <p className="tp__pillar-desc">{pillar.desc}</p>
+      <span className="tp__pillar-explore">Explore →</span>
+    </motion.a>
+  )
+}
+
 const TrustedPartnersSection = () => {
   const sectionRef = useRef<HTMLElement>(null)
+  const pillarsRef = useRef<HTMLDivElement>(null)
+  /* Triggered once when the section scrolls into view (IntersectionObserver
+     under the hood, via useSectionEnter) — everything below plays out over
+     real TIME from that trigger, not raw scroll-pixel distance. A pixel-
+     distance-mapped version was tried first, but within this section's
+     compact, single-screen height that whole 0→1 range covers under half
+     a viewport — a normal scroll/trackpad gesture blows through it in a
+     fraction of a second, so every phase resolved almost instantly instead
+     of being visible. Making it long enough to scrub properly would need
+     several extra viewport-heights of pinned scroll space, which would
+     break the compact layout the mockup calls for. Time-based keeps the
+     "triggered by scrolling into view" spirit without that tradeoff. */
   const built = useSectionEnter(sectionRef, 150)
+
+  const scrollToPillars = () => {
+    pillarsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   return (
     <section ref={sectionRef} className="tp" aria-label="Trusted developers and financial partners" data-header-theme="light">
@@ -75,59 +185,107 @@ const TrustedPartnersSection = () => {
         </div>
         {/* ── Trusted Developers in Chennai ── */}
         <div className="tp__top">
-          <header className="tp__header">
-            <span className="tp__eyebrow">Since 1991</span>
-            <motion.h2
-              className="tp__title"
-              initial={{ opacity: 0, y: 30 }}
-              animate={built ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 1.1, ease: EASE }}
-            >
-              Trusted Developers <em>in Chennai.</em>
-            </motion.h2>
-            <motion.p
-              className="tp__intro"
-              initial={{ opacity: 0, y: 24 }}
-              animate={built ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 1, ease: EASE, delay: 0.22 }}
-            >
-              OmShakthy Agencies (Madras) Private Limited (OSAL) was incorporated in 1991
-              with the purpose to consolidate land that would be used for projects in the
-              future.
-            </motion.p>
-          </header>
+          <div className="tp__hero">
+            <span className="tp__side-credit" aria-hidden>
+              OmShakthy Agencies (Madras) Private Limited
+            </span>
+            <div className="tp__hero-left">
+              <Link href="/" className="tp__brand-logo">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/omshakthy-logo.png" alt="OmShakthy Homes" />
+              </Link>
 
-          {/* Background video — wraps the pillars area only, so it starts
-              right where the header ends (this container begins right
-              after </header>) and fills down to where this area ends. */}
-          <div className="tp__video-band">
-            <video
-              className="tp__bg-video"
-              src="/trusted-partners-bg.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-hidden="true"
-            />
-            <div className="tp__bg-overlay" aria-hidden="true" />
+              {/* Eyebrow sits above the heading visually, but the HEADING
+                  is what rolls in first (delay 0) — the eyebrow/intro
+                  below are a staggered second pass of the same roll
+                  (delay 0.25/0.3), which of the two elements happens to be
+                  drawn higher on screen doesn't matter, only the delay
+                  value controls animation order. */}
+              <motion.span
+                className="tp__eyebrow"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: built ? 1 : 0, x: built ? 0 : -50 }}
+                transition={{ duration: 0.8, ease: EASE, delay: 0.25 }}
+              >
+                Since 1991
+                <span className="tp__eyebrow-line" />
+              </motion.span>
 
-            <div className="tp__pillars">
-              {pillars.map((p, i) => (
-                <motion.div
-                  className="tp__pillar"
-                  key={p.title}
-                  initial={{ opacity: 0, y: 34 }}
-                  animate={built ? { opacity: 1, y: 0 } : {}}
-                  whileHover={{ y: -3 }}
-                  transition={{ duration: 0.9, ease: EASE, delay: 4 + i * 0.14 }}
-                >
-                  <h3 className="tp__pillar-title">{p.title}</h3>
-                  <p className="tp__pillar-desc">{p.desc}</p>
-                  <span className="tp__pillar-explore">Explore →</span>
-                </motion.div>
-              ))}
+              <motion.h2
+                className="tp__title"
+                initial={{ opacity: 0, x: -70 }}
+                animate={{ opacity: built ? 1 : 0, x: built ? 0 : -70 }}
+                transition={{ duration: 0.8, ease: EASE }}
+              >
+                Trusted
+                <br />
+                Developers
+                <br />
+                <em>in Chennai.</em>
+              </motion.h2>
+
+              <span className="tp__title-rule" aria-hidden />
+
+              <motion.p
+                className="tp__intro"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: built ? 1 : 0, x: built ? 0 : -50 }}
+                transition={{ duration: 0.8, ease: EASE, delay: 0.3 }}
+              >
+                From land to legacy, we create spaces that inspire, empower and endure.
+              </motion.p>
+
+              <button type="button" className="tp__scroll-cue" onClick={scrollToPillars}>
+                <span className="tp__scroll-cue-icon" aria-hidden>
+                  <svg viewBox="0 0 24 24"><path d="M12 4v14M6 13l6 6 6-6" /></svg>
+                </span>
+                Scroll to Explore
+              </button>
             </div>
+
+            <div className="tp__hero-right">
+              <span className="tp__hero-tagline">Building Landmarks. Creating Legacies.</span>
+
+              {/* Two real phases, not one blended zoom: scaleY expands the
+                  flat line to full height first (0.7s), and only once
+                  that's done does x start translating in from a more-
+                  centered offset into its actual slot (delay = scaleY's
+                  own duration, so it starts right as expansion ends). */}
+              <motion.div
+                className="tp__hero-image"
+                initial={{ scaleY: 0.025, x: '-16%', opacity: 0 }}
+                animate={{ scaleY: built ? 1 : 0.025, x: built ? '0%' : '-16%', opacity: built ? 1 : 0 }}
+                transition={{
+                  opacity: { duration: 0.25 },
+                  scaleY: { duration: 0.7, ease: EASE, delay: 0.1 },
+                  x: { duration: 0.6, ease: EASE, delay: 0.8 },
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/trusted-partners/hero-aerial.jpg" alt="Aerial view of an OmShakthy master-planned development, from raw land through residential blocks to commercial towers" />
+                <span className="tp__hero-pin" aria-hidden />
+                {heroLabels.map((l) => (
+                  <span key={l.text} className="tp__hero-label" style={{ left: l.left }}>
+                    <span className="tp__hero-label-text">{l.text}</span>
+                    <span className="tp__hero-label-line" style={{ height: l.drop }} />
+                    <span className="tp__hero-label-dot" />
+                  </span>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="tp__timeline" aria-hidden>
+            <span className="tp__timeline-track" />
+            {pillars.map((p) => (
+              <span key={p.title} className="tp__timeline-dot" />
+            ))}
+          </div>
+
+          <div className="tp__pillars" ref={pillarsRef}>
+            {pillars.map((p, i) => (
+              <TPPillarCard key={p.title} pillar={p} index={i} built={built} />
+            ))}
           </div>
         </div>
 
@@ -137,7 +295,7 @@ const TrustedPartnersSection = () => {
           <motion.h3
             className="tp__partners-title"
             initial={{ opacity: 0, y: 24 }}
-            animate={built ? { opacity: 1, y: 0 } : {}}
+            animate={{ opacity: built ? 1 : 0, y: built ? 0 : 24 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.45 }}
           >
             Trusted by India&rsquo;s <em>Leading Financial Institutions.</em>
@@ -148,7 +306,7 @@ const TrustedPartnersSection = () => {
                 className="tp__logo"
                 key={p.name}
                 initial={{ opacity: 0, y: 18 }}
-                animate={built ? { opacity: 1, y: 0 } : {}}
+                animate={{ opacity: built ? 1 : 0, y: built ? 0 : 18 }}
                 whileHover={{ y: -2 }}
                 transition={{ duration: 0.75, ease: EASE, delay: 0.45 + i * 0.11 }}
               >

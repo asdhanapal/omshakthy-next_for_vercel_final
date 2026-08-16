@@ -83,14 +83,31 @@ const PropertyGrid = () => {
                 <div className="property-item__gradient" />
               </div>
 
-              {/* Vertical rotated label — visible when NOT active */}
-              <span className="property-item__label">{property.status}</span>
+              {/* Always-visible info block — status tag stays on screen
+                  whether the card is collapsed or expanded, instead of the
+                  old rotated label that only appeared on hover and
+                  vanished the moment a card became active. */}
+              <div className="property-item__info">
+                <p className={`property-item__status property-item__status--${property.status === 'Sold' ? 'sold' : 'ongoing'}`}>
+                  <span className="property-item__status-dot" />
+                  {property.status}
+                </p>
+                <h4 className="property-item__name">{property.name}</h4>
+                <p className="property-item__location">
+                  <svg viewBox="0 0 24 24" aria-hidden focusable="false">
+                    <path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z" />
+                    <circle cx="12" cy="9.5" r="2.4" />
+                  </svg>
+                  {property.location}
+                </p>
 
-              {/* Text overlay — visible only when active */}
-              <div className="property-item__text">
-                <h4>{property.name}</h4>
-                <p>{property.location}</p>
-                <p className="property-item__price">{property.price}</p>
+                {/* Extra detail — only when expanded, so collapsed strips
+                    stay uncluttered like the reference. */}
+                {property.status === 'Sold' ? (
+                  <span className="property-item__badge">Sold Out</span>
+                ) : (
+                  <span className="property-item__price">{property.price}</span>
+                )}
               </div>
             </Link>
           </div>

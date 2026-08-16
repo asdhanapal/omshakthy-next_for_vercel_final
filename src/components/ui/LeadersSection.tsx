@@ -84,7 +84,7 @@ function Card({ leader, index }: { leader: Leader; index: number }) {
 
 const LeadersSection = () => {
   return (
-    <section className="ld3" id="leadership" data-snap="true" aria-label="Our leadership" data-header-theme="transparent">
+    <section className="ld3" id="leadership" data-snap="true" aria-label="Our leadership" data-header-theme="transparent" padding-left= "130px" padding-right="130px">
       <div className="ld3__intro">
         {/* Same background clip TrustedPartnersSection uses behind its
             pillars — reused here rather than the static skyline photo, so

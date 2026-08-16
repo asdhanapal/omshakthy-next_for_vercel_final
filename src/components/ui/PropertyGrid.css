@@ -99,139 +99,194 @@
   pointer-events: none;
 }
 
-/* 4. Vertical rotated label — visible when NOT active */
-.property-item__label {
+/* Always-visible info block — number + status + name + location stay on
+   screen in both the collapsed strip and the expanded card, rather than
+   the old rotated label that only showed on hover and vanished on
+   expand. Sizing scales up when the card is active via the modifiers
+   below; the block itself is laid out once here. */
+.property-item__info {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%) rotate(-90deg);
-  width: auto;
-  text-align: center;
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 43px;
-  font-weight: 300;
-  line-height: 1;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: transparent;
-  padding: 0;
-  opacity: 0;
-  transition: 0.15s opacity ease-out;
-  pointer-events: none;
-  z-index: 5;
-}
-
-/* 4. Label visible only when NOT active */
-.property-item:not(.active) .property-item__label {
-  opacity: 1;
-  text-transform: uppercase;
-}
-
-/* 4. Label hidden when active — becomes small gold badge on mobile */
-.property-item.active .property-item__label {
-  opacity: 0;
-}
-
-@media (max-width: 992px) {
-  .property-item__label {
-    transform: none;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    width: auto;
-    font-size: 12px;
-    padding: 6px 14px;
-    background-color: #0499de;
-    color: #fff;
-    text-transform: none;
-    letter-spacing: normal;
-    opacity: 1 !important;
-    line-height: 1;
-    font-weight: 500;
-  }
-}
-
-/* 7. Text positioned absolute bottom-left over the image */
-.property-item__text {
-  position: absolute;
-  bottom: 2rem;
+  bottom: 0;
   left: 0;
-  padding: 0 2rem;
   width: 100%;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0) 50%);
-  color: #fff !important;
-  text-align: left;
-  transition: 0.15s opacity ease-out, 0.15s visibility ease-out;
-  opacity: 1;
+  padding: 1.25rem 1rem 1.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0) 70%);
+  color: #fff;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   z-index: 4;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
 }
 
-@media (max-width: 992px) {
-  .property-item__text {
-    padding-inline: 1rem;
-  }
+.property-item.active .property-item__info {
+  padding: 1.75rem 2rem 2rem;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0) 55%);
 }
 
-.property-item__text h4 {
+/* Status row — colored dot + label, same "eyebrow" language (dot +
+   uppercase mono-ish caps) used for status tags elsewhere on the site.
+   This is the ONLY thing visible on a collapsed card now that the name
+   is hover-only, so it needs to read clearly on its own — brighter,
+   fully-saturated colors and a stronger shadow/glow than the muted brand
+   tokens (--os-mist/--os-brass-lift), which were too washed out to pop
+   reliably against busy photo backgrounds at this small a size. */
+/* A pill with its own solid-ish backing, not just colored text floating
+   on the photo — text-shadow alone still washed out depending on what's
+   directly behind it (worst on the grayscale sold cards, where the tint
+   sits close to the amber's own value). The chip's background guarantees
+   contrast no matter what image is underneath. */
+.property-item__status {
+  margin: 0.1rem 0 0;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.property-item__status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.property-item__status--ongoing {
+  color: #4FC3F7;
+}
+
+.property-item__status--sold {
+  color: #FBBF24;
+}
+
+/* Hidden on collapsed cards — only the number + status dot show until a
+   card is hovered/active. Height:0 (not just opacity) so the collapsed
+   card's info block doesn't hold empty reserved space where the name
+   would've sat. */
+.property-item__name {
   margin: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
   font-family: 'Fraunces', Georgia, serif;
-  font-size: 28px;
+  font-size: 17px;
   font-weight: 600;
   text-transform: uppercase;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: 0.02em;
-  color: #fff !important;
+  color: #fff;
   text-shadow:
     1px 1px 2px rgba(0, 0, 0, 0.9),
     0 0 12px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.15s ease-out;
+}
+
+.property-item.active .property-item__name {
+  margin: 0.35rem 0 0;
+  height: auto;
+  overflow: visible;
+  opacity: 1;
+  font-size: 28px;
 }
 
 @media (max-width: 992px) {
-  .property-item__text h4 {
+  .property-item.active .property-item__name {
     font-size: 21px;
   }
 }
 
-.property-item__text p {
-  margin: 0;
+/* Single line + ellipsis on collapsed cards specifically — location
+   strings are different lengths ("Avadi, Chennai" vs "Thirumullaivoyal,
+   Chennai"), and this block is bottom-anchored, so letting some wrap to
+   2 lines and others stay on 1 was pushing the status tag up by a
+   different amount per card — the misaligned "some rendering below"
+   look. Pinning every card to the same 1-line height fixes that; the
+   active card (much wider) gets the wrap back since truncation isn't a
+   risk there. */
+.property-item__location {
+  margin: 0.2rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  max-width: 100%;
   font-family: 'Inter', sans-serif;
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
-  color: #fff !important;
+  color: rgba(255, 255, 255, 0.85);
   text-shadow:
     1px 1px 2px rgba(0, 0, 0, 0.9),
     0 0 12px rgba(0, 0, 0, 0.6);
 }
-
-@media (max-width: 992px) {
-  .property-item__text p {
-    font-size: 14px;
-  }
+.property-item:not(.active) .property-item__location {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.property-item__price {
-  font-size: 18px !important;
-  font-weight: 500 !important;
-  margin-top: 0.2rem !important;
+.property-item__location svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* 3. When NOT active — text is hidden */
-.property-item:not(.active) .property-item__text {
-  visibility: hidden;
-  opacity: 0;
+.property-item.active .property-item__location {
+  font-size: 16px;
 }
 
-/* 3. When active — text is visible */
-.property-item.active .property-item__text {
-  visibility: visible;
-  opacity: 1;
+.property-item.active .property-item__location svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Price (ongoing) / Sold Out pill (sold) — only surfaced once a card is
+   expanded, so the collapsed strips stay as uncluttered as the number +
+   status + name + location. */
+.property-item__price,
+.property-item__badge {
+  display: none;
+}
+
+.property-item.active .property-item__price {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.property-item.active .property-item__badge {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--os-brass-lift, #D9B570);
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--os-brass-lift, #D9B570);
+  background: rgba(0, 0, 0, 0.3);
+  width: fit-content;
 }
 
 /* 5. No hover overlay with buttons — display none */

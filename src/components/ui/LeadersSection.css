@@ -73,11 +73,15 @@
   max-width: calc(4 * var(--ld3-card-w) + 3 * var(--ld3-gap));
 }
 /* Same background clip as TrustedPartnersSection's .tp__bg-video, faded
-   left-to-right instead of tinted — reads as a backdrop the copy sits
-   on, not a competing clip. Fully transparent at the left edge (where
-   the heading text is) rising to 70% opacity at the right. mask-image,
-   not a plain opacity, so the footage itself stays crisp and only how
-   much of it shows through fades. */
+   on every edge instead of tinted — reads as a backdrop blended into the
+   section, not a competing clip with a visible boundary. Transparent at
+   the left edge, rising to 80% opacity through the middle, then back
+   down to transparent at the RIGHT edge too — a peak in the middle, not
+   a ramp that just stops at 80% and cuts off, which left a visible seam
+   on the right. Combined with the vertical gradient below (also
+   transparent top/bottom) via mask-composite, all four edges fade out
+   the same way. mask-image, not a plain opacity, so the footage itself
+   stays crisp and only how much of it shows through fades. */
 .ld3__intro-video {
   position: absolute;
   inset: 0;
@@ -89,9 +93,22 @@
      container itself is untouched. Lower than center so the crop favors
      the footage's ground-level content over its sky. */
   object-position: center 30%;
-  border-radius: 12px;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(-40, 0, 0, 0.8) 100%);
-  mask-image: linear-gradient(to right, transparent 0%, rgba(-40, 0, 0, 0.8) 100%);
+  /* No border-radius — a rounded rect is still a distinct floating card.
+     Fading all four edges (not just left→right) toward transparent is
+     what actually blends the clip into .ld3's own #f4f6f9 background
+     instead of reading as an image sitting on top of it: two gradients
+     (horizontal fade, vertical fade) multiplied together via
+     mask-composite so every edge — top, bottom, and right, not only the
+     text side on the left — dissolves into the page instead of ending in
+     a visible seam. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, transparent 15%, rgba(0, 0, 0, 0.8) 75%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+  -webkit-mask-composite: source-in, source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, transparent 15%, rgba(0, 0, 0, 0.8) 75%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+  mask-composite: intersect;
   pointer-events: none;
 }
 .ld3__intro-main {

@@ -386,10 +386,12 @@
   background: linear-gradient(to top, rgba(1, 20, 40, 0.88) 0%, rgba(1, 20, 40, 0.22) 48%, transparent 72%);
 }
 .tw-play {
+  /* Bottom-right — .tw-video-badge already owns the top-right corner, and
+     .tw-video-caption (name/stars/detail) is left-aligned along the
+     bottom, so the bottom-right stays clear for this. */
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  right: 1.4rem;
+  bottom: 1.4rem;
   width: 64px;
   height: 64px;
   display: flex;
@@ -407,7 +409,7 @@
   margin-left: 3px; /* optical centering — the play triangle isn't symmetric */
 }
 .tw-play:hover {
-  transform: translate(-50%, -50%) scale(1.08);
+  transform: scale(1.08);
   background: rgba(255, 200, 26, 1);
 }
 .tw-video-badge {

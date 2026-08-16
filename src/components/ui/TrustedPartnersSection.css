@@ -22,38 +22,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Background video — wraps just the pillars area, so it starts exactly
-   where the header ends (this element begins right after </header> in
-   the DOM) and fills down to where the pillars end. The header itself
-   stays on the plain ivory background, outside this wrapper. Rounded
-   corners, same 12px radius as the Spotlight tile cards, instead of a
-   sharp rectangular edge. */
-.tp__video-band {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  padding: clamp(0.75rem, 1.5vh, 1.25rem) clamp(1.25rem, 3vw, 2rem);
-}
-
-.tp__bg-video {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Ivory-tinted scrim so the pillar cards keep the same readable contrast
-   they had against the flat ivory background. Lower opacity than before
-   so the video is actually visible instead of nearly hidden. */
-.tp__bg-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: rgba(248, 248, 245, 0.45);
-}
-
 .tp__inner {
   position: relative;
   z-index: 1;
@@ -101,43 +69,279 @@
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.tp__header {
-  max-width: 640px;
-  margin-bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+/* Rotated credit line running up the left margin — sits in the gutter
+   .tp__inner's own side padding already reserves, so it doesn't need
+   extra layout space of its own. Lives inside .tp__hero (not .tp__top)
+   so it centers against just the hero row's height, not the full
+   height including the timeline + pillar grid below it. */
+.tp__side-credit {
+  position: absolute;
+  left: -2.4rem;
+  top: 50%;
+  /* transform-origin left (not the default center) pivots on the text's
+     own left edge, not its middle — with a long string, rotating around
+     the middle pushed the visual (post-rotation) center rightward by
+     half the text's own length, landing it on top of the heading/body
+     copy instead of in the gutter. Pivoting on the left edge keeps the
+     rotated column's horizontal position fixed regardless of how long
+     the string is. */
+  transform-origin: left center;
+  transform: translateY(-50%) rotate(-90deg);
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tp-ink-muted);
+  opacity: 0.6;
+}
+@media (max-width: 1100px) {
+  .tp__side-credit {
+    display: none;
+  }
+}
+
+/* ---- hero: logo/heading (left) + aerial callout image (right) ---- */
+.tp__hero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) 1fr;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+.tp__hero-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.tp__brand-logo {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.tp__brand-logo img {
+  height: 44px;
+  width: auto;
+  display: block;
 }
 
 .tp__eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   font-size: 0.72rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--tp-brass);
-  margin-bottom: 0.9rem;
-  padding: 0.4rem 0.9rem;
-  border: 1px solid var(--tp-hair);
-  font-weight: 900;
-  border-radius: 999px;
+  font-weight: 800;
+}
+
+.tp__eyebrow-line {
+  width: 26px;
+  height: 1.5px;
+  background: var(--tp-brass);
+  border-radius: 2px;
 }
 
 .tp__title {
   font-family: 'Fraunces', Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(1.8rem, 3vw, 2.2rem);
-  line-height: 1.08;
-  color: var(--tp-ink);
-  padding-top: 0;
-  margin-bottom: 0.9rem;
+  font-weight: 700;
+  font-size: clamp(2.1rem, 3.6vw, 2.9rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--os-ink, #0B1F3A);
 }
 
 .tp__title em {
-  font-style: italic;
-  font-weight: 300;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--tp-ink);
+}
+
+.tp__title-rule {
+  display: block;
+  width: 44px;
+  height: 2px;
+  margin: 0.3rem 0 0.5rem;
+  background: var(--tp-ink);
+  border-radius: 2px;
 }
 
 .tp__intro {
-  font-size: 0.92rem;
-  line-height: 1.65;
+  max-width: 30ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: var(--tp-ink-muted);
+}
+
+.tp__scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 0.6rem;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tp-ink-muted);
+  transition: color 0.25s ease;
+}
+.tp__scroll-cue:hover {
+  color: var(--tp-ink);
+}
+.tp__scroll-cue-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--tp-hair);
+  flex-shrink: 0;
+}
+.tp__scroll-cue-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: tpScrollBob 1.8s ease-in-out infinite;
+}
+@keyframes tpScrollBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+/* ---- hero: aerial image + LAND/LIVING/EXPERIENCE/COMMERCE callouts ---- */
+.tp__hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.tp__hero-tagline {
+  align-self: flex-end;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tp-ink-muted);
+}
+
+.tp__hero-image {
+  position: relative;
+  aspect-ratio: 2.1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -30px rgba(2, 95, 138, 0.35);
+}
+.tp__hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.tp__hero-image::after {
+  /* gentle bottom scrim so the callout lines/labels stay legible against
+     whatever's directly under them, without flattening the photo itself */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 20, 35, 0.18) 0%, transparent 30%);
+  pointer-events: none;
+}
+
+.tp__hero-pin {
+  position: absolute;
+  left: 21%;
+  top: 77%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50% 50% 50% 0;
+  transform: translate(-50%, -100%) rotate(-45deg);
+  background: #fff;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.28), 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.tp__hero-label {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(-50%);
+}
+.tp__hero-label-text {
+  padding: 0.35rem 0.7rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(4px);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--tp-ink);
+  white-space: nowrap;
+}
+.tp__hero-label-line {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.75);
+}
+.tp__hero-label-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 900px) {
+  .tp__hero-label-text,
+  .tp__hero-pin {
+    display: none;
+  }
+}
+
+/* ---- timeline connector above the pillar cards ---- */
+.tp__timeline {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: 10px;
+  margin: 0.5rem 0 -0.25rem;
+}
+.tp__timeline-track {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 50%;
+  height: 1px;
+  background: var(--tp-hair);
+  transform: translateY(-50%);
+}
+.tp__timeline-dot {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tp-ink);
 }
 
 /* ---- pillars ---- */
@@ -150,43 +354,125 @@
   margin-bottom: 0;
 }
 
+/* Pale/washed card — the photo is a faint watermark behind mostly-white,
+   dark ink text sits directly on it (not a dark-scrim-plus-white-text
+   card, which read too much like a photo tile and too little like the
+   reference's airy, ivory-toned card). */
 .tp__pillar {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
   padding: 1.25rem 1.1rem;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fbfbfa;
   border: 1px solid var(--tp-hair);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(4px);
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--tp-ink);
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tp__pillar:hover {
+  /* No translateY here — the card's own `y` is a live Framer Motion
+     value bound via `style` (the scroll-linked reveal), which sets an
+     inline transform. Inline style always wins over a stylesheet rule
+     regardless of :hover specificity, so a transform here would just be
+     dead code. Box-shadow is untouched by that and still lifts the card
+     visually on hover. */
+  box-shadow: 0 20px 44px -24px rgba(2, 95, 138, 0.28);
+}
+.tp__pillar-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.9;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tp__pillar:hover .tp__pillar-bg {
+  transform: scale(1.05);
+}
+.tp__pillar-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Heaviest at the top (where the number/icon/title/desc sit — needs
+     the most contrast) fading down to lighter, so the photo reads
+     strongest low in the card, echoing the reference's per-card fades
+     without needing a bespoke gradient direction for each one. */
+  background: linear-gradient(180deg, rgba(251, 251, 250, 0.97) 0%, rgba(251, 251, 250, 0.86) 42%, rgba(251, 251, 250, 0.55) 100%);
 }
 
-.tp__pillar:hover {
-  border-color: var(--tp-brass);
-  box-shadow: 0 12px 32px rgba(2, 95, 138, 0.1);
+.tp__pillar-num {
+  position: relative;
+  z-index: 2;
+  display: block;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: rgba(2, 95, 138, 0.28);
+}
+
+.tp__pillar-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  margin: 0.6rem 0 0.8rem;
+  border-radius: 50%;
+  background: var(--tp-ink);
+}
+.tp__pillar-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .tp__pillar-title {
+  position: relative;
+  z-index: 2;
   font-family: 'Fraunces', Georgia, serif;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1rem;
-  line-height: 1.3;
-  margin-bottom: 0.6rem;
+  line-height: 1.25;
   color: var(--tp-ink);
 }
 
+.tp__pillar-title::after {
+  content: '';
+  display: block;
+  width: 26px;
+  height: 1.5px;
+  margin: 0.5rem 0 0.6rem;
+  background: var(--tp-hair);
+}
+
 .tp__pillar-desc {
-  font-size: 0.78rem;
-  line-height: 1.55;
+  position: relative;
+  z-index: 2;
+  font-size: 0.76rem;
+  line-height: 1.5;
   color: var(--tp-ink-muted);
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.85rem;
 }
 
 .tp__pillar-explore {
+  position: relative;
+  z-index: 2;
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--tp-brass);
+  color: var(--tp-ink);
 }
 
 /* ---- Financial Partners ---- */
@@ -248,13 +534,22 @@
     padding: 4rem 0;
   }
 
-  .tp__pillars {
+  .tp__hero {
+    grid-template-columns: 1fr;
+  }
+  .tp__hero-tagline {
+    align-self: flex-start;
+  }
+
+  .tp__pillars,
+  .tp__timeline {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 700px) {
-  .tp__pillars {
+  .tp__pillars,
+  .tp__timeline {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -268,7 +563,11 @@
 }
 
 @media (max-width: 480px) {
-  .tp__pillars {
+  .tp__pillars,
+  .tp__timeline {
     grid-template-columns: 1fr;
+  }
+  .tp__pillar {
+    aspect-ratio: 16 / 10;
   }
 }
