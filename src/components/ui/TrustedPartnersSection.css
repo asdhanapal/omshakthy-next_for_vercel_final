@@ -1,24 +1,45 @@
 /* ============================================================
-   TrustedPartnersSection — ivory page combining:
-   1. Trusted Developers in Chennai (5 service pillars)
-   2. Financial Partners (logo strip)
+   TrustedPartnersSection — "Trusted Developers in Chennai" gallery,
+   filling its whole snapped slide on its own (header text and the
+   Financial Partners strip both moved to FinancialPartnersSection).
    Palette matches RegaliaContent.tsx (Paper White / Deep Ink / Brass).
    ============================================================ */
 
 .tp {
-  --tp-ink: #025f8a;
-  --tp-ink-muted: rgba(2, 95, 138, 0.68);
-  --tp-paper: #F8F8F5;
+  /* Bright white/ivory + the site's actual logo blue (#0499de, sampled
+     directly from omshakthy-logo.png — matches globals.css's --brand
+     token) instead of the muted #025f8a used before, plus brass kept as
+     a light secondary accent. Neither the pastel-ivory-gold, the deep
+     navy, nor the rainbow-gradient pass landed — this is deliberately
+     simple: a bright ground and one confident brand color on top of it. */
+  --tp-paper: #FFFFFF;
+  --tp-blue: #0499DE;
+  --tp-blue-deep: #037AB8;
+  /* Deep Ink · Pantone 289 C — this site's existing navy token (see
+     globals.css --os-ink), reused here for the pillar titles instead of
+     the brighter logo blue so the two headings (script "What We Do" vs
+     serif pillar title) read as distinct weights of the brand, not just
+     two shades of the same blue. */
+  --tp-navy: #0B1F3A;
+  --tp-text: var(--tp-navy);
+  --tp-text-muted: rgba(11, 31, 58, 0.62);
   --tp-brass: #C9A227;
-  --tp-hair: rgba(200, 161, 90, 0.35);
+  --tp-hair: rgba(4, 153, 222, 0.25);
+  --tp-frame-edge: #FFFFFF;
 
+  /* This section is one of PageController's snapped slides, which locks
+     every child to exactly 100vh with overflow:hidden (see PageController
+     .page-controller__section) — height/overflow here mirror that so
+     content that runs long gets caught instead of silently clipped off
+     the bottom. */
   position: relative;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   display: flex;
   align-items: center;
-  background: var(--tp-paper);
-  color: var(--tp-ink);
+  background: linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%);
+  color: var(--tp-text);
   font-family: 'Inter', sans-serif;
 }
 
@@ -26,14 +47,14 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  height: 100%;
+  max-height: 100%;
   margin: 0 auto;
   /* Clears the fixed .site-nav (102px) without adding extra vertical
-     footprint on top of it — reduce the section's own top breathing room
-     by the same amount so total height stays the same as before. */
-  padding: calc(102px + 0.75rem) clamp(1.25rem, 6vw, 6rem) clamp(1.5rem, 4vh, 2.5rem);
+     footprint on top of it. */
+  padding: calc(102px + 0.5rem) 160px clamp(1.25rem, 3vh, 2rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(1.25rem, 2.5vh, 2rem);
 }
 
 /* ---- waves ---- */
@@ -69,505 +90,252 @@
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-/* Rotated credit line running up the left margin — sits in the gutter
-   .tp__inner's own side padding already reserves, so it doesn't need
-   extra layout space of its own. Lives inside .tp__hero (not .tp__top)
-   so it centers against just the hero row's height, not the full
-   height including the timeline + pillar grid below it. */
-.tp__side-credit {
-  position: absolute;
-  left: -2.4rem;
-  top: 50%;
-  /* transform-origin left (not the default center) pivots on the text's
-     own left edge, not its middle — with a long string, rotating around
-     the middle pushed the visual (post-rotation) center rightward by
-     half the text's own length, landing it on top of the heading/body
-     copy instead of in the gutter. Pivoting on the left edge keeps the
-     rotated column's horizontal position fixed regardless of how long
-     the string is. */
-  transform-origin: left center;
-  transform: translateY(-50%) rotate(-90deg);
-  white-space: nowrap;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--tp-ink-muted);
-  opacity: 0.6;
-}
-@media (max-width: 1100px) {
-  .tp__side-credit {
-    display: none;
-  }
-}
 
-/* ---- hero: logo/heading (left) + aerial callout image (right) ---- */
-.tp__hero {
+/* ---- amenities-style gallery ----
+   The only content in the slide now — full height, centered, same
+   orientation as Elyse's amenities-wrap: text/rail on the left, two
+   genuinely overlapping images (a small one layered over the top-left
+   corner of a larger one) on the right, instead of a single photo. */
+.tp__gallery {
   position: relative;
   z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+
+.tp__gallery-stage {
   display: grid;
-  grid-template-columns: minmax(260px, 360px) 1fr;
-  gap: clamp(2rem, 4vw, 3.5rem);
-  align-items: start;
-}
-
-.tp__hero-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.9rem;
-}
-
-.tp__brand-logo {
-  display: block;
-  margin-bottom: 0.4rem;
-}
-
-.tp__brand-logo img {
-  height: 44px;
-  width: auto;
-  display: block;
-}
-
-.tp__eyebrow {
-  display: inline-flex;
+  /* The copy column is sized to its own content (never wider than the
+     480px cap below) instead of a fraction of the row — a fraction left
+     a dead gap between where the text actually ended and the image
+     column, since the text rarely reached that column's full width. */
+  grid-template-columns: minmax(0, 480px) 1fr;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--tp-brass);
-  font-weight: 800;
-}
-
-.tp__eyebrow-line {
-  width: 26px;
-  height: 1.5px;
-  background: var(--tp-brass);
-  border-radius: 2px;
-}
-
-.tp__title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 700;
-  font-size: clamp(2.1rem, 3.6vw, 2.9rem);
-  line-height: 1.06;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  color: var(--os-ink, #0B1F3A);
-}
-
-.tp__title em {
-  font-style: normal;
-  font-weight: 700;
-  color: var(--tp-ink);
-}
-
-.tp__title-rule {
-  display: block;
-  width: 44px;
-  height: 2px;
-  margin: 0.3rem 0 0.5rem;
-  background: var(--tp-ink);
-  border-radius: 2px;
-}
-
-.tp__intro {
-  max-width: 30ch;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--tp-ink-muted);
-}
-
-.tp__scroll-cue {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-top: 0.6rem;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--tp-ink-muted);
-  transition: color 0.25s ease;
-}
-.tp__scroll-cue:hover {
-  color: var(--tp-ink);
-}
-.tp__scroll-cue-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1px solid var(--tp-hair);
-  flex-shrink: 0;
-}
-.tp__scroll-cue-icon svg {
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  animation: tpScrollBob 1.8s ease-in-out infinite;
-}
-@keyframes tpScrollBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(3px); }
-}
-
-/* ---- hero: aerial image + LAND/LIVING/EXPERIENCE/COMMERCE callouts ---- */
-.tp__hero-right {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  min-width: 0;
-}
-
-.tp__hero-tagline {
-  align-self: flex-end;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--tp-ink-muted);
-}
-
-.tp__hero-image {
-  position: relative;
-  aspect-ratio: 2.1 / 1;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 30px 60px -30px rgba(2, 95, 138, 0.35);
-}
-.tp__hero-image img {
+  justify-content: space-between;
+  /* Reference has the text column almost touching the images — was way
+     too generous a gap before. */
+  gap: clamp(1rem, 2.5vw, 2rem);
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.tp__hero-image::after {
-  /* gentle bottom scrim so the callout lines/labels stay legible against
-     whatever's directly under them, without flattening the photo itself */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(2, 20, 35, 0.18) 0%, transparent 30%);
-  pointer-events: none;
-}
-
-.tp__hero-pin {
-  position: absolute;
-  left: 21%;
-  top: 77%;
-  width: 16px;
-  height: 16px;
-  border-radius: 50% 50% 50% 0;
-  transform: translate(-50%, -100%) rotate(-45deg);
-  background: #fff;
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.28), 0 6px 14px rgba(0, 0, 0, 0.35);
-}
-
-.tp__hero-label {
-  position: absolute;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translateX(-50%);
-}
-.tp__hero-label-text {
-  padding: 0.35rem 0.7rem;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(4px);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  color: var(--tp-ink);
-  white-space: nowrap;
-}
-.tp__hero-label-line {
-  width: 1px;
-  background: rgba(255, 255, 255, 0.75);
-}
-.tp__hero-label-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
-}
-
-@media (max-width: 900px) {
-  .tp__hero-label-text,
-  .tp__hero-pin {
-    display: none;
-  }
-}
-
-/* ---- timeline connector above the pillar cards ---- */
-.tp__timeline {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  height: 10px;
-  margin: 0.5rem 0 -0.25rem;
-}
-.tp__timeline-track {
-  position: absolute;
-  left: 5%;
-  right: 5%;
-  top: 50%;
-  height: 1px;
-  background: var(--tp-hair);
-  transform: translateY(-50%);
-}
-.tp__timeline-dot {
-  position: relative;
-  z-index: 1;
-  justify-self: center;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--tp-ink);
-}
-
-/* ---- pillars ---- */
-.tp__pillars {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 0;
-}
-
-/* Pale/washed card — the photo is a faint watermark behind mostly-white,
-   dark ink text sits directly on it (not a dark-scrim-plus-white-text
-   card, which read too much like a photo tile and too little like the
-   reference's airy, ivory-toned card). */
-.tp__pillar {
-  position: relative;
-  display: block;
-  aspect-ratio: 3 / 4;
-  padding: 1.25rem 1.1rem;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #fbfbfa;
-  border: 1px solid var(--tp-hair);
-  color: var(--tp-ink);
-  text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.tp__pillar:hover {
-  /* No translateY here — the card's own `y` is a live Framer Motion
-     value bound via `style` (the scroll-linked reveal), which sets an
-     inline transform. Inline style always wins over a stylesheet rule
-     regardless of :hover specificity, so a transform here would just be
-     dead code. Box-shadow is untouched by that and still lifts the card
-     visually on hover. */
-  box-shadow: 0 20px 44px -24px rgba(2, 95, 138, 0.28);
-}
-.tp__pillar-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  opacity: 0.9;
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.tp__pillar:hover .tp__pillar-bg {
-  transform: scale(1.05);
-}
-.tp__pillar-scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  /* Heaviest at the top (where the number/icon/title/desc sit — needs
-     the most contrast) fading down to lighter, so the photo reads
-     strongest low in the card, echoing the reference's per-card fades
-     without needing a bespoke gradient direction for each one. */
-  background: linear-gradient(180deg, rgba(251, 251, 250, 0.97) 0%, rgba(251, 251, 250, 0.86) 42%, rgba(251, 251, 250, 0.55) 100%);
-}
-
-.tp__pillar-num {
-  position: relative;
-  z-index: 2;
-  display: block;
-  font-family: 'Fraunces', Georgia, serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: rgba(2, 95, 138, 0.28);
-}
-
-.tp__pillar-icon {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  margin: 0.6rem 0 0.8rem;
-  border-radius: 50%;
-  background: var(--tp-ink);
-}
-.tp__pillar-icon svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.tp__pillar-title {
-  position: relative;
-  z-index: 2;
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.25;
-  color: var(--tp-ink);
-}
-
-.tp__pillar-title::after {
-  content: '';
-  display: block;
-  width: 26px;
-  height: 1.5px;
-  margin: 0.5rem 0 0.6rem;
-  background: var(--tp-hair);
-}
-
-.tp__pillar-desc {
-  position: relative;
-  z-index: 2;
-  font-size: 0.76rem;
-  line-height: 1.5;
-  color: var(--tp-ink-muted);
-  margin-bottom: 0.85rem;
-}
-
-.tp__pillar-explore {
-  position: relative;
-  z-index: 2;
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--tp-ink);
-}
-
-/* ---- Financial Partners ---- */
-.tp__bottom {
-  padding-top: clamp(0.75rem, 1.5vh, 1.25rem);
-  border-top: 1px solid var(--tp-hair);
-  text-align: center;
-}
-
-.tp__partners-label {
-  display: inline-block;
-  font-size: 0.7rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--tp-brass);
-  font-weight: 700;
-  margin-bottom: 0.6rem;
-}
-
-.tp__partners-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
-  line-height: 1.2;
-  color: var(--tp-ink);
-  margin-bottom: clamp(1.25rem, 2.5vh, 1.75rem);
-}
-
-.tp__partners-title em {
-  font-style: italic;
-  font-weight: 300;
-}
-
-.tp__logos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: clamp(1.5rem, 4vw, 3rem);
-}
-
-.tp__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 52px;
-}
-
-.tp__logo img {
   max-height: 100%;
-  max-width: 150px;
-  object-fit: contain;
+  min-height: 0;
 }
 
-/* ---- Responsive ---- */
+/* ---- copy (headline + description + rail) ---- */
+.tp__gallery-copy {
+  position: relative;
+  padding-left: 1.9rem;
+  z-index: 1;
+  /* The row centers on the tall portrait image's height, which left the
+     (much shorter) text block floating with dead space above it. Pin it
+     to the top of that row instead of centering it. */
+  align-self: start;
+  padding-top: 1.5rem;
+}
+
+/* Reference brief: a gold script "What We Do" heading, then a bold navy
+   pillar title below — two distinct type treatments doing two distinct
+   jobs (the "01/05" counter was dropped). */
+.tp__gallery-eyebrow {
+  display: block;
+  padding-top: 50px;
+  /* Back to the script (Alex Brush) — that was the right call, it just
+     needed refining rather than replacing: smoothed rendering, tighter
+     tracking so the connected strokes don't look loose/oversized, and a
+     touch less vertical room since the letterforms run smaller visually
+     than a serif at the same font-size. */
+  font-family: 'Alex Brush', cursive;
+  font-weight: 400;
+  font-size: clamp(3.2rem, 6.2vw, 5.25rem);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Light-to-rich gold sheen instead of a flat fill. */
+  background: linear-gradient(160deg, #F0CC6B 0%, #C9A227 55%, #A9821C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1.5rem;
+  /* Extra breathing room below the script's descenders (the loops on
+     the "y"/"D" swing well below the baseline) before the rest of the
+     column starts. */
+}
+
+/* SplitText's line-mask wrapper (see the component's linesClass config)
+   — without this, descenders on wrapped lines (the "g" in "Aggregation",
+   for instance) get clipped by the mask's own overflow:hidden. */
+.tp__split-line {
+  padding-bottom: 10px;
+}
+
+.tp__gallery-copy::before {
+  /* rail track */
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7rem;
+  bottom: 0.2rem;
+  width: 2px;
+  background: var(--tp-hair);
+}
+
+.tp__gallery-rail-fill {
+  position: absolute;
+  left: 0;
+  top: 7rem;
+  width: 2px;
+  background: var(--tp-blue);
+  transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tp__gallery-slides {
+  position: relative;
+  min-height: clamp(11rem, 28vh, 16.5rem);
+}
+
+.tp__gallery-slide {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+}
+
+.tp__gallery-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+  line-height: 1.02;
+  /* Was var(--tp-navy) (#0B1F3A) — read as a dull, washed-out dark blue
+     rather than a crisp heading color. Straight black instead. */
+  color: #000;
+  margin: 0 0 1.1rem;
+}
+
+.tp__gallery-desc {
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: var(--tp-text-muted);
+  max-width: 440px;
+  margin: 0;
+}
+
+/* ---- visual (overlapping image pair) ----
+   Matches the reference composition exactly: a TALL PORTRAIT big image
+   on the right, full container height, with a near-square small image
+   overlapping its left edge at mid-height (not tucked into a corner) —
+   the two photos sit flush against each other, no border trim between
+   them, just a shadow for separation. Container aspect-ratio is derived
+   from the frame proportions below (see the math in the comment on
+   --big): big is 74% of the container's width at the container's full
+   height, and the reference's big image itself is ~0.78 width:height,
+   so the container works out to ≈1.05:1 to make that hold. Both frames
+   stack MASK_SLICES-revealed / clip-path-revealed <img> elements per
+   pillar (see the component), painted in DOM order so a newly revealed
+   pillar's image visually covers whichever was showing before it. */
+.tp__gallery-visual {
+  position: relative;
+  width: 100%;
+  height: 140%;
+  aspect-ratio: 1.05;
+  /* +30% from the previous 38rem / 600px cap. */
+  max-height: min(95%, 70.4rem);
+  max-width: 780px;
+  margin-left: auto;
+}
+
+.tp__gallery-frame {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.tp__gallery-frame--big {
+  width: 74%;
+  height: 100%;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  /* Soft dark drop for lift off the white ground, plus a blue glow tying
+     the frame back to the section's own accent color. */
+  box-shadow: 0 20px 50px rgba(3, 122, 184, 0.22), 0 8px 20px rgba(11, 31, 58, 0.12);
+}
+
+.tp__gallery-frame--small {
+  width: 47%;
+  height: 60%;
+  left: 0;
+  top: 20%;
+  z-index: 2;
+  box-shadow: 0 16px 36px rgba(3, 122, 184, 0.25);
+}
+
+.tp__gallery-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Responsive ----
+   Still inside PageController's fixed 100vh/overflow:hidden slide at
+   every width, so narrow layouts stay a single row (copy + a smaller
+   visual side by side) rather than stacking — stacking two full-width
+   blocks wouldn't fit the same height budget. */
 @media (max-width: 1100px) {
-  .tp {
-    min-height: auto;
-    padding: 4rem 0;
+  .tp__inner {
+    padding-left: clamp(1.5rem, 6vw, 4rem);
+    padding-right: clamp(1.5rem, 6vw, 4rem);
   }
 
-  .tp__hero {
-    grid-template-columns: 1fr;
-  }
-  .tp__hero-tagline {
-    align-self: flex-start;
+  .tp__gallery-stage {
+    grid-template-columns: 1fr 0.9fr;
+    gap: 1.5rem;
   }
 
-  .tp__pillars,
-  .tp__timeline {
-    grid-template-columns: repeat(3, 1fr);
+  .tp__gallery-eyebrow {
+    font-size: clamp(2.2rem, 5.5vw, 3.2rem);
+  }
+
+  .tp__gallery-title {
+    font-size: clamp(1.8rem, 4.2vw, 2.5rem);
+  }
+
+  .tp__gallery-desc {
+    font-size: 0.92rem;
+  }
+
+  .tp__gallery-slides {
+    min-height: clamp(9rem, 28vh, 12.5rem);
+  }
+
+  .tp__gallery-visual {
+    max-height: 26rem;
   }
 }
 
 @media (max-width: 700px) {
-  .tp__pillars,
-  .tp__timeline {
-    grid-template-columns: repeat(2, 1fr);
+  .tp__gallery-copy {
+    padding-left: 1.1rem;
   }
 
-  .tp__logos {
-    gap: 1.5rem;
+  .tp__gallery-eyebrow {
+    margin-bottom: 1rem;
   }
 
-  .tp__logo {
-    height: 48px;
+  .tp__gallery-title {
+    font-size: clamp(1.3rem, 5.4vw, 1.7rem);
+    margin-bottom: 0.5rem;
   }
-}
 
-@media (max-width: 480px) {
-  .tp__pillars,
-  .tp__timeline {
-    grid-template-columns: 1fr;
+  .tp__gallery-desc {
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
-  .tp__pillar {
-    aspect-ratio: 16 / 10;
+
+  .tp__gallery-visual {
+    max-height: 20rem;
   }
 }

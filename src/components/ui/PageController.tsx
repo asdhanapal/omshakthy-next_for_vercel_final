@@ -70,6 +70,26 @@ const PageController = ({ children }: PageControllerProps) => {
       timelineReset()
     }
 
+    // If current section is the Trusted Partners gallery (index 6, also
+    // the last snapped section): scrolling either direction steps through
+    // the 5 pillars one at a time, same as the timeline above but
+    // symmetric (up steps back through pillars instead of exiting
+    // immediately). Only once a boundary pillar is reached does the wheel
+    // tick fall through — up moves to the previous section, down hits the
+    // "last section" release check right below.
+    const tpGalleryAdvance = (window as any).__tpGalleryAdvance
+    const tpGalleryReset = (window as any).__tpGalleryReset
+    if (currentSection === 6 && typeof tpGalleryAdvance === 'function') {
+      const consumed = tpGalleryAdvance(dir)
+      if (consumed) {
+        isAnimating.current = true
+        setTimeout(() => { isAnimating.current = false }, 700)
+        return
+      }
+      // Boundary reached — leaving the gallery, so reset it for next time.
+      if (typeof tpGalleryReset === 'function') tpGalleryReset()
+    }
+
     // At the last snapped section and still scrolling down: hand off to
     // native scroll for whatever comes after PageController, rather than
     // just sitting stuck (goTo is a no-op past the last index).

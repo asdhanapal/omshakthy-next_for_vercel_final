@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   overflow: hidden;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   /* Explicit stacking, not just document order: TrustedPartnersSection and
      SpotlightSection (rendered after this in the DOM, now that they've been
@@ -18,9 +18,7 @@
    PageController in the document. Drops out of the fixed overlay and
    becomes a normal-flow block instead — still exactly one viewport tall
    (frozen on the last snapped section), so nothing visibly jumps at the
-   handoff. width:100% rather than 100vw here specifically, because 100vw
-   includes the scrollbar gutter that now exists once the page has real
-   scrollable height — 100vw would overflow the visible area horizontally. */
+   handoff. */
 .page-controller--released {
   position: static;
   width: 100%;
@@ -35,8 +33,15 @@
   will-change: transform;
 }
 
+/* width:100% everywhere in this file, never 100vw: vw units are measured
+   against the raw viewport and don't subtract the scrollbar gutter, so a
+   100vw element is exactly scrollbar-width wider than the visible area —
+   enough to make the page horizontally scrollable, which then paints the
+   site's custom-styled (bright blue) scrollbar as a bar across the bottom
+   of every screen. 100% correctly resolves against the actual visible
+   width instead. */
 .page-controller__section {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
   position: relative;

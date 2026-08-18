@@ -8,8 +8,8 @@ import MilestoneSection from '@/components/ui/MilestoneSection'
 import LeadersSection from '@/components/ui/LeadersSection'
 import PriceTrends from '@/components/ui/PriceTrends'
 import TestimonialsSection from '@/components/ui/TestimonialsSection'
-import BlogSection from '@/components/ui/BlogSection'
 import TrustedPartnersSection from '@/components/ui/TrustedPartnersSection'
+import FinancialPartnersSection from '@/components/ui/FinancialPartnersSection'
 import SpotlightSection from '@/components/ui/SpotlightSection'
 import PageController from '@/components/ui/PageController'
 import Header from '@/components/layout/Header'
@@ -35,9 +35,9 @@ export default function HomeClient() {
       {showHeader && <Header />}
       <main>
         <IntroSection />
-        {/* Snap-scroll (one wheel tick = one section) only through
-            Testimonials. Everything after that is normal free-flow scroll —
-            see PageController's `released` state for the handoff. */}
+        {/* Snap-scroll (one wheel tick = one section) through Testimonials
+            AND Trusted Partners. Everything after that is normal free-flow
+            scroll — see PageController's `released` state for the handoff. */}
         <PageController>
           <HeroSlider />
           <PropertyGrid />
@@ -45,9 +45,12 @@ export default function HomeClient() {
           <LeadersSection />
           <PriceTrends />
           <TestimonialsSection />
+          <TrustedPartnersSection />
         </PageController>
-        <TrustedPartnersSection />
-        <BlogSection />
+        {/* First thing native scroll reaches once the pillar gallery above
+            releases — was part of TrustedPartnersSection, split out so
+            that slide could dedicate its full 100vh to the gallery alone. */}
+        <FinancialPartnersSection />
         <SpotlightSection />
       </main>
       <Footer />
