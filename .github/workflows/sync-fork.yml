@@ -8,6 +8,11 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    
+    # Add these lines to give the script permission to update your repo
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout target repo
         uses: actions/checkout@v5
