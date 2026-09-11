@@ -9,9 +9,10 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     
-    # Add these lines to give the script permission to update your repo
+    # Update this section to include workflow permissions
     permissions:
       contents: write
+      workflows: write
 
     steps:
       - name: Checkout target repo
