@@ -1,26 +1,5 @@
-name: Sync Fork
-
-on:
-  schedule:
-    - cron: '0 0 * * *' # Runs automatically every day at midnight UTC
-  workflow_dispatch: # Allows you to also trigger it manually with one click
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    
-    # Add these lines to give the script permission to update your repo
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout target repo
-        uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Sync upstream changes
         run: |
-          gh repo sync ${{ github.repository }} --branch main
+          gh repo sync ${{ github.repository }} --branch main --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
